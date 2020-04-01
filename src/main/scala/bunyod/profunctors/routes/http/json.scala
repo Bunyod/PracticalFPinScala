@@ -28,13 +28,13 @@ object json extends JsonCodecs {
 private[http] trait JsonCodecs {
 
   // ----- Overriding some Coercible codecs ----
-  implicit val brandParamDecoer: Decoder[BrandParam] =
+  implicit val brandParamDecoder: Decoder[BrandParam] =
     Decoder.forProduct1("name")(BrandParam.apply)
 
-  implicit val categoryParamDecoer: Decoder[CategoryParam] =
+  implicit val categoryParamDecoder: Decoder[CategoryParam] =
     Decoder.forProduct1("name")(CategoryParam.apply)
 
-  implicit val paymentIdDecoer: Decoder[PaymentId] =
+  implicit val paymentIdDecoder: Decoder[PaymentId] =
     Decoder.forProduct1("paymentId")(PaymentId.apply)
 
   // ----- Coercible codecs -----
@@ -52,36 +52,36 @@ private[http] trait JsonCodecs {
 
   // ----- Domain codecs -----
 
-  implicit val brandEncoder: Encoder[Brand] = deriveEncoder[Brand]
   implicit val brandDecoder: Decoder[Brand] = deriveDecoder[Brand]
+  implicit val brandEncoder: Encoder[Brand] = deriveEncoder[Brand]
 
-  implicit val categoryEncoder: Encoder[Category] = deriveEncoder[Category]
   implicit val categoryDecoder: Decoder[Category] = deriveDecoder[Category]
-
-  implicit val moneyEncoder: Encoder[Money] =
-    Encoder[BigDecimal].contramap(_.amount)
+  implicit val categoryEncoder: Encoder[Category] = deriveEncoder[Category]
 
   implicit val moneyDecoder: Decoder[Money] =
     Decoder[BigDecimal].map(USD.apply)
 
-  implicit val itemEncoder: Encoder[Item] = deriveEncoder[Item]
+  implicit val moneyEncoder: Encoder[Money] =
+    Encoder[BigDecimal].contramap(_.amount)
+
   implicit val itemDecoder: Decoder[Item] = deriveDecoder[Item]
+  implicit val itemEncoder: Encoder[Item] = deriveEncoder[Item]
 
-  implicit val createItemParamDecoer: Decoder[CreateItemParam] = deriveDecoder[CreateItemParam]
-  implicit val updateItemParamDecoer: Decoder[UpdateItemParam] = deriveDecoder[UpdateItemParam]
+  implicit val createItemDecoder: Decoder[CreateItemParam] = deriveDecoder[CreateItemParam]
+  implicit val updateItemDecoder: Decoder[UpdateItemParam] = deriveDecoder[UpdateItemParam]
 
-  implicit val cartItemEncoder: Encoder[CartItem] = deriveEncoder[CartItem]
   implicit val cartItemDecoder: Decoder[CartItem] = deriveDecoder[CartItem]
+  implicit val cartItemEncoder: Encoder[CartItem] = deriveEncoder[CartItem]
 
   implicit val cartTotalEncoder: Encoder[CartTotal] = deriveEncoder[CartTotal]
 
-  implicit val orderEcoder: Encoder[Order] = deriveEncoder[Order]
+  implicit val orderEncoder: Encoder[Order] = deriveEncoder[Order]
 
   implicit val cardDecoder: Decoder[Card] = deriveDecoder[Card]
-  implicit val cardEcoder: Encoder[Card] = deriveEncoder[Card]
+  implicit val cardEncoder: Encoder[Card] = deriveEncoder[Card]
 
   implicit val tokenEncoder: Encoder[JwtToken] =
-    Encoder.forProduct1("acces_token")(_.value)
+    Encoder.forProduct1("access_token")(_.value)
 
   implicit val cartEncoder: Encoder[Cart] =
     Encoder.forProduct1("items")(_.items)
@@ -89,10 +89,10 @@ private[http] trait JsonCodecs {
   implicit val cartDecoder: Decoder[Cart] =
     Decoder.forProduct1("items")(Cart.apply)
 
-  implicit val userEncoder: Encoder[User] = deriveEncoder[User]
   implicit val userDecoder: Decoder[User] = deriveDecoder[User]
+  implicit val userEncoder: Encoder[User] = deriveEncoder[User]
 
-  implicit val paymentEcoder: Encoder[Payment] = deriveEncoder[Payment]
+  implicit val paymentEncoder: Encoder[Payment] = deriveEncoder[Payment]
 
   implicit val createUserDecoder: Decoder[CreateUser] = deriveDecoder[CreateUser]
 

@@ -13,7 +13,7 @@ object checkout {
 
   type CardNamePred = String Refined MatchesRegex[Rgx]
   type CardNumberPred = Long Refined Size[16]
-  type CardExpirationPred = Int Refined (Size[4] And ValidInt)
+  type CardExpirationPred = String Refined (Size[4] And ValidInt)
   type CardCVVPred = Int Refined Size[3]
 
   @newtype case class CardName(value: CardNamePred)
@@ -27,5 +27,4 @@ object checkout {
     expiration: CardExpiration,
     ccv: CardCVV
   )
-
 }
