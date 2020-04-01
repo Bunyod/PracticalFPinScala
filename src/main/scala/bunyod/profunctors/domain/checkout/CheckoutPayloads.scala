@@ -7,7 +7,7 @@ import eu.timepit.refined.collection.Size
 import eu.timepit.refined.string.{MatchesRegex, ValidInt}
 import io.estatico.newtype.macros.newtype
 
-object checkout {
+object CheckoutPayloads {
 
   type Rgx = W.`"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"`.T
 

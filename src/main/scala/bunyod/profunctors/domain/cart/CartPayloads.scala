@@ -1,13 +1,13 @@
 package bunyod.profunctors.domain.cart
 
-import bunyod.profunctors.domain.auth.auth.UserId
-import bunyod.profunctors.domain.items.items.{Item, ItemId}
+import bunyod.profunctors.domain.auth.AuthPayloads.UserId
+import bunyod.profunctors.domain.items.ItemsPayloads.{Item, ItemId}
 import io.estatico.newtype.macros.newtype
 import java.util.UUID
 import scala.util.control.NoStackTrace
 import squants.market.Money
 
-object cart {
+object CartPayloads {
 
   @newtype case class Quantity(value: Int)
   @newtype case class Cart(items: Map[ItemId, Quantity])

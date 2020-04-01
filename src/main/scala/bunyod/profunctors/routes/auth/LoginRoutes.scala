@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.auth
 
-import bunyod.profunctors.domain.auth.auth.{InvalidUserOrPassword, LoginUser}
+import bunyod.profunctors.domain.auth.AuthPayloads.{InvalidUserOrPassword, LoginUser}
 import cats.implicits._
 import bunyod.profunctors.domain.auth.Auth
 import bunyod.profunctors.effects.MonadThrow

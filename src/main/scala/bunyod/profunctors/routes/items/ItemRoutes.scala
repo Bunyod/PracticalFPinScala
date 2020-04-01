@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.items
 
-import bunyod.profunctors.domain.brands.brands._
+import bunyod.profunctors.domain.brands.BrandsPayloads._
 import bunyod.profunctors.domain.items.Items
 import cats._
 import org.http4s._

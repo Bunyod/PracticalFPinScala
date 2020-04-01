@@ -1,7 +1,7 @@
 package bunyod.profunctors.domain.items
 
-import bunyod.profunctors.domain.brands.brands.BrandName
-import bunyod.profunctors.domain.items.items.{CreateItem, Item, ItemId, UpdateItem}
+import bunyod.profunctors.domain.brands.BrandsPayloads.BrandName
+import bunyod.profunctors.domain.items.ItemsPayloads.{CreateItem, Item, ItemId, UpdateItem}
 
 trait Items[F[_]] {
 

@@ -1,10 +1,10 @@
 package bunyod.profunctors.domain.payment
 
-import bunyod.profunctors.domain.auth.auth.UserId
-import bunyod.profunctors.domain.checkout.checkout.Card
+import bunyod.profunctors.domain.auth.AuthPayloads.UserId
+import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
 import squants.market.Money
 
-object payment {
+object PaymentPayloads {
 
   case class Payment(
     id: UserId,

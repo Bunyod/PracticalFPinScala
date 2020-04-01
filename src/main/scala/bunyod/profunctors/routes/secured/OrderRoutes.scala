@@ -1,8 +1,8 @@
 package bunyod.profunctors.routes.secured
 
 import bunyod.profunctors.domain.orders.Orders
-import bunyod.profunctors.domain.orders.orders.OrderId
-import bunyod.profunctors.domain.users.users.CommonUser
+import bunyod.profunctors.domain.orders.OrdersPayloads.OrderId
+import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import cats.{Defer, Monad}
 import org.http4s.{AuthedRoutes, HttpRoutes}
 import org.http4s.dsl.Http4sDsl

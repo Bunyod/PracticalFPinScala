@@ -1,9 +1,9 @@
 package bunyod.profunctors.routes.secured
 
 import bunyod.profunctors.domain.cart.ShoppingCart
-import bunyod.profunctors.domain.cart.cart.Cart
-import bunyod.profunctors.domain.items.items.ItemId
-import bunyod.profunctors.domain.users.users.CommonUser
+import bunyod.profunctors.domain.cart.CartPayloads.Cart
+import bunyod.profunctors.domain.items.ItemsPayloads.ItemId
+import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import cats.implicits._
 import cats.{Defer, Monad}
 import org.http4s.circe._

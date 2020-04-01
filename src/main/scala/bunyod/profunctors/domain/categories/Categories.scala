@@ -1,6 +1,6 @@
 package bunyod.profunctors.domain.categories
 
-import bunyod.profunctors.domain.categories.categories.{Category, CategoryName}
+import bunyod.profunctors.domain.categories.CategoryPayloads.{Category, CategoryName}
 
 trait Categories[F[_]] {
 

@@ -1,7 +1,7 @@
 package bunyod.profunctors.domain.auth
 
-import bunyod.profunctors.domain.auth.auth.{Password, UserName}
-import bunyod.profunctors.domain.users.users.User
+import bunyod.profunctors.domain.auth.AuthPayloads.{Password, UserName}
+import bunyod.profunctors.domain.users.UsersPayloads.User
 import dev.profunktor.auth.jwt.JwtToken
 
 trait Auth[F[_]] {

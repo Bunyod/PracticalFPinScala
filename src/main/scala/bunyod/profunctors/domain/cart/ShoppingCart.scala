@@ -1,8 +1,8 @@
 package bunyod.profunctors.domain.cart
 
-import bunyod.profunctors.domain.auth.auth.UserId
-import bunyod.profunctors.domain.cart.cart.{Cart, CartTotal, Quantity}
-import bunyod.profunctors.domain.items.items.ItemId
+import bunyod.profunctors.domain.auth.AuthPayloads.UserId
+import bunyod.profunctors.domain.cart.CartPayloads.{Cart, CartTotal, Quantity}
+import bunyod.profunctors.domain.items.ItemsPayloads.ItemId
 
 trait ShoppingCart[F[_]] {
 

@@ -1,6 +1,6 @@
 package bunyod.profunctors.domain.brands
 
-import bunyod.profunctors.domain.brands.brands.{Brand, BrandName}
+import bunyod.profunctors.domain.brands.BrandsPayloads.{Brand, BrandName}
 
 trait Brands[F[_]] {
 

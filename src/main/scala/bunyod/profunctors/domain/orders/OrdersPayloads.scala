@@ -1,13 +1,13 @@
 package bunyod.profunctors.domain.orders
 
-import bunyod.profunctors.domain.cart.cart.Quantity
-import bunyod.profunctors.domain.items.items.ItemId
+import bunyod.profunctors.domain.cart.CartPayloads.Quantity
+import bunyod.profunctors.domain.items.ItemsPayloads.ItemId
 import io.estatico.newtype.macros.newtype
 import java.util.UUID
 import scala.util.control.NoStackTrace
 import squants.market.Money
 
-object orders {
+object OrdersPayloads {
 
   @newtype case class OrderId(uuid: UUID)
   @newtype case class PaymentId(uuid: UUID)

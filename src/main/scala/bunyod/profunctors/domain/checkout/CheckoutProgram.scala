@@ -1,13 +1,13 @@
 package bunyod.profunctors.domain.checkout
 
-import bunyod.profunctors.domain.auth.auth.UserId
-import bunyod.profunctors.domain.cart.{cart, ShoppingCart}
-import bunyod.profunctors.domain.cart.cart.CartTotal
-import bunyod.profunctors.domain.checkout.checkout.Card
-import bunyod.profunctors.domain.orders.orders.{EmptyCartError, OrderError, OrderId, PaymentError, PaymentId}
+import bunyod.profunctors.domain.auth.AuthPayloads.UserId
+import bunyod.profunctors.domain.cart.{CartPayloads, ShoppingCart}
+import bunyod.profunctors.domain.cart.CartPayloads.CartTotal
+import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
+import bunyod.profunctors.domain.orders.OrdersPayloads.{EmptyCartError, OrderError, OrderId, PaymentError, PaymentId}
 import bunyod.profunctors.domain.orders.Orders
 import bunyod.profunctors.domain.payment.PaymentClient
-import bunyod.profunctors.domain.payment.payment.Payment
+import bunyod.profunctors.domain.payment.PaymentPayloads.Payment
 import bunyod.profunctors.effects.{Background, MonadThrow}
 import cats.effect.Timer
 import cats.implicits._
@@ -47,10 +47,11 @@ final class CheckoutProgram[F[_]: Background: Logger: MonadThrow: Timer](
         PaymentError(Option(e.getMessage).getOrElse("Unknown"))
     }
   }
+
   private def createOrder(
     userId: UserId,
     paymentId: PaymentId,
-    items: List[cart.CartItem],
+    items: List[CartPayloads.CartItem],
     total: Money
   ): F[OrderId] = {
     val action = retryingOnAllErrors[OrderId](

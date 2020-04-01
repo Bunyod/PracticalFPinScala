@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
     name := "examples",
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= CompilerOptions.compilerOptions,
-    scalafmtOnCompile := true,
+//    scalafmtOnCompile := true,
     libraryDependencies ++= Seq(
       CompilerPlugins.betterMonadicFor,
       "org.typelevel" %% "squants" % "1.6.0",

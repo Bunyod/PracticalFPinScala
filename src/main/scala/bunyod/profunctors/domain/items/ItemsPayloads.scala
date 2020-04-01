@@ -1,15 +1,15 @@
 package bunyod.profunctors.domain.items
 
 import java.util.UUID
-import bunyod.profunctors.domain.brands.brands.{Brand, BrandId}
-import bunyod.profunctors.domain.categories.categories.{Category, CategoryId}
+import bunyod.profunctors.domain.brands.BrandsPayloads.{Brand, BrandId}
+import bunyod.profunctors.domain.categories.CategoryPayloads.{Category, CategoryId}
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.string.{Uuid, ValidBigDecimal}
 import eu.timepit.refined.types.string.NonEmptyString
 import io.estatico.newtype.macros.newtype
 import squants.market.{Money, USD}
 
-object items {
+object ItemsPayloads {
 
   @newtype case class ItemId(value: UUID)
   @newtype case class ItemName(value: String)
@@ -37,6 +37,7 @@ object items {
     brandId: BrandId,
     categoryId: CategoryId
   ) {
+
     def toDomain: CreateItem =
       CreateItem(
         ItemName(name.value.value),
@@ -63,6 +64,7 @@ object items {
     id: ItemIdParam,
     price: PriceParam
   ) {
+
     def toDomain: UpdateItem =
       UpdateItem(
         ItemId(UUID.fromString(id.value.value)),

@@ -1,14 +1,14 @@
 package bunyod.profunctors.routes.http
 
-import bunyod.profunctors.domain.auth.auth._
-import bunyod.profunctors.domain.brands.brands._
-import bunyod.profunctors.domain.cart.cart._
-import bunyod.profunctors.domain.categories.categories._
-import bunyod.profunctors.domain.checkout.checkout._
-import bunyod.profunctors.domain.items.items._
-import bunyod.profunctors.domain.orders.orders._
-import bunyod.profunctors.domain.payment.payment._
-import bunyod.profunctors.domain.users.users._
+import bunyod.profunctors.domain.auth.AuthPayloads._
+import bunyod.profunctors.domain.brands.BrandsPayloads._
+import bunyod.profunctors.domain.cart.CartPayloads._
+import bunyod.profunctors.domain.categories.CategoryPayloads._
+import bunyod.profunctors.domain.checkout.CheckoutPayloads._
+import bunyod.profunctors.domain.items.ItemsPayloads._
+import bunyod.profunctors.domain.orders.OrdersPayloads._
+import bunyod.profunctors.domain.payment.PaymentPayloads._
+import bunyod.profunctors.domain.users.UsersPayloads._
 import bunyod.profunctors.routes.http.refined._
 import cats.Applicative
 import dev.profunktor.auth.jwt.JwtToken

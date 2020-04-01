@@ -19,6 +19,7 @@ object Background {
 
   implicit def concurrentBackground[F[_]: Concurrent: Timer]: Background[F] =
     new Background[F] {
+
       def schedule[A](
         fa: F[A],
         duration: FiniteDuration

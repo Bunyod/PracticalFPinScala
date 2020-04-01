@@ -1,8 +1,8 @@
 package bunyod.profunctors.routes.admin
 
-import bunyod.profunctors.domain.brands.brands.BrandParam
+import bunyod.profunctors.domain.brands.BrandsPayloads.BrandParam
 import bunyod.profunctors.domain.brands.Brands
-import bunyod.profunctors.domain.users.users.AdminUser
+import bunyod.profunctors.domain.users.UsersPayloads.AdminUser
 import bunyod.profunctors.effects.MonadThrow
 import cats.Defer
 import org.http4s.AuthedRoutes
@@ -18,6 +18,7 @@ final class AdminBrandRouter[F[_]: Defer: JsonDecoder: MonadThrow](
 ) extends Http4sDsl[F] {
 
   private[admin] val pathPrefix = "/brands"
+
   private val httpRoutes: AuthedRoutes[AdminUser, F] =
     AuthedRoutes.of {
       case ar @ POST -> Root as _ =>

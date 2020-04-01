@@ -1,7 +1,7 @@
 package bunyod.profunctors.routes.auth
 
 import bunyod.profunctors.domain.auth._
-import bunyod.profunctors.domain.auth.auth.{CreateUser, UserNameInUse}
+import bunyod.profunctors.domain.auth.AuthPayloads.{CreateUser, UserNameInUse}
 import bunyod.profunctors.effects.MonadThrow
 import cats._
 import cats.implicits._

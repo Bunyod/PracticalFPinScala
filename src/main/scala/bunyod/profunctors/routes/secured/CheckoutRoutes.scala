@@ -2,11 +2,11 @@ package bunyod.profunctors.routes.checkout
 
 import cats.Defer
 import cats.implicits._
-import bunyod.profunctors.domain.cart.cart.CartNotFound
+import bunyod.profunctors.domain.cart.CartPayloads.CartNotFound
 import bunyod.profunctors.domain.checkout.CheckoutProgram
-import bunyod.profunctors.domain.checkout.checkout.Card
-import bunyod.profunctors.domain.orders.orders.{EmptyCartError, OrderError, PaymentError}
-import bunyod.profunctors.domain.users.users.CommonUser
+import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
+import bunyod.profunctors.domain.orders.OrdersPayloads.{EmptyCartError, OrderError, PaymentError}
+import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import bunyod.profunctors.effects.MonadThrow
 import bunyod.profunctors.routes.http.decoder._
 import bunyod.profunctors.routes.http.json._

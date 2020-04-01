@@ -1,7 +1,7 @@
 package bunyod.profunctors.routes.auth
 
 import bunyod.profunctors.domain.auth.Auth
-import bunyod.profunctors.domain.users.users.CommonUser
+import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import cats._
 import cats.implicits._
 import dev.profunktor.auth.AuthHeaders

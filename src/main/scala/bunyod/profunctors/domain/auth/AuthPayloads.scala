@@ -7,7 +7,7 @@ import java.util.UUID
 import javax.crypto.Cipher
 import scala.util.control.NoStackTrace
 
-object auth {
+object AuthPayloads {
 
   @newtype case class UserId(value: UUID)
   @newtype case class UserName(value: String)
@@ -17,6 +17,7 @@ object auth {
 
   @newtype case class EncryptCipher(value: Cipher)
   @newtype case class DecryptCipher(value: Cipher)
+
   @newtype case class UserNameParam(value: NonEmptyString) {
     def toDomain: UserName = UserName(value.value.toLowerCase())
   }
@@ -48,6 +49,7 @@ object auth {
   @newtype case class ClaimContent(uuid: UUID)
 
   object ClaimContent {
+
     implicit val jsonDecoder: Decoder[ClaimContent] =
       Decoder.forProduct1("uuid")(ClaimContent.apply)
   }

@@ -1,8 +1,8 @@
 package bunyod.profunctors.routes.admin
 
 import bunyod.profunctors.domain.categories.Categories
-import bunyod.profunctors.domain.categories.categories.CategoryParam
-import bunyod.profunctors.domain.users.users.AdminUser
+import bunyod.profunctors.domain.categories.CategoryPayloads.CategoryParam
+import bunyod.profunctors.domain.users.UsersPayloads.AdminUser
 import bunyod.profunctors.effects.MonadThrow
 import cats.Defer
 import org.http4s.{AuthedRoutes, HttpRoutes}

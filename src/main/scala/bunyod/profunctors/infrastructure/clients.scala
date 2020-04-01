@@ -1,3 +1,7 @@
 package bunyod.profunctors.infrastructure
 
-class clients {}
+object Clients {
+
+  def abc(s: Int): String = s"$s"
+
+}

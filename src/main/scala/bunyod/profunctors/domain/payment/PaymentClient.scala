@@ -1,7 +1,7 @@
 package bunyod.profunctors.domain.payment
 
-import bunyod.profunctors.domain.orders.orders.PaymentId
-import bunyod.profunctors.domain.payment.payment.Payment
+import bunyod.profunctors.domain.orders.OrdersPayloads.PaymentId
+import bunyod.profunctors.domain.payment.PaymentPayloads.Payment
 
 trait PaymentClient[F[_]] {
 

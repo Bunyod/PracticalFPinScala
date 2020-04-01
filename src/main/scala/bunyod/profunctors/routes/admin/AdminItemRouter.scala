@@ -1,8 +1,8 @@
 package bunyod.profunctors.routes.admin
 
 import bunyod.profunctors.domain.items._
-import bunyod.profunctors.domain.items.items.{CreateItemParam, UpdateItemParam}
-import bunyod.profunctors.domain.users.users.AdminUser
+import bunyod.profunctors.domain.items.ItemsPayloads.{CreateItemParam, UpdateItemParam}
+import bunyod.profunctors.domain.users.UsersPayloads.AdminUser
 import bunyod.profunctors.effects.MonadThrow
 import cats.Defer
 import org.http4s.{AuthedRoutes, HttpRoutes}

@@ -1,8 +1,8 @@
 package bunyod.profunctors.domain.orders
 
-import bunyod.profunctors.domain.auth.auth.UserId
-import bunyod.profunctors.domain.cart.cart.CartItem
-import bunyod.profunctors.domain.orders.orders.{Order, OrderId, PaymentId}
+import bunyod.profunctors.domain.auth.AuthPayloads.UserId
+import bunyod.profunctors.domain.cart.CartPayloads.CartItem
+import bunyod.profunctors.domain.orders.OrdersPayloads.{Order, OrderId, PaymentId}
 import squants.market.Money
 
 trait Orders[F[_]] {
