@@ -10,4 +10,6 @@ object Configuration {
     value: Secret[NonEmptyString]
   )
 
+  @newtype case class PasswordSalt(value: Secret[NonEmptyString])
+
 }

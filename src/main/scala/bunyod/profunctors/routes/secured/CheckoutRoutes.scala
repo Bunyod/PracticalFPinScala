@@ -3,7 +3,7 @@ package bunyod.profunctors.routes.checkout
 import cats.Defer
 import cats.implicits._
 import bunyod.profunctors.domain.cart.CartPayloads.CartNotFound
-import bunyod.profunctors.domain.checkout.CheckoutProgram
+import bunyod.profunctors.domain.checkout.CheckoutService
 import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
 import bunyod.profunctors.domain.orders.OrdersPayloads.{EmptyCartError, OrderError, PaymentError}
 import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
@@ -16,7 +16,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
 
 final class CheckoutRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
-  program: CheckoutProgram[F]
+  program: CheckoutService[F]
 ) extends Http4sDsl[F] {
 
   private[routes] val prefixPath = "/checkout"

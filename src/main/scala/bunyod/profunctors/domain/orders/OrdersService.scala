@@ -5,17 +5,20 @@ import bunyod.profunctors.domain.cart.CartPayloads.CartItem
 import bunyod.profunctors.domain.orders.OrdersPayloads.{Order, OrderId, PaymentId}
 import squants.market.Money
 
-trait OrdersAlgebra[F[_]] {
+class OrdersService[F[_]](ordersRepo: OrdersAlgebra[F]) {
 
-  def get(userId: UserId, orderId: OrderId): F[Option[Order]]
+  def get(userId: UserId, orderId: OrderId): F[Option[Order]] =
+    ordersRepo.get(userId, orderId)
 
-  def findBy(userId: UserId): F[List[Order]]
+  def findBy(userId: UserId): F[List[Order]] =
+    ordersRepo.findBy(userId)
 
   def create(
     userId: UserId,
     paymentId: PaymentId,
     items: List[CartItem],
     total: Money
-  ): F[OrderId]
+  ): F[OrderId] =
+    ordersRepo.create(userId, paymentId, items, total)
 
 }

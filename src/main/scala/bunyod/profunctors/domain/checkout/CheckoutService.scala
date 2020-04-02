@@ -1,25 +1,25 @@
 package bunyod.profunctors.domain.checkout
 
 import bunyod.profunctors.domain.auth.AuthPayloads.UserId
-import bunyod.profunctors.domain.cart.{CartPayloads, ShoppingCartAlgebra}
 import bunyod.profunctors.domain.cart.CartPayloads.CartTotal
+import bunyod.profunctors.domain.cart._
 import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
-import bunyod.profunctors.domain.orders.OrdersPayloads.{EmptyCartError, OrderError, OrderId, PaymentError, PaymentId}
-import bunyod.profunctors.domain.orders.OrdersAlgebra
-import bunyod.profunctors.domain.payment.PaymentClientAlgebra
+import bunyod.profunctors.domain.orders.OrdersPayloads._
+import bunyod.profunctors.domain.orders.OrdersService
+import bunyod.profunctors.domain.payment.PaymentClientService
 import bunyod.profunctors.domain.payment.PaymentPayloads.Payment
-import bunyod.profunctors.effects.{Background, MonadThrow}
+import bunyod.profunctors.effects._
 import cats.effect.Timer
 import cats.implicits._
 import io.chrisdavenport.log4cats.Logger
-import squants.market.Money
 import retry._
 import scala.concurrent.duration.DurationInt
+import squants.market.Money
 
-final class CheckoutProgram[F[_]: Background: Logger: MonadThrow: Timer](
-  paymentClient: PaymentClientAlgebra[F],
-  shoppingCart: ShoppingCartAlgebra[F],
-  orders: OrdersAlgebra[F],
+final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
+  paymentClient: PaymentClientService[F],
+  shoppingCart: ShoppingCartService[F],
+  orders: OrdersService[F],
   retryPolicy: RetryPolicy[F]
 ) {
 
