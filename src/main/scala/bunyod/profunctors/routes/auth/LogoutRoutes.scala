@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.auth
 
-import bunyod.profunctors.domain.auth.Auth
+import bunyod.profunctors.domain.auth.AuthAlgebra
 import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import cats._
 import cats.implicits._
@@ -10,7 +10,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.{AuthMiddleware, Router}
 
 final class LogoutRoutes[F[_]: Defer: Monad](
-  auth: Auth[F]
+  auth: AuthAlgebra[F]
 ) extends Http4sDsl[F] {
 
   private[auth] val pathPrefix = "/auth"

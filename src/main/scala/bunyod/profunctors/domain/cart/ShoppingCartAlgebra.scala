@@ -4,7 +4,7 @@ import bunyod.profunctors.domain.auth.AuthPayloads.UserId
 import bunyod.profunctors.domain.cart.CartPayloads.{Cart, CartTotal, Quantity}
 import bunyod.profunctors.domain.items.ItemsPayloads.ItemId
 
-trait ShoppingCart[F[_]] {
+trait ShoppingCartAlgebra[F[_]] {
 
   def add(userId: UserId, itemId: ItemId, quantity: Quantity): F[Unit]
   def delete(userId: UserId): F[Unit]

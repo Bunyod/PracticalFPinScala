@@ -5,7 +5,7 @@ import bunyod.profunctors.domain.cart.CartPayloads.CartItem
 import bunyod.profunctors.domain.orders.OrdersPayloads.{Order, OrderId, PaymentId}
 import squants.market.Money
 
-trait Orders[F[_]] {
+trait OrdersAlgebra[F[_]] {
 
   def get(
     userId: UserId,

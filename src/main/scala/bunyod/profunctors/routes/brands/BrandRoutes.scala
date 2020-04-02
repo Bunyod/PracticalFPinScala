@@ -10,7 +10,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 import routes.http.json._
 
-final class BrandRoutes[F[_]: Defer: Monad](brands: Brands[F]) extends Http4sDsl[F] {
+final class BrandRoutes[F[_]: Defer: Monad](brands: BrandsAlgebra[F]) extends Http4sDsl[F] {
 
   private[routes] val prefixPath = "/brands"
 

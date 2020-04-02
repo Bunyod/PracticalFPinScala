@@ -3,7 +3,7 @@ package bunyod.profunctors.domain.items
 import bunyod.profunctors.domain.brands.BrandsPayloads.BrandName
 import bunyod.profunctors.domain.items.ItemsPayloads.{CreateItem, Item, ItemId, UpdateItem}
 
-trait Items[F[_]] {
+trait ItemsAlgebra[F[_]] {
 
   def findAll: F[List[Item]]
   def findBy(brand: BrandName): F[List[Item]]

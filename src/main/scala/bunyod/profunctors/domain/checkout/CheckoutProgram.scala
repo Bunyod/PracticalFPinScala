@@ -1,12 +1,12 @@
 package bunyod.profunctors.domain.checkout
 
 import bunyod.profunctors.domain.auth.AuthPayloads.UserId
-import bunyod.profunctors.domain.cart.{CartPayloads, ShoppingCart}
+import bunyod.profunctors.domain.cart.{CartPayloads, ShoppingCartAlgebra}
 import bunyod.profunctors.domain.cart.CartPayloads.CartTotal
 import bunyod.profunctors.domain.checkout.CheckoutPayloads.Card
 import bunyod.profunctors.domain.orders.OrdersPayloads.{EmptyCartError, OrderError, OrderId, PaymentError, PaymentId}
-import bunyod.profunctors.domain.orders.Orders
-import bunyod.profunctors.domain.payment.PaymentClient
+import bunyod.profunctors.domain.orders.OrdersAlgebra
+import bunyod.profunctors.domain.payment.PaymentClientAlgebra
 import bunyod.profunctors.domain.payment.PaymentPayloads.Payment
 import bunyod.profunctors.effects.{Background, MonadThrow}
 import cats.effect.Timer
@@ -17,9 +17,9 @@ import retry._
 import scala.concurrent.duration.DurationInt
 
 final class CheckoutProgram[F[_]: Background: Logger: MonadThrow: Timer](
-  paymentClient: PaymentClient[F],
-  shoppingCart: ShoppingCart[F],
-  orders: Orders[F],
+  paymentClient: PaymentClientAlgebra[F],
+  shoppingCart: ShoppingCartAlgebra[F],
+  orders: OrdersAlgebra[F],
   retryPolicy: RetryPolicy[F]
 ) {
 

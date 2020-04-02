@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.admin
 
-import bunyod.profunctors.domain.categories.Categories
+import bunyod.profunctors.domain.categories.CategoriesAlgebra
 import bunyod.profunctors.domain.categories.CategoryPayloads.CategoryParam
 import bunyod.profunctors.domain.users.UsersPayloads.AdminUser
 import bunyod.profunctors.effects.MonadThrow
@@ -12,7 +12,7 @@ import bunyod.profunctors.routes.http.decoder._
 import bunyod.profunctors.routes.http.json._
 import org.http4s.server.{AuthMiddleware, Router}
 
-final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories: Categories[F]) extends Http4sDsl[F] {
+final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories: CategoriesAlgebra[F]) extends Http4sDsl[F] {
 
   private[admin] val pathPrefix = "/categories"
 

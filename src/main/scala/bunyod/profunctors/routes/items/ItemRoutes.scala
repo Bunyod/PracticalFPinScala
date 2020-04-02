@@ -1,7 +1,7 @@
 package bunyod.profunctors.routes.items
 
 import bunyod.profunctors.domain.brands.BrandsPayloads._
-import bunyod.profunctors.domain.items.Items
+import bunyod.profunctors.domain.items.ItemsAlgebra
 import cats._
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
@@ -10,7 +10,7 @@ import bunyod.profunctors.routes.http.json._
 import bunyod.profunctors.routes.http.refined._
 
 final class ItemRoutes[F[_]: Defer: Monad](
-  items: Items[F]
+  items: ItemsAlgebra[F]
 ) extends Http4sDsl[F] {
 
   private[routes] val prefixPath = "/items"

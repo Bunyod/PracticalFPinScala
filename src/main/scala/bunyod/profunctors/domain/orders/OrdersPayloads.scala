@@ -14,9 +14,9 @@ object OrdersPayloads {
 
   case class Order(
     id: OrderId,
-    pid: PaymentId,
+    paymentId: PaymentId,
     items: Map[ItemId, Quantity],
-    toatl: Money
+    total: Money
   )
 
   case object EmptyCartError extends NoStackTrace

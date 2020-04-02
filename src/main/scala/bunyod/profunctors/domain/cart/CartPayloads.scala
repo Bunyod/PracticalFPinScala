@@ -17,4 +17,5 @@ object CartPayloads {
   case class CartTotal(items: List[CartItem], total: Money)
 
   case class CartNotFound(userId: UserId) extends NoStackTrace
+
 }

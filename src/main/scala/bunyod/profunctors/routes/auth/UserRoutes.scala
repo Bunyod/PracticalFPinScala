@@ -12,7 +12,7 @@ import bunyod.profunctors.routes.http.decoder._
 import bunyod.profunctors.routes.http.json._
 import org.http4s.server.Router
 
-final class UserRoutes[F[_]: Defer: JsonDecoder: MonadThrow](auth: Auth[F]) extends Http4sDsl[F] {
+final class UserRoutes[F[_]: Defer: JsonDecoder: MonadThrow](auth: AuthAlgebra[F]) extends Http4sDsl[F] {
 
   private[auth] val pathPrefix = "/auth"
 

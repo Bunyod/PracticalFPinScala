@@ -73,7 +73,7 @@ object ItemsPayloads {
   }
 
   case class UpdateItem(
-    item: ItemId,
+    id: ItemId,
     price: Money
   )
 

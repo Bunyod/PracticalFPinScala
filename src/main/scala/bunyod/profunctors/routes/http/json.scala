@@ -8,7 +8,6 @@ import bunyod.profunctors.domain.checkout.CheckoutPayloads._
 import bunyod.profunctors.domain.items.ItemsPayloads._
 import bunyod.profunctors.domain.orders.OrdersPayloads._
 import bunyod.profunctors.domain.payment.PaymentPayloads._
-import bunyod.profunctors.domain.users.UsersPayloads._
 import bunyod.profunctors.routes.http.refined._
 import cats.Applicative
 import dev.profunktor.auth.jwt.JwtToken
@@ -88,9 +87,6 @@ private[http] trait JsonCodecs {
 
   implicit val cartDecoder: Decoder[Cart] =
     Decoder.forProduct1("items")(Cart.apply)
-
-  implicit val userDecoder: Decoder[User] = deriveDecoder[User]
-  implicit val userEncoder: Encoder[User] = deriveEncoder[User]
 
   implicit val paymentEncoder: Encoder[Payment] = deriveEncoder[Payment]
 

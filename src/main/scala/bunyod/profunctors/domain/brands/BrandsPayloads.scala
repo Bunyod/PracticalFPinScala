@@ -10,7 +10,6 @@ object BrandsPayloads {
   @newtype case class BrandId(value: UUID)
 
   @newtype case class BrandName(value: String) {
-
     def toBrand(brandId: BrandId): Brand =
       Brand(brandId, this)
   }

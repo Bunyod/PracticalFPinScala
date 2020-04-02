@@ -13,7 +13,7 @@ import bunyod.profunctors.routes.http.json._
 import org.http4s.server.{AuthMiddleware, Router}
 
 final class AdminItemRouter[F[_]: Defer: JsonDecoder: MonadThrow](
-  items: Items[F]
+  items: ItemsAlgebra[F]
 ) extends Http4sDsl[F] {
 
   private[admin] val pathPrefix = "/items"

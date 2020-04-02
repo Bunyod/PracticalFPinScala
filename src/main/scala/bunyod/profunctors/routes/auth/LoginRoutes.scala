@@ -2,7 +2,7 @@ package bunyod.profunctors.routes.auth
 
 import bunyod.profunctors.domain.auth.AuthPayloads.{InvalidUserOrPassword, LoginUser}
 import cats.implicits._
-import bunyod.profunctors.domain.auth.Auth
+import bunyod.profunctors.domain.auth.AuthAlgebra
 import bunyod.profunctors.effects.MonadThrow
 import bunyod.profunctors.routes.http.decoder._
 import bunyod.profunctors.routes.http.json._
@@ -13,7 +13,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
 final class LoginRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
-  auth: Auth[F]
+  auth: AuthAlgebra[F]
 ) extends Http4sDsl[F] {
 
   private[auth] val pathPrefix = "/auth"

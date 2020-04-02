@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.secured
 
-import bunyod.profunctors.domain.orders.Orders
+import bunyod.profunctors.domain.orders.OrdersAlgebra
 import bunyod.profunctors.domain.orders.OrdersPayloads.OrderId
 import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
 import cats.{Defer, Monad}
@@ -10,7 +10,7 @@ import org.http4s.server.{AuthMiddleware, Router}
 import bunyod.profunctors.routes.http.json._
 
 final class OrderRoutes[F[_]: Defer: Monad](
-  orders: Orders[F]
+  orders: OrdersAlgebra[F]
 ) extends Http4sDsl[F] {
 
   private[routes] val pathPrefix = "/orders"

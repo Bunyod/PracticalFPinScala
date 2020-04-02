@@ -1,6 +1,6 @@
 package bunyod.profunctors.routes.secured
 
-import bunyod.profunctors.domain.cart.ShoppingCart
+import bunyod.profunctors.domain.cart.ShoppingCartAlgebra
 import bunyod.profunctors.domain.cart.CartPayloads.Cart
 import bunyod.profunctors.domain.items.ItemsPayloads.ItemId
 import bunyod.profunctors.domain.users.UsersPayloads.CommonUser
@@ -12,7 +12,7 @@ import org.http4s.server.{AuthMiddleware, Router}
 import org.http4s.{AuthedRoutes, HttpRoutes}
 import bunyod.profunctors.routes.http.json._
 
-final class CartRoutes[F[_]: Defer: JsonDecoder: Monad](shoppingCart: ShoppingCart[F]) extends Http4sDsl[F] {
+final class CartRoutes[F[_]: Defer: JsonDecoder: Monad](shoppingCart: ShoppingCartAlgebra[F]) extends Http4sDsl[F] {
 
   private[routes] val pathPrefix = "/cart"
 
