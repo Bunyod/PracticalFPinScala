@@ -2,8 +2,6 @@ package bunyod.fp
 
 import cats.effect.Bracket
 import cats.{ApplicativeError, MonadError}
-import io.estatico.newtype.macros.newtype
-import scala.concurrent.duration.FiniteDuration
 
 package object effects {
 
@@ -25,8 +23,5 @@ package object effects {
   object BracketThrow {
     def apply[F[_]](implicit env: Bracket[F, Throwable]): Bracket[F, Throwable] = env
   }
-
-  @newtype case class TokenExpiration(value: FiniteDuration)
-  @newtype case class ShoppingCartExpiration(value: FiniteDuration)
 
 }

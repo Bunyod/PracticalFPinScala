@@ -10,7 +10,7 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class BrandsInterpreter[F[_]: BracketThrow: GenUUID](
+class BrandsRepository[F[_]: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends BrandsAlgebra[F] {
 

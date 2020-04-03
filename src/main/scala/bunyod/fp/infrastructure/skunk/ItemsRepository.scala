@@ -13,11 +13,11 @@ import skunk.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class ItemsInterpreter[F[_]: Sync: BracketThrow: GenUUID](
+class ItemsRepository[F[_]: Sync: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends ItemsAlgebra[F] {
 
-  import ItemsInterpreter._
+  import ItemsRepository._
 
   def findAll: F[List[Item]] =
     sessionPool.use(_.execute(selectAll))
@@ -46,7 +46,7 @@ class ItemsInterpreter[F[_]: Sync: BracketThrow: GenUUID](
 
 }
 
-object ItemsInterpreter {
+object ItemsRepository {
 
   private val decoder: Decoder[Item] =
     (uuid ~ varchar ~ varchar ~ numeric ~ uuid ~ varchar ~ uuid ~ varchar).map {

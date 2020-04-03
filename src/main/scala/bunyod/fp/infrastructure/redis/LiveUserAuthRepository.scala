@@ -10,18 +10,18 @@ import dev.profunktor.redis4cats.algebra.RedisCommands
 import io.circe.parser.decode
 import pdi.jwt.JwtClaim
 
-object LiveUserAuthInterpreter {
+object LiveUserAuthRepository {
 
   def make[F[_]: Sync](
     redis: RedisCommands[F, String, String]
   ): F[UserAuthAlgebra[F, CommonUser]] =
     Sync[F].delay(
-      new LiveUserAuthInterpreter(redis)
+      new LiveUserAuthRepository(redis)
     )
 
 }
 
-class LiveUserAuthInterpreter[F[_]: Functor](
+class LiveUserAuthRepository[F[_]: Functor](
   redis: RedisCommands[F, String, String]
 ) extends UserAuthAlgebra[F, CommonUser] {
 

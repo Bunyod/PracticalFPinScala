@@ -8,18 +8,18 @@ import dev.profunktor.auth.jwt.JwtToken
 import pdi.jwt.JwtClaim
 import cats.implicits._
 
-object LiveAdminAuthInterpreter {
+object LiveAdminAuthRepository {
 
   def make[F[_]: Sync](
     adminToken: JwtToken,
     adminUser: AdminUser
   ): F[UserAuthAlgebra[F, AdminUser]] =
     Sync[F].delay(
-      new LiveAdminAuthInterpreter(adminToken, adminUser)
+      new LiveAdminAuthRepository(adminToken, adminUser)
     )
 }
 
-class LiveAdminAuthInterpreter[F[_]: Applicative](
+class LiveAdminAuthRepository[F[_]: Applicative](
   adminToken: JwtToken,
   adminUser: AdminUser
 ) extends UserAuthAlgebra[F, AdminUser] {

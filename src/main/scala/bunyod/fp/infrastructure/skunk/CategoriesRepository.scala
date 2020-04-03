@@ -10,11 +10,11 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class CategoriesInterpreter[F[_]: BracketThrow: GenUUID](
+class CategoriesRepository[F[_]: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends CategoriesAlgebra[F] {
 
-  import CategoriesInterpreter._
+  import CategoriesRepository._
 
   def findAll: F[List[Category]] =
     sessionPool.use(_.execute(selectAll))
@@ -32,7 +32,7 @@ class CategoriesInterpreter[F[_]: BracketThrow: GenUUID](
 
 }
 
-object CategoriesInterpreter {
+object CategoriesRepository {
 
   private val codec: Codec[Category] =
     (uuid.cimap[CategoryId] ~ varchar.cimap[CategoryName]).imap {

@@ -1,7 +1,7 @@
 package bunyod.fp.domain.crypto
 
 import bunyod.fp.domain.auth.AuthPayloads._
-import bunyod.fp.utils.config.Configuration.PasswordSalt
+import bunyod.fp.utils.cfg.Configuration.PasswordSaltCfg
 import cats.effect.Sync
 import cats.implicits._
 import javax.crypto.{Cipher, SecretKeyFactory}
@@ -9,7 +9,7 @@ import javax.crypto.spec.{PBEKeySpec, SecretKeySpec}
 
 object CryptoService {
 
-  def make[F[_]: Sync](secret: PasswordSalt): F[CryptoAlgebra] =
+  def make[F[_]: Sync](secret: PasswordSaltCfg): F[CryptoAlgebra] =
     Sync[F]
       .delay {
         val salt = secret.value.value.value.getBytes("UTF-8")

@@ -16,11 +16,11 @@ import skunk.circe.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class OrdersInterpreter[F[_]: Sync: BracketThrow: GenUUID](
+class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends OrdersAlgebra[F] {
 
-  import OrdersInterpreter._
+  import OrdersRepository._
 
   override def get(userId: UserId, orderId: OrderId): F[Option[Order]] =
     sessionPool.use(session => session.prepare(selectByUserIdAndOrderId).use(q => q.option(userId ~ orderId)))
@@ -46,7 +46,7 @@ class OrdersInterpreter[F[_]: Sync: BracketThrow: GenUUID](
 
 }
 
-object OrdersInterpreter {
+object OrdersRepository {
 
   private val decoder: Decoder[Order] = (uuid.cimap[OrderId] ~ uuid.cimap[UserId] ~ uuid.cimap[PaymentId] ~
     jsonb[Map[ItemId, Quantity]] ~ numeric.map[Money](USD.apply)).map {

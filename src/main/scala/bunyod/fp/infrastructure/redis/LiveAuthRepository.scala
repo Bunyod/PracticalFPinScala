@@ -6,28 +6,29 @@ import bunyod.fp.domain.tokens.TokensAlgebra
 import bunyod.fp.domain.users.UsersAlgebra
 import bunyod.fp.domain.users.UsersPayloads.User
 import bunyod.fp.effects._
+import bunyod.fp.utils.cfg.Configuration.TokenExpirationCfg
 import cats.effect.Sync
 import dev.profunktor.auth.jwt.JwtToken
 import dev.profunktor.redis4cats.algebra.RedisCommands
 import cats.implicits._
 import io.circe.syntax._
 
-object LiveAuthInterpreter {
+object LiveAuthRepository {
 
   def make[F[_]: Sync](
-    tokenExpiration: TokenExpiration,
+    tokenExpiration: TokenExpirationCfg,
     tokens: TokensAlgebra[F],
     users: UsersAlgebra[F],
     redis: RedisCommands[F, String, String]
   ): F[AuthAlgebra[F]] =
     Sync[F].delay(
-      new LiveAuthInterpreter[F](tokenExpiration, tokens, users, redis)
+      new LiveAuthRepository[F](tokenExpiration, tokens, users, redis)
     )
 
 }
 
-final class LiveAuthInterpreter[F[_]: GenUUID: MonadThrow] private (
-  tokenExpiration: TokenExpiration,
+final class LiveAuthRepository[F[_]: GenUUID: MonadThrow] private (
+  tokenExpiration: TokenExpirationCfg,
   tokens: TokensAlgebra[F],
   users: UsersAlgebra[F],
   redis: RedisCommands[F, String, String]

@@ -12,12 +12,12 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class UsersInterpreter[F[_]: BracketThrow: GenUUID](
+class UsersRepository[F[_]: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]],
   crypto: CryptoAlgebra
 ) extends UsersAlgebra[F] {
 
-  import UsersInterpreter._
+  import UsersRepository._
 
   override def find(
     username: UserName,
@@ -48,7 +48,7 @@ class UsersInterpreter[F[_]: BracketThrow: GenUUID](
     }
 }
 
-object UsersInterpreter {
+object UsersRepository {
 
   private val codec: Codec[User ~ EncryptedPassword] =
     (uuid.cimap[UserId] ~ varchar.cimap[UserName] ~ varchar.cimap[EncryptedPassword]).imap {
