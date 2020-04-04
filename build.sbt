@@ -26,7 +26,7 @@ lazy val root = (project in file("."))
       Libraries.http4sCirce,
       Libraries.http4sJwtAuth,
       Libraries.log4cats,
-//      Libraries.pureConfig,
+      Libraries.pureConfig,
       Libraries.refinedPureconfig,
       Libraries.circeCore,
       Libraries.circeGeneric,

@@ -12,7 +12,7 @@ object CryptoService {
   def make[F[_]: Sync](secret: PasswordSaltCfg): F[CryptoAlgebra] =
     Sync[F]
       .delay {
-        val salt = secret.value.value.value.getBytes("UTF-8")
+        val salt = secret.value.value.getBytes("UTF-8")
         val keySpec = new PBEKeySpec("password".toCharArray, salt, 65536, 256)
         val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
         val bytes = factory.generateSecret(keySpec).getEncoded

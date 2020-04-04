@@ -39,14 +39,14 @@ object AppResources {
 
     def mkRedisResource(c: RedisCfg): Resource[F, RedisCommands[F, String, String]] =
       for {
-        uri <- Resource.liftF(RedisURI.make[F](c.uri.value.value))
+        uri <- Resource.liftF(RedisURI.make[F](c.uri.value))
         client <- RedisClient[F](uri)
         cmd <- Redis[F, String, String](client, RedisCodec.Utf8)
       } yield cmd
 
     def mkHttpClient(c: HttpClientCfg): Resource[F, Client[F]] =
       BlazeClientBuilder[F](ExecutionContext.global)
-        .withConnectTimeout(c.connectTimeout)
+        .withConnectTimeout(c.connectionTimeout)
         .withRequestTimeout(c.requestTimeout)
         .resource
 

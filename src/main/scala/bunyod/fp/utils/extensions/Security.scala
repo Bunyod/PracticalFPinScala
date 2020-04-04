@@ -29,7 +29,7 @@ object Security {
       AdminJwtAuth(
         JwtAuth
           .hmac(
-            cfg.adminJwt.secretKey.value.value.value,
+            cfg.adminJwt.secretKey.value,
             JwtAlgorithm.HS256
           )
       )
@@ -38,17 +38,17 @@ object Security {
       UserJwtAuth(
         JwtAuth
           .hmac(
-            cfg.jwtSecretKey.value.value.value,
+            cfg.userJwt.secretKey.value,
             JwtAlgorithm.HS256
           )
       )
 
-    val adminToken = JwtToken(cfg.adminJwt.adminToken.value.value.value)
+    val adminToken = JwtToken(cfg.adminJwt.adminToken.value)
     for {
       adminClaim <- jwtDecode[F](adminToken, adminJwtAuth.value)
       content <- ApThrow[F].fromEither(jsonDecode[ClaimContent](adminClaim.content))
       adminUser = AdminUser(User(UserId(content.uuid), UserName("admin")))
-      tokensService =  new TokenSyncService[F](cfg.jwtSecretKey, cfg.tokenExpiration.value)
+      tokensService =  new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
       token <- tokensService.create
       adminAuthRepo = new LiveAdminAuthRepository[F](token, adminUser)
       userAuthRepo = new  LiveUserAuthRepository[F](redis)

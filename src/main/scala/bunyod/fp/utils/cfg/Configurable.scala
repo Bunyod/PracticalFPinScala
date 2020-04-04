@@ -4,12 +4,12 @@ import bunyod.fp.utils.cfg.Configuration._
 import cats.implicits._
 import ciris._
 import ciris.refined._
-// import com.typesafe.config.ConfigFactory
 import eu.timepit.refined.auto._
-import eu.timepit.refined.cats._
+import eu.timepit.refined.pureconfig._ // DON'T REMOVE THIS LINE
 import eu.timepit.refined.types.net.UserPortNumber
 import eu.timepit.refined.types.string.NonEmptyString
-// import pureconfig.ConfigSource
+import pureconfig._
+import pureconfig.generic.auto._ // DON'T REMOVE THIS LINE
 import scala.concurrent.duration.DurationInt
 
 trait Configurable {
@@ -20,15 +20,15 @@ object Configurable {
 
   val config: ConfigValue[Config] =
     env("APP_ENV").as[AppEnvironment].option.flatMap {
-//      case Some(AppEnvironment.Dev) | None =>
-//        ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])
+      case Some(AppEnvironment.Dev) | None =>
+        ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])
       case _ =>
         (
-          env("JWT_SECRET_KEY").as[NonEmptyString].secret,
-          env("JWT_CLAIM").as[NonEmptyString].secret,
-          env("ACCESS_TOKEN_SECRET_KEY").as[NonEmptyString].secret,
-          env("ADMIN_USER_TOKEN").as[NonEmptyString].secret,
-          env("PASSWORD_SALT").as[NonEmptyString].secret,
+          env("JWT_SECRET_KEY").as[NonEmptyString],
+          env("JWT_CLAIM").as[NonEmptyString],
+          env("ACCESS_TOKEN_SECRET_KEY").as[NonEmptyString],
+          env("ADMIN_USER_TOKEN").as[NonEmptyString],
+          env("PASSWORD_SALT").as[NonEmptyString],
           env("REDIS_URI").as[NonEmptyString],
           env("PAYMENT_URI").as[NonEmptyString],
           env("POSTGRESQL_HOST").as[NonEmptyString],
@@ -39,11 +39,11 @@ object Configurable {
           (secretKey, claimStr, tokenKey, adminToken, salt, redisUri, paymentUri, pgHost, pgPort, pgUser, database) =>
             Config(
               AdminJwtCfg(
-                JwtSecretKeyCfg(secretKey),
-                JwtClaimCfg(claimStr),
-                AdminUserTokenCfg(adminToken)
+                secretKey,
+                claimStr,
+                adminToken
               ),
-              JwtSecretKeyCfg(tokenKey),
+              UserJwtCfg(tokenKey),
               PasswordSaltCfg(salt),
               TokenExpirationCfg(30.minutes),
               ShoppingCartCfg(30.minutes),
@@ -51,9 +51,9 @@ object Configurable {
                 retriesLimit = 3,
                 retriesBackoff = 10.milliseconds
               ),
-              PaymentCfg(PaymentURI(paymentUri)),
+              PaymentCfg(paymentUri),
               HttpClientCfg(
-                connectTimeout = 2.seconds,
+                connectionTimeout = 2.seconds,
                 requestTimeout = 2.seconds
               ),
               HttpServerCfg(
@@ -67,7 +67,7 @@ object Configurable {
                 database = database,
                 max = 10
               ),
-              RedisCfg(RedisURI(redisUri))
+              RedisCfg(redisUri)
             )
         }
     }

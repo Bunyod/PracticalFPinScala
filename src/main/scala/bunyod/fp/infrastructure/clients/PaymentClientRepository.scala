@@ -19,7 +19,7 @@ class PaymentClientRepository[F[_]: JsonDecoder: MonadThrow](
 ) extends PaymentClientAlgebra[F] with Http4sClientDsl[F] {
 
   def process(payment: Payment): F[PaymentId] =
-      Uri.fromString(cfg.uri.value.value + "/payments").liftTo[F].flatMap { uri =>
+      Uri.fromString(cfg.uri.value + "/payments").liftTo[F].flatMap { uri =>
         client.fetch[PaymentId](POST(payment, uri)) { r =>
           if (r.status == Status.Ok || r.status == Status.Conflict) {
             r.asJsonDecode[PaymentId]
