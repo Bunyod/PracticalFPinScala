@@ -46,12 +46,14 @@ object AuthPayloads {
 
   // ----- admin auth ------------
 
-  @newtype case class ClaimContent(uuid: UUID)
+  @newtype case class ClaimContent(claim: UUID)
 
   object ClaimContent {
 
     implicit val jsonDecoder: Decoder[ClaimContent] =
-      Decoder.forProduct1("uuid")(ClaimContent.apply)
+      Decoder.forProduct1("claim"){ cl: String =>
+        ClaimContent.apply(UUID.fromString(cl))
+      }
   }
 
 }
