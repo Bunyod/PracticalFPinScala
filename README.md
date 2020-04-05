@@ -51,15 +51,5 @@ The configured test payment client is a fake API that always returns 200 with a 
 
 This fake API can be modified at: [https://beeceptor.com/console/payments](https://beeceptor.com/console/payments)
 
-## HTTP API Resources
 
-If you use the [Insomnia](https://insomnia.rest/) REST Client, you can import the shopping cart resources using the [insomnia.json](insomnia.json) file.
-
-## LICENSE
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this project except in compliance with
-the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
-language governing permissions and limitations under the License.
+TODO add project structure explanation
