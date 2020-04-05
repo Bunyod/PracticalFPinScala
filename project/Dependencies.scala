@@ -26,6 +26,10 @@ object Dependencies {
     val redis4cats = "0.9.6"
     val ciris = "1.0.4"
     val pureConfig = "0.12.3"
+
+    val scalaCheck    = "1.14.3"
+    val scalaTest     = "3.1.1"
+    val scalaTestPlus = "3.1.1.1"
   }
 
   object Libraries {
@@ -80,6 +84,11 @@ object Dependencies {
     val skunkCirce = "org.tpolecat" %% "skunk-circe" % Versions.skunk
     // Runtime
     val logback = "ch.qos.logback" % "logback-classic" % Versions.logback
+
+    val scalaCheck    = "org.scalacheck"    %% "scalacheck"      % Versions.scalaCheck
+    val scalaTest     = "org.scalatest"     %% "scalatest"       % Versions.scalaTest
+    val scalaTestPlus = "org.scalatestplus" %% "scalacheck-1-14" % Versions.scalaTestPlus
+
   }
 
   object CompilerPlugins {

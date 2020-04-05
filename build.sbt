@@ -1,4 +1,5 @@
 import Dependencies._
+
 name := "PracticalScalaFP"
 
 version := "0.1"
@@ -12,7 +13,8 @@ lazy val root = (project in file("."))
     scalacOptions ++= CompilerOptions.compilerOptions,
 //    scalafmtOnCompile := true,
     libraryDependencies ++= Seq(
-      CompilerPlugins.betterMonadicFor,
+      compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
+      compilerPlugin(CompilerPlugins.betterMonadicFor),
       "org.typelevel" %% "squants" % "1.6.0",
       CompilerPlugins.contextApplied,
       CompilerPlugins.kindProjector,
@@ -48,7 +50,9 @@ lazy val root = (project in file("."))
       Libraries.monocleMacro,
       Libraries.newtype,
       Libraries.refinedCore,
-      Libraries.refinedCats
-
+      Libraries.refinedCats,
+      Libraries.scalaCheck,
+      Libraries.scalaTest,
+      Libraries.scalaTestPlus
     )
   )
