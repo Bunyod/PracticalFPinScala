@@ -31,7 +31,7 @@ jobs:
         - pip install --user codecov
       script:
         - sbt ++$TRAVIS_SCALA_VERSION validateJVM &&
-        - SCALAJS_VERSION=0.6.32 sbt ++$TRAVIS_SCALA_VERSION clean
+          sbt ++$TRAVIS_SCALA_VERSION clean
       after_success:
         - codecov
 
