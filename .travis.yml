@@ -7,7 +7,7 @@ scala:
 jdk:
   - openjdk11
 
-sudo: salse
+sudo: false
 addons:
   apt:
     packages:
@@ -31,8 +31,7 @@ jobs:
         - pip install --user codecov
       script:
         - sbt ++$TRAVIS_SCALA_VERSION validateJVM &&
-          sbt ++$TRAVIS_SCALA_VERSION validateJS
-        - SCALAJS_VERSION=0.6.32 sbt ++$TRAVIS_SCALA_VERSION clean validateJS
+        - SCALAJS_VERSION=0.6.32 sbt ++$TRAVIS_SCALA_VERSION clean
       after_success:
         - codecov
 
