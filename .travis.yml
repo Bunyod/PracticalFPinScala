@@ -7,8 +7,11 @@ scala:
 jdk:
   - openjdk11
 
-sudo: required
-dist: trusty
+sudo: salse
+addons:
+  apt:
+    packages:
+      - graphviz
 
 cache:
   directories:
@@ -16,7 +19,24 @@ cache:
     - $HOME/.coursier
     - $HOME/.sbt
 
-script:
-  - (test $TRAVIS_SCALA_VERSION == "2.13.1" && sbt ++$TRAVIS_SCALA_VERSION fmtCheck) || test $TRAVIS_SCALA_VERSION == "2.12.10"
-  - sbt ++$TRAVIS_SCALA_VERSION -Dfile.encoding=UTF8 -Dfs2.test.travis testJVM
-  - (test $TRAVIS_SCALA_VERSION == "2.12.10" && sbt ++$TRAVIS_SCALA_VERSION -Dfile.encoding=UTF8 -J-Xms2g -J-Xmx2g) || test $TRAVIS_SCALA_VERSION == "2.13.1"
+stages:
+  - name: test
+  - name: release
+    if: (branch = master AND type = push) OR (tag IS present)
+
+jobs:
+  include:
+    - scala: 2.12.11 # Remember to update this in build.sbt, too.
+      install:
+        - pip install --user codecov
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION validateJVM &&
+          sbt ++$TRAVIS_SCALA_VERSION validateJS
+        - SCALAJS_VERSION=0.6.32 sbt ++$TRAVIS_SCALA_VERSION clean validateJS
+      after_success:
+        - codecov
+
+    - scala: 2.13.1 # Remember to update this in build.sbt, too.
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION testJVM213 &&
+          sbt ++$TRAVIS_SCALA_VERSION testJS213
