@@ -14,17 +14,15 @@ import org.http4s.client.dsl.io._
 
 class ItemRoutesSpec extends HttpTestSuite {
 
-  def dataItems(items: List[Item]) = new ItemsService[IO](
+  def dataItems(items: List[Item]): ItemsService[IO] = new ItemsService[IO](
     new TestItems {
-
       override def findAll: IO[List[Item]] =
         IO.pure(items)
     }
   )
 
-  def failingItems(items: List[Item]) = new ItemsService[IO](
+  def failingItems(items: List[Item]): ItemsService[IO] = new ItemsService[IO](
     new TestItems {
-
       override def findAll: IO[List[Item]] =
         IO.raiseError(DummyError) *> IO.pure(items)
 

@@ -11,7 +11,7 @@ lazy val root = (project in file("."))
     name := "examples",
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= CompilerOptions.compilerOptions,
-//    scalafmtOnCompile := true,
+    scalafmtOnCompile := true,
     libraryDependencies ++= Seq(
       compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
       compilerPlugin(CompilerPlugins.betterMonadicFor),

@@ -23,19 +23,18 @@ class CartRoutesSpec extends HttpTestSuite {
   val authUser = CommonUser(User(UserId(UUID.randomUUID()), UserName("testuser")))
 
   val authMiddleware: AuthMiddleware[IO, CommonUser] =
-      AuthMiddleware(Kleisli.pure(authUser))
+    AuthMiddleware(Kleisli.pure(authUser))
 
-  def dataCart(cartTotal: CartTotal) = new ShoppingCartService[IO](
+  def dataCart(cartTotal: CartTotal): ShoppingCartService[IO] = new ShoppingCartService[IO](
     new TestShoppingCart {
-
       override def get(userId: UserId): IO[CartTotal] =
-          IO.pure(cartTotal)
+        IO.pure(cartTotal)
     }
   )
 
   forAll { cartTotal: CartTotal =>
     spec("GET shopping cart [OK]") {
-      GET(Uri.unsafeFromString("/cart")).flatMap {req =>
+      GET(Uri.unsafeFromString("/cart")).flatMap { req =>
         val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
         assertHttp(routes, req)(Status.Ok, cartTotal)
       }
@@ -45,7 +44,7 @@ class CartRoutesSpec extends HttpTestSuite {
   forAll { cart: Cart =>
     spec("POST add item to shopping cart [OK]") {
       POST(cart, Uri.unsafeFromString("/cart")).flatMap { req =>
-      val cartTotal = CartTotal(List.empty, USD(0))
+        val cartTotal = CartTotal(List.empty, USD(0))
         val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
         assertHttpStatus(routes, req)(Status.Created)
 
