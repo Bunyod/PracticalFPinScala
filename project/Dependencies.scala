@@ -15,7 +15,7 @@ object Dependencies {
     val refined = "0.9.13"
 
     val betterMonadicFor = "0.3.1"
-    val contextApplied = "0.1.2"
+    val contextApplied = "0.1.3"
     val kindProjector = "0.11.0"
     val skunk = "0.0.7"
     val http4s = "0.21.2"
