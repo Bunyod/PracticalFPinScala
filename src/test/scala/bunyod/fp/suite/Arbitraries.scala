@@ -6,6 +6,7 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.categories.CategoryPayloads.Category
 import bunyod.fp.domain.checkout.CheckoutPayloads.Card
 import bunyod.fp.domain.items.ItemsPayloads.Item
+import bunyod.fp.domain.orders.OrdersPayloads._
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.ops._
 import java.util.UUID
@@ -31,6 +32,9 @@ object Arbitraries {
 
   implicit val arbMoney: Arbitrary[Money] =
     Arbitrary(genMoney)
+
+  implicit val arbOrder: Arbitrary[Order] =
+    Arbitrary(orderGen)
 
   implicit val arbItem: Arbitrary[Item] =
     Arbitrary(itemGen)

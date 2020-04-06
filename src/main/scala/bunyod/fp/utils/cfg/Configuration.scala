@@ -40,8 +40,7 @@ object Configuration {
     adminToken: NonEmptyString
   )
   case class UserJwtCfg(
-    secretKey: NonEmptyString,
-
+    secretKey: NonEmptyString
   )
   case class PasswordSaltCfg(value: NonEmptyString)
   case class TokenExpirationCfg(value: FiniteDuration)
