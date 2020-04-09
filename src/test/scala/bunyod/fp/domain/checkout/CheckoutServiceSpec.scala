@@ -109,7 +109,7 @@ class CheckoutServiceSpec extends PureTestSuite {
             case Left(PaymentError(_)) =>
               logs.get.map {
                 case x :: xs => assert(x.contains("Giving up") && xs.size === MaxRetries)
-                case err => fail(s"Expected $MaxRetries")
+                case _ => fail(s"Expected $MaxRetries")
               }
             case _ => fail("Expected payment error")
           }
