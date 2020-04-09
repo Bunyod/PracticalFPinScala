@@ -10,7 +10,6 @@ import org.http4s.dsl.Http4sDsl
 object decoder {
 
   implicit class RefinedRequestDecoder[F[_]: JsonDecoder: MonadThrow](request: Request[F]) extends Http4sDsl[F] {
-
     def decodeR[A: Decoder](f: A => F[Response[F]]): F[Response[F]] =
       request.asJsonDecode[A].attempt.flatMap {
         case Left(e) =>

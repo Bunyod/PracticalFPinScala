@@ -15,14 +15,12 @@ class BrandRoutesSpec extends HttpTestSuite {
 
   def dataBrands(brands: List[Brand]): BrandsService[IO] =
     new BrandsService[IO](new TestBrandsService {
-
       override def findAll: IO[List[Brand]] =
         IO.pure(brands)
     })
 
   def failingBrands(brands: List[Brand]): BrandsService[IO] =
     new BrandsService[IO](new TestBrandsService {
-
       override def findAll: IO[List[Brand]] =
         IO.raiseError(DummyError) *> IO.pure(brands)
 

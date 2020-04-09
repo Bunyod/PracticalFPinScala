@@ -17,7 +17,6 @@ package object effects {
     def apply[F[_]](implicit env: ApplicativeError[F, Throwable]): ApThrow[F] = env
   }
 
-
   type BracketThrow[F[_]] = Bracket[F, Throwable]
 
   object BracketThrow {

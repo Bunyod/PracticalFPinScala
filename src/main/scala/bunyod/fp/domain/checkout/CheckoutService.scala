@@ -1,7 +1,7 @@
 package bunyod.fp.domain.checkout
 
 import bunyod.fp.domain.auth.AuthPayloads.UserId
-import bunyod.fp.domain.cart.CartPayloads.CartTotal
+import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.cart._
 import bunyod.fp.domain.checkout.CheckoutPayloads.Card
 import bunyod.fp.domain.orders.OrdersPayloads._
@@ -12,6 +12,7 @@ import bunyod.fp.effects._
 import cats.effect.Timer
 import cats.implicits._
 import io.chrisdavenport.log4cats.Logger
+import retry.RetryDetails._
 import retry._
 import scala.concurrent.duration.DurationInt
 import squants.market.Money
@@ -48,12 +49,7 @@ final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
     }
   }
 
-  private def createOrder(
-    userId: UserId,
-    paymentId: PaymentId,
-    items: List[CartPayloads.CartItem],
-    total: Money
-  ): F[OrderId] = {
+  private def createOrder(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): F[OrderId] = {
     val action = retryingOnAllErrors[OrderId](
       policy = retryPolicy,
       onError = logError("Order")
@@ -65,12 +61,20 @@ final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
         }
         .onError {
           case _ =>
-            Logger[F].error(s"Failed to create order for Payment: ${paymentId}") *>
+            Logger[F].error(s"Failed to create order for Payment: $paymentId. Rescheduling as a background action") *>
               Background[F].schedule(backgroundAction(fa), 1.hour)
         }
 
     backgroundAction(action)
   }
 
-  private def logError(action: String)(e: Throwable, details: RetryDetails): F[Unit] = ???
+  private def logError(action: String)(e: Throwable, details: RetryDetails): F[Unit] =
+    details match {
+      case r: WillDelayAndRetry =>
+        Logger[F].error(
+          s"Failed to process $action with ${e.getMessage}. So far we have retried ${r.retriesSoFar} times."
+        )
+      case g: GivingUp =>
+        Logger[F].error(s"Giving up on $action after ${g.totalRetries} retries.")
+    }
 }

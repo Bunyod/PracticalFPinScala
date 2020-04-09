@@ -16,7 +16,7 @@ trait LowPriorityCatsConstraints extends TripleEquals {
 }
 
 trait CatsEquality extends LowPriorityCatsConstraints {
-  override def convertToEqualizer[T](left: T): Equalizer[T]                          = super.convertToEqualizer[T](left)
+  override def convertToEqualizer[T](left: T): Equalizer[T] = super.convertToEqualizer[T](left)
   implicit override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)
   override def unconstrainedEquality[A, B](implicit equalityOfA: Equality[A]): CanEqual[A, B] =
     super.unconstrainedEquality[A, B]
