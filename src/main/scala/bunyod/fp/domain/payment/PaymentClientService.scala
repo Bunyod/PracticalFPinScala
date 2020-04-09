@@ -5,7 +5,6 @@ import bunyod.fp.domain.payment.PaymentPayloads.Payment
 
 class PaymentClientService[F[_]](paymentsRepo: PaymentClientAlgebra[F]) {
 
-  def process(payment: Payment): F[PaymentId] =
-    paymentsRepo.process(payment)
+  def process(payment: Payment): F[PaymentId] = paymentsRepo.process(payment)
 
 }

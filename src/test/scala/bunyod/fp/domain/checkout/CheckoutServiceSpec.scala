@@ -35,7 +35,7 @@ class CheckoutServiceSpec extends PureTestSuite {
   val unreachableClient: PaymentClientService[IO] = new PaymentClientService[IO](
     new PaymentClientAlgebra[IO] {
       override def process(payment: Payment): IO[PaymentId] =
-        IO.raiseError(PaymentError("Unreachable"))
+        IO.raiseError(PaymentError(""))
     }
   )
 
@@ -44,7 +44,7 @@ class CheckoutServiceSpec extends PureTestSuite {
       override def process(payment: Payment): IO[PaymentId] =
         attemptsSoFar.get.flatMap {
           case n if n == 1 => IO.pure(paymentId)
-          case _ => attemptsSoFar.update(_ + 1) *> IO.raiseError(PaymentError("Failed"))
+          case _ => attemptsSoFar.update(_ + 1) *> IO.raiseError(PaymentError(""))
         }
     })
 
@@ -64,7 +64,7 @@ class CheckoutServiceSpec extends PureTestSuite {
   def failingCart(cartTotal: CartTotal): ShoppingCartService[IO] = new ShoppingCartService[IO](
     new TestCartRepository {
       override def get(userId: UserId): IO[CartTotal] = IO.pure(cartTotal)
-      override def delete(userId: UserId): IO[Unit] = IO.raiseError(new Exception("Failed"))
+      override def delete(userId: UserId): IO[Unit] = IO.raiseError(new Exception(""))
     }
   )
 
@@ -109,7 +109,7 @@ class CheckoutServiceSpec extends PureTestSuite {
             case Left(PaymentError(_)) =>
               logs.get.map {
                 case x :: xs => assert(x.contains("Giving up") && xs.size === MaxRetries)
-                case _ => fail(s"Expected $MaxRetries")
+                case err => fail(s"Expected $MaxRetries")
               }
             case _ => fail("Expected payment error")
           }
@@ -121,7 +121,6 @@ class CheckoutServiceSpec extends PureTestSuite {
     spec("failing payment client succeeds after one retry") {
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
         Ref.of[IO, Int](0).flatMap { ref =>
-//          implicit val bg: Background[IO] = BackgroundTest.NoOp
           implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
           new CheckoutService[IO](recoveringClient(ref, pid), successfulCart(ct), successfulOrders(oid), retryPolicy)
             .checkout(uid, card)
