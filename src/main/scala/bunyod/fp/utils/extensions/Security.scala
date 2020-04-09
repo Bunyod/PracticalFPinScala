@@ -24,8 +24,7 @@ object Security {
     sessionPool: Resource[F, Session[F]],
     redis: RedisCommands[F, String, String]
   ): F[Security[F]] = {
-
-      val adminJwtAuth: AdminJwtAuth =
+    val adminJwtAuth: AdminJwtAuth =
       AdminJwtAuth(
         JwtAuth
           .hmac(
@@ -48,10 +47,10 @@ object Security {
       adminClaim <- jwtDecode[F](adminToken, adminJwtAuth.value)
       content <- ApThrow[F].fromEither(jsonDecode[ClaimContent](adminClaim.content))
       adminUser = AdminUser(User(UserId(content.claim), UserName("admin")))
-      tokensService =  new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
+      tokensService = new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
       token <- tokensService.create
       adminAuthRepo = new LiveAdminAuthRepository[F](token, adminUser)
-      userAuthRepo = new  LiveUserAuthRepository[F](redis)
+      userAuthRepo = new LiveUserAuthRepository[F](redis)
       adminsAuthService = new UsersService[F, AdminUser](adminAuthRepo)
       usersAuthService = new UsersService[F, CommonUser](userAuthRepo)
       crypto <- CryptoService.make[F](cfg.passwordSalt)
@@ -69,5 +68,4 @@ final class Security[F[_]] private (
   val usersAuthService: UsersService[F, CommonUser],
   val adminJwtAuth: AdminJwtAuth,
   val userJwtAuth: UserJwtAuth
-) {
-}
+) {}

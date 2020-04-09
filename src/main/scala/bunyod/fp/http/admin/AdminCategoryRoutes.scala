@@ -12,7 +12,8 @@ import bunyod.fp.http.utils.decoder._
 import bunyod.fp.http.utils.json._
 import org.http4s.server.{AuthMiddleware, Router}
 
-final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories: CategoriesService[F]) extends Http4sDsl[F] {
+final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories: CategoriesService[F])
+  extends Http4sDsl[F] {
 
   private[admin] val pathPrefix = "/categories"
 

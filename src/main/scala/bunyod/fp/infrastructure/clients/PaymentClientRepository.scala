@@ -16,19 +16,21 @@ import bunyod.fp.http.utils.json._
 class PaymentClientRepository[F[_]: JsonDecoder: MonadThrow](
   cfg: PaymentCfg,
   client: Client[F]
-) extends PaymentClientAlgebra[F] with Http4sClientDsl[F] {
+) extends PaymentClientAlgebra[F]
+  with Http4sClientDsl[F] {
 
   def process(payment: Payment): F[PaymentId] =
-      Uri.fromString(cfg.uri.value + "/payments").liftTo[F].flatMap { uri =>
-        client.fetch[PaymentId](POST(payment, uri)) { r =>
-          if (r.status == Status.Ok || r.status == Status.Conflict) {
-            r.asJsonDecode[PaymentId]
-          } else {
-            PaymentError(
-              Option(r.status.reason).getOrElse("Unknown")
-            ).raiseError[F, PaymentId]
-          }
+    Uri.fromString(cfg.uri.value + "/payments").liftTo[F].flatMap { uri =>
+      client.fetch[PaymentId](POST(payment, uri)) { r =>
+        if (r.status == Status.Ok || r.status == Status.Conflict) {
+          r.asJsonDecode[PaymentId]
+        }
+        else {
+          PaymentError(
+            Option(r.status.reason).getOrElse("Unknown")
+          ).raiseError[F, PaymentId]
         }
       }
+    }
 
 }

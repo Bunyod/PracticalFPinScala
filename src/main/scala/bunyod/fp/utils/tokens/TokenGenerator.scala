@@ -51,7 +51,6 @@ object data {
   @newtype case class Claim(value: String)
 
   object Claim {
-
     implicit val jsonDecoder: Decoder[Claim] =
       Decoder.forProduct1("claim")(Claim.apply)
   }

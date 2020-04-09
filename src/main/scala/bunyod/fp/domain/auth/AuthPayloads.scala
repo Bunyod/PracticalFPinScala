@@ -51,9 +51,7 @@ object AuthPayloads {
   object ClaimContent {
 
     implicit val jsonDecoder: Decoder[ClaimContent] =
-      Decoder.forProduct1("claim"){ cl: String =>
-        ClaimContent.apply(UUID.fromString(cl))
-      }
+      Decoder.forProduct1("claim") { cl: String => ClaimContent.apply(UUID.fromString(cl)) }
   }
 
 }
