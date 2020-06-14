@@ -10,7 +10,7 @@ object Dependencies {
     val derevo = "0.11.2"
     val fs2 = "2.3.0"
     val logback = "1.2.1"
-    val monocle = "2.0.4"
+    val monocle = "2.0.5"
     val newtype = "0.4.3"
     val refined = "0.9.14"
 
