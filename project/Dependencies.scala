@@ -18,7 +18,7 @@ object Dependencies {
     val contextApplied = "0.1.4"
     val kindProjector = "0.11.0"
     val skunk = "0.0.8"
-    val http4s = "0.21.3"
+    val http4s = "0.21.5"
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.4"
     val log4cats = "1.0.1"
