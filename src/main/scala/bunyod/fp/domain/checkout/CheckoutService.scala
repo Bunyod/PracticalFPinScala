@@ -57,13 +57,12 @@ final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
 
     def backgroundAction(fa: F[OrderId]): F[OrderId] =
       fa.adaptError {
-          case e => OrderError(e.getMessage)
-        }
-        .onError {
-          case _ =>
-            Logger[F].error(s"Failed to create order for Payment: $paymentId. Rescheduling as a background action") *>
-              Background[F].schedule(backgroundAction(fa), 1.hour)
-        }
+        case e => OrderError(e.getMessage)
+      }.onError {
+        case _ =>
+          Logger[F].error(s"Failed to create order for Payment: $paymentId. Rescheduling as a background action") *>
+            Background[F].schedule(backgroundAction(fa), 1.hour)
+      }
 
     backgroundAction(action)
   }

@@ -46,17 +46,18 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
   override def removeItem(userId: UserId, itemId: ItemId): F[Unit] =
     redis.hDel(userId.value.toString, itemId.value.toString)
 
-  override def update(userId: UserId, cart: Cart): F[Unit] = redis.hGetAll(userId.value.toString).flatMap { items =>
-    items.toList
-      .traverse_ {
-        case (k, _) =>
-          GenUUID[F].read[ItemId](k).flatMap { id =>
-            cart.items.get(id).traverse_(q => redis.hSet(userId.value.toString, k, q.value.toString))
-          }
+  override def update(userId: UserId, cart: Cart): F[Unit] =
+    redis.hGetAll(userId.value.toString).flatMap { items =>
+      items.toList
+        .traverse_ {
+          case (k, _) =>
+            GenUUID[F].read[ItemId](k).flatMap { id =>
+              cart.items.get(id).traverse_(q => redis.hSet(userId.value.toString, k, q.value.toString))
+            }
 
-      } *>
-      redis.expire(userId.value.toString, expCfg.expiration)
-  }
+        } *>
+        redis.expire(userId.value.toString, expCfg.expiration)
+    }
 
   private def calcTotal(items: List[CartItem]): Money =
     USD(

@@ -25,12 +25,13 @@ class CartRoutesSpec extends HttpTestSuite {
   val authMiddleware: AuthMiddleware[IO, CommonUser] =
     AuthMiddleware(Kleisli.pure(authUser))
 
-  def dataCart(cartTotal: CartTotal): ShoppingCartService[IO] = new ShoppingCartService[IO](
-    new TestShoppingCart {
-      override def get(userId: UserId): IO[CartTotal] =
-        IO.pure(cartTotal)
-    }
-  )
+  def dataCart(cartTotal: CartTotal): ShoppingCartService[IO] =
+    new ShoppingCartService[IO](
+      new TestShoppingCart {
+        override def get(userId: UserId): IO[CartTotal] =
+          IO.pure(cartTotal)
+      }
+    )
 
   forAll { cartTotal: CartTotal =>
     spec("GET shopping cart [OK]") {

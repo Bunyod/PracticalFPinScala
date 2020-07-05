@@ -21,16 +21,14 @@ class PaymentClientRepository[F[_]: JsonDecoder: MonadThrow](
 
   def process(payment: Payment): F[PaymentId] =
     Uri.fromString(cfg.uri.value + "/payments").liftTo[F].flatMap { uri =>
-      client.fetch[PaymentId](POST(payment, uri)) { r =>
-        if (r.status == Status.Ok || r.status == Status.Conflict) {
+      POST(payment, uri).flatMap(client.run(_).use { r =>
+        if (r.status == Status.Ok || r.status == Status.Conflict)
           r.asJsonDecode[PaymentId]
-        }
-        else {
+        else
           PaymentError(
             Option(r.status.reason).getOrElse("Unknown")
           ).raiseError[F, PaymentId]
-        }
-      }
+      })
     }
 
 }

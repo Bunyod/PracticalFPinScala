@@ -18,16 +18,17 @@ object GenUUID {
 
   def apply[F[_]](implicit env: GenUUID[F]): GenUUID[F] = env
 
-  implicit def syncGenUUID[F[_]: Sync]: GenUUID[F] = new GenUUID[F] {
+  implicit def syncGenUUID[F[_]: Sync]: GenUUID[F] =
+    new GenUUID[F] {
 
-    override def make: F[UUID] =
-      Sync[F].delay(UUID.randomUUID())
+      override def make: F[UUID] =
+        Sync[F].delay(UUID.randomUUID())
 
-    override def make[A: Coercible[UUID, *]]: F[A] =
-      make.map(_.coerce[A])
+      override def make[A: Coercible[UUID, *]]: F[A] =
+        make.map(_.coerce[A])
 
-    override def read[A: Coercible[UUID, *]](str: String): F[A] =
-      ApThrow[F].catchNonFatal(UUID.fromString(str).coerce[A])
-  }
+      override def read[A: Coercible[UUID, *]](str: String): F[A] =
+        ApThrow[F].catchNonFatal(UUID.fromString(str).coerce[A])
+    }
 
 }

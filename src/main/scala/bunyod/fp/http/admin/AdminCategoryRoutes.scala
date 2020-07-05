@@ -23,7 +23,8 @@ final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories
         ar.req.decodeR[CategoryParam](c => Created(categories.create(c.toDomain)))
     }
 
-  def routes(authMiddleware: AuthMiddleware[F, AdminUser]): HttpRoutes[F] = Router(
-    pathPrefix -> authMiddleware(httpRoutes)
-  )
+  def routes(authMiddleware: AuthMiddleware[F, AdminUser]): HttpRoutes[F] =
+    Router(
+      pathPrefix -> authMiddleware(httpRoutes)
+    )
 }

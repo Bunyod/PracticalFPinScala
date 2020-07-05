@@ -22,7 +22,8 @@ final class LogoutRoutes[F[_]: Defer: Monad](
         .traverse_(t => auth.logout(t, user.value.name)) *> NoContent()
   }
 
-  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(
-    pathPrefix -> authMiddleware(httpRoutes)
-  )
+  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] =
+    Router(
+      pathPrefix -> authMiddleware(httpRoutes)
+    )
 }

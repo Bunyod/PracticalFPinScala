@@ -25,8 +25,9 @@ final class AdminBrandRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
         ar.req.decodeR[BrandParam](bp => Created(brands.create(bp.toDomain)))
     }
 
-  def routes(authMiddleware: AuthMiddleware[F, AdminUser]): HttpRoutes[F] = Router(
-    pathPrefix -> authMiddleware(httpRoutes)
-  )
+  def routes(authMiddleware: AuthMiddleware[F, AdminUser]): HttpRoutes[F] =
+    Router(
+      pathPrefix -> authMiddleware(httpRoutes)
+    )
 
 }
