@@ -30,8 +30,9 @@ final class UserRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
       }
   }
 
-  def routes: HttpRoutes[F] = Router {
-    pathPrefix -> httpRoutes
-  }
+  def routes: HttpRoutes[F] =
+    Router {
+      pathPrefix -> httpRoutes
+    }
 
 }

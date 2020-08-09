@@ -42,8 +42,9 @@ final class CheckoutRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
 
   }
 
-  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(
-    prefixPath -> authMiddleware(httpRoutes)
-  )
+  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] =
+    Router(
+      prefixPath -> authMiddleware(httpRoutes)
+    )
 
 }

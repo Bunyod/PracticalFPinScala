@@ -48,12 +48,13 @@ class CheckoutServiceSpec extends PureTestSuite {
         }
     })
 
-  def failingOrders: OrdersService[IO] = new OrdersService[IO](
-    new TestOrdersRepository {
-      override def create(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): IO[OrderId] =
-        IO.raiseError(OrderError(""))
-    }
-  )
+  def failingOrders: OrdersService[IO] =
+    new OrdersService[IO](
+      new TestOrdersRepository {
+        override def create(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): IO[OrderId] =
+          IO.raiseError(OrderError(""))
+      }
+    )
 
   def emptyCart: ShoppingCartService[IO] =
     new ShoppingCartService[IO](new TestCartRepository {
@@ -61,27 +62,30 @@ class CheckoutServiceSpec extends PureTestSuite {
         IO.pure(CartTotal(List.empty, USD(0)))
     })
 
-  def failingCart(cartTotal: CartTotal): ShoppingCartService[IO] = new ShoppingCartService[IO](
-    new TestCartRepository {
-      override def get(userId: UserId): IO[CartTotal] = IO.pure(cartTotal)
-      override def delete(userId: UserId): IO[Unit] = IO.raiseError(new Exception(""))
-    }
-  )
+  def failingCart(cartTotal: CartTotal): ShoppingCartService[IO] =
+    new ShoppingCartService[IO](
+      new TestCartRepository {
+        override def get(userId: UserId): IO[CartTotal] = IO.pure(cartTotal)
+        override def delete(userId: UserId): IO[Unit] = IO.raiseError(new Exception(""))
+      }
+    )
 
-  def successfulCart(cartTotal: CartTotal): ShoppingCartService[IO] = new ShoppingCartService[IO](
-    new TestCartRepository {
-      override def get(userId: UserId): IO[CartTotal] = IO.pure(cartTotal)
-      override def delete(userId: UserId): IO[Unit] = IO.unit
+  def successfulCart(cartTotal: CartTotal): ShoppingCartService[IO] =
+    new ShoppingCartService[IO](
+      new TestCartRepository {
+        override def get(userId: UserId): IO[CartTotal] = IO.pure(cartTotal)
+        override def delete(userId: UserId): IO[Unit] = IO.unit
 
-    }
-  )
+      }
+    )
 
-  def successfulOrders(orderId: OrderId): OrdersService[IO] = new OrdersService[IO](
-    new TestOrdersRepository {
-      override def create(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): IO[OrderId] =
-        IO.pure(orderId)
-    }
-  )
+  def successfulOrders(orderId: OrderId): OrdersService[IO] =
+    new OrdersService[IO](
+      new TestOrdersRepository {
+        override def create(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): IO[OrderId] =
+          IO.pure(orderId)
+      }
+    )
 
   forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
     spec("empty cart") {

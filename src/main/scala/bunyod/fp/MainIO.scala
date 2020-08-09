@@ -56,15 +56,16 @@ object MainIO extends IOApp with Configurable {
               orderService,
               security
             )
-            _ <- BlazeServerBuilder[IO]
-              .bindHttp(
-                cfg.httpServer.port.value,
-                cfg.httpServer.host.value
-              )
-              .withHttpApp(routes.httpApp)
-              .serve
-              .compile
-              .drain
+            _ <-
+              BlazeServerBuilder[IO]
+                .bindHttp(
+                  cfg.httpServer.port.value,
+                  cfg.httpServer.host.value
+                )
+                .withHttpApp(routes.httpApp)
+                .serve
+                .compile
+                .drain
 
           } yield ExitCode.Success
         }

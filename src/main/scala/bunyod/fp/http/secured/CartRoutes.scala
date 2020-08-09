@@ -36,8 +36,9 @@ final class CartRoutes[F[_]: Defer: JsonDecoder: Monad](
         shoppingCart.removeItem(user.value.id, ItemId(uuid)) *> NoContent()
     }
 
-  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(
-    pathPrefix -> authMiddleware(httpRoutes)
-  )
+  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] =
+    Router(
+      pathPrefix -> authMiddleware(httpRoutes)
+    )
 
 }

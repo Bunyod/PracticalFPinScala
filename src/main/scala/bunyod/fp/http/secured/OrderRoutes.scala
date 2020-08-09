@@ -25,8 +25,9 @@ final class OrderRoutes[F[_]: Defer: Monad](
 
   }
 
-  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router {
-    pathPrefix -> authMiddleware(httpRoutes)
-  }
+  def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] =
+    Router {
+      pathPrefix -> authMiddleware(httpRoutes)
+    }
 
 }
