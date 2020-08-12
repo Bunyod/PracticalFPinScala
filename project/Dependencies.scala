@@ -103,7 +103,7 @@ object Dependencies {
   val rootDependencies = Seq(
     compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
-    "org.typelevel" %% "squants" % "1.6.0",
+    "org.typelevel" %% "squants" % "1.7.0",
     CompilerPlugins.contextApplied,
     CompilerPlugins.kindProjector,
     Libraries.cats,
