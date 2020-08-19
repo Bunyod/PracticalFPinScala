@@ -5,30 +5,30 @@ object Dependencies {
   object Versions {
     val cats = "2.1.1"
     val catsEffect = "2.1.2"
-    val catsMeowMtl = "0.4.0"
+    val catsMeowMtl = "0.4.1"
     val console4cats = "0.8.1"
     val derevo = "0.11.4"
-    val fs2 = "2.3.0"
+    val fs2 = "2.4.3"
     val logback = "1.2.1"
-    val monocle = "2.0.5"
+    val monocle = "2.1.0"
     val newtype = "0.4.3"
-    val refined = "0.9.14"
+    val refined = "0.9.15"
 
     val betterMonadicFor = "0.3.1"
     val contextApplied = "0.1.4"
     val kindProjector = "0.11.0"
-    val skunk = "0.0.9"
-    val http4s = "0.21.7"
+    val skunk = "0.0.17"
+    val http4s = "0.21.3"
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.4"
     val log4cats = "1.0.1"
     val catsRetry = "1.1.1"
     val redis4cats = "0.9.6"
-    val ciris = "1.0.4"
+    val ciris = "1.1.2"
     val pureConfig = "0.13.0"
 
     val scalaCheck    = "1.14.3"
-    val scalaTest     = "3.1.1"
+    val scalaTest     = "3.1.3"
     val scalaTestPlus = "3.2.0.0"
   }
 
@@ -103,7 +103,7 @@ object Dependencies {
   val rootDependencies = Seq(
     compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
-    "org.typelevel" %% "squants" % "1.6.0",
+    "org.typelevel" %% "squants" % "1.7.0",
     CompilerPlugins.contextApplied,
     CompilerPlugins.kindProjector,
     Libraries.cats,
