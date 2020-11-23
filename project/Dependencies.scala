@@ -22,7 +22,7 @@ object Dependencies {
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.4"
     val log4cats = "1.0.1"
-    val catsRetry = "1.1.1"
+    val catsRetry = "2.0.0"
     val redis4cats = "0.9.6"
     val ciris = "1.1.2"
     val pureConfig = "0.13.0"
