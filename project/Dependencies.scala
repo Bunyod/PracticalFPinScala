@@ -8,7 +8,7 @@ object Dependencies {
     val catsMeowMtl = "0.4.1"
     val console4cats = "0.8.1"
     val derevo = "0.11.4"
-    val fs2 = "2.4.3"
+    val fs2 = "2.4.5"
     val logback = "1.2.1"
     val monocle = "2.1.0"
     val newtype = "0.4.3"
