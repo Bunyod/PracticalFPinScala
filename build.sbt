@@ -7,7 +7,7 @@ version in ThisBuild := "0.0.1"
 lazy val root = (project in file("."))
   .settings(
     name := "PracticalFPinScala",
-    scalaVersion := "2.13.1",
+    scalaVersion := "2.13.5",
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= CompilerOptions.cOptions,
     scalafmtOnCompile := true,
