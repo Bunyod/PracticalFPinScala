@@ -13,7 +13,7 @@ import skunk.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class ItemsRepository[F[_]: Sync: BracketThrow: GenUUID](
+class ItemsRepository[F[_]: Sync](
   sessionPool: Resource[F, Session[F]]
 ) extends ItemsAlgebra[F] {
 
@@ -90,9 +90,8 @@ object ItemsRepository {
     sql"""
        INSERT INTO items
        VALUES ($uuid, $varchar, $varchar, $numeric, $uuid, $uuid)
-     """.command.contramap {
-      case id ~ i =>
-        id.value ~ i.name.value ~ i.description.value ~ i.price.amount ~ i.brandId.value ~ i.categoryId.value
+     """.command.contramap { case id ~ i =>
+      id.value ~ i.name.value ~ i.description.value ~ i.price.amount ~ i.brandId.value ~ i.categoryId.value
     }
 
   val updateItem: Command[UpdateItem] =

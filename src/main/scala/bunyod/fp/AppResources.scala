@@ -2,16 +2,15 @@ package bunyod.fp
 
 import bunyod.fp.utils.cfg.Configuration.{Config, HttpClientCfg, PostgreSQLCfg, RedisCfg}
 import cats.effect._
-import cats.implicits._
-import dev.profunktor.redis4cats.algebra.RedisCommands
-import dev.profunktor.redis4cats.connection.{RedisClient, RedisURI}
-import dev.profunktor.redis4cats.domain.RedisCodec
-import dev.profunktor.redis4cats.interpreter.Redis
+import cats.syntax.all._
+import dev.profunktor.redis4cats.{Redis, RedisCommands}
 import dev.profunktor.redis4cats.log4cats._
+import eu.timepit.refined.auto._
 import io.chrisdavenport.log4cats.Logger
-import natchez.Trace.Implicits.noop /// needed for skunk
+import natchez.Trace.Implicits.noop
 import org.http4s.client.Client
 import org.http4s.client.blaze.BlazeClientBuilder
+
 import scala.concurrent.ExecutionContext
 import skunk._
 
@@ -38,11 +37,7 @@ object AppResources {
         )
 
     def mkRedisResource(c: RedisCfg): Resource[F, RedisCommands[F, String, String]] =
-      for {
-        uri <- Resource.liftF(RedisURI.make[F](c.uri.value))
-        client <- RedisClient[F](uri)
-        cmd <- Redis[F, String, String](client, RedisCodec.Utf8)
-      } yield cmd
+      Redis[F].utf8(c.uri.value)
 
     def mkHttpClient(c: HttpClientCfg): Resource[F, Client[F]] =
       BlazeClientBuilder[F](ExecutionContext.global)

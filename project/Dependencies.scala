@@ -4,38 +4,32 @@ object Dependencies {
 
   object Versions {
     val cats = "2.4.2"
-    val catsEffect = "2.1.2"
+    val catsEffect = "2.2.0"
     val catsMeowMtl = "0.4.1"
-    val console4cats = "0.8.1"
-    val derevo = "0.11.6"
-    val fs2 = "2.5.3"
-    val logback = "1.2.1"
-    val monocle = "2.1.0"
+    val fs2 = "2.4.6"
+    val logback = "1.2.3"
     val newtype = "0.4.3"
-    val refined = "0.9.21"
-
+    val refined = "0.9.19"
     val betterMonadicFor = "0.3.1"
-    val contextApplied = "0.1.4"
     val kindProjector = "0.11.3"
-    val skunk = "0.0.24"
+    val skunk = "0.0.21"
     val http4s = "0.21.20"
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.4"
-    val log4cats = "1.0.1"
-    val catsRetry = "2.1.0"
-    val redis4cats = "0.12.0"
-    val ciris = "1.1.2"
+    val log4cats = "1.1.1"
+    val catsRetry = "2.0.0"
+    val redis4cats = "0.10.3"
+    val ciris = "1.2.1"
     val pureConfig = "0.14.1"
 
-    val scalaCheck    = "1.15.3"
-    val scalaTest     = "3.2.6"
-    val scalaTestPlus = "3.2.0.0"
+    val scalaCheck    = "1.15.2"
+    val scalaTest     = "3.2.3"
+    val scalaTestPlus = "3.2.2.0"
   }
 
   object Libraries {
     val cats = "org.typelevel" %% "cats-core" % Versions.cats
     val catsEffect = "org.typelevel" %% "cats-effect" % Versions.catsEffect
-    val console4cats = "dev.profunktor" %% "console4cats" % Versions.console4cats
     val catsRetry = "com.github.cb372" %% "cats-retry" % Versions.catsRetry
 
     val fs2 = "co.fs2" %% "fs2-core" % Versions.fs2
@@ -67,18 +61,12 @@ object Dependencies {
     val catsMeowMtlCore = "com.olegpy" %% "meow-mtl-core" % Versions.catsMeowMtl
     val catsMeowMtlEffects = "com.olegpy" %% "meow-mtl-effects" % Versions.catsMeowMtl
 
-    val derevoCats = "org.manatki" %% "derevo-cats" % Versions.derevo
-    val derevoTagless = "org.manatki" %% "derevo-cats-tagless" % Versions.derevo
-
     val refinedCore = "eu.timepit" %% "refined" % Versions.refined
     val refinedCats = "eu.timepit" %% "refined-cats" % Versions.refined
     val refinedPureconfig = "eu.timepit" %% "refined-pureconfig" % Versions.refined
 
     val log4cats = "io.chrisdavenport" %% "log4cats-slf4j" % Versions.log4cats
     val newtype = "io.estatico" %% "newtype" % Versions.newtype
-
-    val monocleCore = "com.github.julien-truffaut" %% "monocle-core" % Versions.monocle
-    val monocleMacro = "com.github.julien-truffaut" %% "monocle-macro" % Versions.monocle
 
     val skunk = "org.tpolecat" %% "skunk-core" % Versions.skunk
     val skunkCirce = "org.tpolecat" %% "skunk-circe" % Versions.skunk
@@ -93,8 +81,6 @@ object Dependencies {
 
   object CompilerPlugins {
     val betterMonadicFor = compilerPlugin("com.olegpy" %% "better-monadic-for" % Versions.betterMonadicFor)
-    val contextApplied = compilerPlugin("org.augustjune" %% "context-applied" % Versions.contextApplied)
-
     val kindProjector = compilerPlugin(
       ("org.typelevel" %% "kind-projector" % Versions.kindProjector).cross(CrossVersion.full)
     )
@@ -103,8 +89,8 @@ object Dependencies {
   val rootDependencies = Seq(
     compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
+//    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
     "org.typelevel" %% "squants" % "1.7.4",
-    CompilerPlugins.contextApplied,
     CompilerPlugins.kindProjector,
     Libraries.cats,
     Libraries.catsRetry,
@@ -116,6 +102,7 @@ object Dependencies {
     Libraries.http4sCirce,
     Libraries.http4sJwtAuth,
     Libraries.log4cats,
+    Libraries.logback % Runtime,
     Libraries.pureConfig,
     Libraries.refinedPureconfig,
     Libraries.circeCore,
@@ -125,17 +112,12 @@ object Dependencies {
     Libraries.catsEffect,
     Libraries.catsMeowMtlCore,
     Libraries.catsMeowMtlEffects,
-    Libraries.console4cats,
     Libraries.cirisCore,
     Libraries.cirisEnum,
     Libraries.cirisRefined,
-    Libraries.derevoCats,
-    Libraries.derevoTagless,
     Libraries.fs2,
     Libraries.skunk,
     Libraries.skunkCirce,
-    Libraries.monocleCore,
-    Libraries.monocleMacro,
     Libraries.newtype,
     Libraries.refinedCore,
     Libraries.refinedCats,

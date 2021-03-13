@@ -5,12 +5,12 @@ import bunyod.fp.domain.categories._
 import bunyod.fp.effects._
 import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
-import cats.implicits._
+import cats.syntax.all._
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class CategoriesRepository[F[_]: BracketThrow: GenUUID](
+class CategoriesRepository[F[_]: Sync](
   sessionPool: Resource[F, Session[F]]
 ) extends CategoriesAlgebra[F] {
 
@@ -35,8 +35,8 @@ class CategoriesRepository[F[_]: BracketThrow: GenUUID](
 object CategoriesRepository {
 
   private val codec: Codec[Category] =
-    (uuid.cimap[CategoryId] ~ varchar.cimap[CategoryName]).imap {
-      case i ~ n => Category(i, n)
+    (uuid.cimap[CategoryId] ~ varchar.cimap[CategoryName]).imap { case i ~ n =>
+      Category(i, n)
     }(c => c.uuid ~ c.name)
 
   val selectAll: Query[Void, Category] =

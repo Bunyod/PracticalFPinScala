@@ -15,11 +15,10 @@ final class LogoutRoutes[F[_]: Defer: Monad](
 
   private[auth] val pathPrefix = "/auth"
 
-  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of {
-    case ar @ POST -> Root / "logout" as user =>
-      AuthHeaders
-        .getBearerToken[F](ar.req)
-        .traverse_(t => auth.logout(t, user.value.name)) *> NoContent()
+  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of { case ar @ POST -> Root / "logout" as user =>
+    AuthHeaders
+      .getBearerToken[F](ar.req)
+      .traverse_(t => auth.logout(t, user.value.name)) *> NoContent()
   }
 
   def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(

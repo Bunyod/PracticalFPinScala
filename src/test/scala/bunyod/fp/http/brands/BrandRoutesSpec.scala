@@ -6,7 +6,6 @@ import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.http.utils.json._
 import bunyod.fp.suite.HttpTestSuite
 import cats.effect._
-import cats.implicits._
 import org.http4s.Method._
 import org.http4s._
 import org.http4s.client.dsl.io._

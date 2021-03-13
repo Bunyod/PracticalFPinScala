@@ -16,7 +16,7 @@ import skunk.circe.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
+class OrdersRepository[F[_]: Sync](
   sessionPool: Resource[F, Session[F]]
 ) extends OrdersAlgebra[F] {
 
@@ -49,16 +49,14 @@ class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
 object OrdersRepository {
 
   private val decoder: Decoder[Order] = (uuid.cimap[OrderId] ~ uuid.cimap[UserId] ~ uuid.cimap[PaymentId] ~
-    jsonb[Map[ItemId, Quantity]] ~ numeric.map[Money](USD.apply)).map {
-    case o ~ _ ~ p ~ i ~ t =>
-      Order(o, p, i, t)
+    jsonb[Map[ItemId, Quantity]] ~ numeric.map[Money](USD.apply)).map { case o ~ _ ~ p ~ i ~ t =>
+    Order(o, p, i, t)
   }
 
   val encoder: Encoder[UserId ~ Order] =
     (uuid.cimap[OrderId] ~ uuid.cimap[UserId] ~ uuid.cimap[PaymentId] ~
-      jsonb[Map[ItemId, Quantity]] ~ numeric.contramap[Money](_.amount)).contramap {
-      case id ~ o =>
-        o.id ~ id ~ o.paymentId ~ o.items ~ o.total
+      jsonb[Map[ItemId, Quantity]] ~ numeric.contramap[Money](_.amount)).contramap { case id ~ o =>
+      o.id ~ id ~ o.paymentId ~ o.items ~ o.total
     }
 
   val selecByUserId: Query[UserId, Order] =

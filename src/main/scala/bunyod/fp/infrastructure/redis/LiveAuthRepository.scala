@@ -9,7 +9,7 @@ import bunyod.fp.effects._
 import bunyod.fp.utils.cfg.Configuration.TokenExpirationCfg
 import cats.effect.Sync
 import dev.profunktor.auth.jwt.JwtToken
-import dev.profunktor.redis4cats.algebra.RedisCommands
+import dev.profunktor.redis4cats.RedisCommands
 import cats.implicits._
 import io.circe.syntax._
 
@@ -27,7 +27,7 @@ object LiveAuthRepository {
 
 }
 
-final class LiveAuthRepository[F[_]: GenUUID: MonadThrow] private (
+final class LiveAuthRepository[F[_]: MonadThrow] private (
   tokenExpiration: TokenExpirationCfg,
   tokens: TokensAlgebra[F],
   users: UsersAlgebra[F],
@@ -65,6 +65,6 @@ final class LiveAuthRepository[F[_]: GenUUID: MonadThrow] private (
     }
 
   override def logout(token: JwtToken, username: UserName): F[Unit] =
-    redis.del(token.value) *> redis.del(username.value)
+    redis.del(token.value) *> redis.del(username.value).void
 
 }

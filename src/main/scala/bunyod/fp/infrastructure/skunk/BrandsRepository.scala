@@ -10,7 +10,7 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class BrandsRepository[F[_]: BracketThrow: GenUUID](
+class BrandsRepository[F[_]: Sync](
   sessionPool: Resource[F, Session[F]]
 ) extends BrandsAlgebra[F] {
 
@@ -37,8 +37,8 @@ class BrandsRepository[F[_]: BracketThrow: GenUUID](
 object BrandQueries {
 
   private val codec: Codec[Brand] =
-    (uuid.cimap[BrandId] ~ varchar.cimap[BrandName]).imap {
-      case i ~ n => Brand(i, n)
+    (uuid.cimap[BrandId] ~ varchar.cimap[BrandName]).imap { case i ~ n =>
+      Brand(i, n)
     }(b => b.uuid ~ b.name)
 
   val selectAll: Query[Void, Brand] =

@@ -20,6 +20,7 @@ import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import org.http4s.server.blaze.BlazeServerBuilder
 import retry.RetryPolicies.{exponentialBackoff, limitRetries}
 import retry.RetryPolicy
+import scala.concurrent.ExecutionContext
 
 object MainIO extends IOApp with Configurable {
 
@@ -56,7 +57,7 @@ object MainIO extends IOApp with Configurable {
               orderService,
               security
             )
-            _ <- BlazeServerBuilder[IO]
+            _ <- BlazeServerBuilder[IO](ExecutionContext.global)
               .bindHttp(
                 cfg.httpServer.port.value,
                 cfg.httpServer.host.value

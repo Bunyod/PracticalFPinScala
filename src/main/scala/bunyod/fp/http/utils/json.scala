@@ -24,7 +24,7 @@ object json extends JsonCodecs {
   implicit def deriveEntityEncoder[F[_]: Applicative, A: Encoder]: EntityEncoder[F, A] = jsonEncoderOf[F, A]
 }
 
-private[http] trait JsonCodecs {
+trait JsonCodecs {
 
   // ----- Overriding some Coercible codecs ----
   implicit val brandParamDecoder: Decoder[BrandParam] =
@@ -41,7 +41,7 @@ private[http] trait JsonCodecs {
     Decoder[B].map(_.coerce[A])
 
   implicit def coercibleEncoder[A: Coercible[B, *], B: Encoder]: Encoder[A] =
-    Encoder[B].contramap(_.repr.asInstanceOf[B])
+    Encoder[B].contramap[A](_.repr.asInstanceOf[B])
 
   implicit def coercibleKeyDecoder[A: Coercible[B, *], B: KeyDecoder]: KeyDecoder[A] =
     KeyDecoder[B].map(_.coerce[A])
@@ -89,9 +89,7 @@ private[http] trait JsonCodecs {
     Decoder.forProduct1("items")(Cart.apply)
 
   implicit val paymentEncoder: Encoder[Payment] = deriveEncoder[Payment]
-
   implicit val createUserDecoder: Decoder[CreateUser] = deriveDecoder[CreateUser]
-
   implicit val loginUserDecoder: Decoder[LoginUser] = deriveDecoder[LoginUser]
 
 }

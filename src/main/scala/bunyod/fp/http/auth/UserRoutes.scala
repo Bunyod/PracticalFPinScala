@@ -18,16 +18,15 @@ final class UserRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
 
   private[auth] val pathPrefix = "/auth"
 
-  private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
-    case req @ POST -> Root / "users" =>
-      req.decodeR[CreateUser] { user =>
-        auth
-          .newUser(user.username.toDomain, user.password.toDomain)
-          .flatMap(Created(_))
-          .recoverWith {
-            case UserNameInUse(u) => Conflict(u.value)
-          }
-      }
+  private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] { case req @ POST -> Root / "users" =>
+    req.decodeR[CreateUser] { user =>
+      auth
+        .newUser(user.username.toDomain, user.password.toDomain)
+        .flatMap(Created(_))
+        .recoverWith { case UserNameInUse(u) =>
+          Conflict(u.value)
+        }
+    }
   }
 
   def routes: HttpRoutes[F] = Router {

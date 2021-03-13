@@ -39,9 +39,8 @@ class UsersRepository[F[_]: BracketThrow: GenUUID](
           cmd
             .execute(User(id, username) ~ crypto.encrypt(password))
             .as(id)
-            .handleErrorWith {
-              case SqlState.UniqueViolation(_) =>
-                UserNameInUse(username).raiseError[F, UserId]
+            .handleErrorWith { case SqlState.UniqueViolation(_) =>
+              UserNameInUse(username).raiseError[F, UserId]
             }
         }
       }
@@ -51,12 +50,10 @@ class UsersRepository[F[_]: BracketThrow: GenUUID](
 object UsersRepository {
 
   private val codec: Codec[User ~ EncryptedPassword] =
-    (uuid.cimap[UserId] ~ varchar.cimap[UserName] ~ varchar.cimap[EncryptedPassword]).imap {
-      case i ~ n ~ p =>
-        User(i, n) ~ p
-    } {
-      case u ~ p =>
-        u.id ~ u.name ~ p
+    (uuid.cimap[UserId] ~ varchar.cimap[UserName] ~ varchar.cimap[EncryptedPassword]).imap { case i ~ n ~ p =>
+      User(i, n) ~ p
+    } { case u ~ p =>
+      u.id ~ u.name ~ p
     }
 
   val selectUser: Query[UserName, User ~ EncryptedPassword] =

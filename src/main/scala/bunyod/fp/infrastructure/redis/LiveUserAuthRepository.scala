@@ -6,7 +6,7 @@ import cats.Functor
 import cats.effect.Sync
 import cats.implicits._
 import dev.profunktor.auth.jwt
-import dev.profunktor.redis4cats.algebra.RedisCommands
+import dev.profunktor.redis4cats.RedisCommands
 import io.circe.parser.decode
 import pdi.jwt.JwtClaim
 

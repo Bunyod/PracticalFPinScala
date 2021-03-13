@@ -12,7 +12,7 @@ import bunyod.fp.utils.cfg.Configuration.Config
 import cats.effect._
 import cats.implicits._
 import dev.profunktor.auth.jwt._
-import dev.profunktor.redis4cats.algebra.RedisCommands
+import dev.profunktor.redis4cats.RedisCommands
 import io.circe.parser.{decode => jsonDecode}
 import pdi.jwt._
 import skunk.Session
