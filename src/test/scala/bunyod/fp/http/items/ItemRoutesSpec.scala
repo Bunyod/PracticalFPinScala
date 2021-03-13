@@ -3,14 +3,14 @@ package bunyod.fp.http.items
 import bunyod.fp.domain.brands.BrandsPayloads.BrandName
 import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.items._
-import bunyod.fp.http.utils.json._
-import bunyod.fp.suite.Arbitraries._
+import bunyod.fp.suite.Generators._
 import bunyod.fp.suite.HttpTestSuite
 import cats.effect._
 import cats.implicits._
 import org.http4s.Method._
 import org.http4s._
 import org.http4s.client.dsl.io._
+import org.scalacheck.Gen
 
 class ItemRoutesSpec extends HttpTestSuite {
 
@@ -31,8 +31,8 @@ class ItemRoutesSpec extends HttpTestSuite {
     }
   )
 
-  forAll { i: List[Item] =>
-    spec("GET items [OK]") {
+  test("GET items [OK]") {
+    forall(Gen.listOf(itemGen)) { i: List[Item] =>
       GET(Uri.unsafeFromString("/items")).flatMap { req =>
         val routes = new ItemRoutes[IO](dataItems(i)).routes
         assertHttp(routes, req)(Status.Ok, i)
@@ -40,8 +40,22 @@ class ItemRoutesSpec extends HttpTestSuite {
     }
   }
 
-  forAll { i: List[Item] =>
-    spec("GET items [ERROR]") {
+  test("GET items by brand succeeds") {
+    val gen = for {
+      i <- Gen.listOf(itemGen)
+      b <- brandGen
+    } yield i -> b
+
+    forall(gen) { case (it, b) =>
+      GET(Uri.uri("/items").withQueryParam(b.name.value)).flatMap { req =>
+        val routes = new ItemRoutes[IO](dataItems(it)).routes
+        assertHttp(routes, req)(Status.Ok, it)
+      }
+    }
+  }
+
+  test("GET items [ERROR]") {
+    forall(Gen.listOf(itemGen)) { i: List[Item] =>
       GET(Uri.unsafeFromString("/items")).flatMap { req =>
         val routes = new ItemRoutes[IO](failingItems(i)).routes
         assertHttpFailure(routes, req)

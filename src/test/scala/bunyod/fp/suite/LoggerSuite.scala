@@ -1,4 +1,4 @@
-package bunyod.fp.logger
+package bunyod.fp.suite
 
 import cats.effect.IO
 import cats.effect.concurrent.Ref
@@ -14,7 +14,7 @@ object LoggerSuite {
         ref.update(xs => message :: xs)
     }
 
-  private[logger] class NoLogger extends Logger[IO] {
+  class NoLogger extends Logger[IO] {
     def warn(message: => String): IO[Unit] = IO.unit
     def warn(t: Throwable)(message: => String): IO[Unit] = IO.unit
     def debug(t: Throwable)(message: => String): IO[Unit] = IO.unit

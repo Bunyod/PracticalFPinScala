@@ -2,14 +2,14 @@ package bunyod.fp.http.brands
 
 import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.brands._
-import bunyod.fp.suite.Arbitraries._
-import bunyod.fp.http.utils.json._
 import bunyod.fp.suite.HttpTestSuite
+import bunyod.fp.suite.Generators._
+
 import cats.effect._
-import cats.implicits._
 import org.http4s.Method._
 import org.http4s._
 import org.http4s.client.dsl.io._
+import org.scalacheck.Gen
 
 class BrandRoutesSpec extends HttpTestSuite {
 
@@ -26,8 +26,8 @@ class BrandRoutesSpec extends HttpTestSuite {
 
     })
 
-  forAll { b: List[Brand] =>
-    spec("GET brands [OK]") {
+  test("GET brands [OK]") {
+    forall(Gen.listOf(brandGen)) { b: List[Brand] =>
       GET(Uri.unsafeFromString("/brands")).flatMap { req =>
         val routes = new BrandRoutes[IO](dataBrands(b)).routes
         assertHttp(routes, req)(Status.Ok, b)
@@ -35,8 +35,8 @@ class BrandRoutesSpec extends HttpTestSuite {
     }
   }
 
-  forAll { b: List[Brand] =>
-    spec("GET BRANDS[ERROR]") {
+  test("GET BRANDS[ERROR]") {
+    forall(Gen.listOf(brandGen)) { b: List[Brand] =>
       GET(Uri.unsafeFromString("/brands")).flatMap { req =>
         val routes = new BrandRoutes[IO](failingBrands(b)).routes
         assertHttpFailure(routes, req)

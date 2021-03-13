@@ -6,9 +6,7 @@ import bunyod.fp.domain.categories.CategoriesService
 import bunyod.fp.domain.checkout.CheckoutService
 import bunyod.fp.domain.items.ItemsService
 import bunyod.fp.domain.orders.OrdersService
-import bunyod.fp.domain.payment.PaymentClientService
-import bunyod.fp.http.HttpApi
-import bunyod.fp.infrastructure.clients.PaymentClientRepository
+import bunyod.fp.http.{HttpApi, HttpClients}
 import bunyod.fp.infrastructure.redis.ShoppingCartRepository
 import bunyod.fp.infrastructure.skunk._
 import bunyod.fp.utils.cfg.Configurable
@@ -32,8 +30,7 @@ object MainIO extends IOApp with Configurable {
           .make[IO](cfg)
           .evalMap { res =>
             Security.make[IO](cfg, res.psql, res.redis).map { security =>
-              val paymentRepo = new PaymentClientRepository[IO](cfg.payment, res.client)
-              val paymentService = new PaymentClientService[IO](paymentRepo)
+              val clients = HttpClients.make[IO](cfg.payment, res.client)
               val itemsRepo = new ItemsRepository[IO](res.psql)
               val itemsService = new ItemsService[IO](itemsRepo)
               val shoppingCartRepo = new ShoppingCartRepository[IO](itemsRepo, res.redis, cfg.shoppingCart)
@@ -48,7 +45,7 @@ object MainIO extends IOApp with Configurable {
                 cfg.checkout.retriesLimit.value
               ) |+| exponentialBackoff[IO](cfg.checkout.retriesBackoff)
               val checkoutService =
-                new CheckoutService[IO](paymentService, shoppingCartService, orderService, retryPolicy)
+                new CheckoutService[IO](clients.payment, shoppingCartService, orderService, retryPolicy)
               val api = new HttpApi[IO](
                 brandsService,
                 categoryService,

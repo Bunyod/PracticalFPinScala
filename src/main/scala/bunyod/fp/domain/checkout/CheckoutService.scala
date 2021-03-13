@@ -6,20 +6,20 @@ import bunyod.fp.domain.cart._
 import bunyod.fp.domain.checkout.CheckoutPayloads.Card
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders.OrdersService
-import bunyod.fp.domain.payment.PaymentClientService
+import bunyod.fp.domain.payment.PaymentClientAlgebra
 import bunyod.fp.domain.payment.PaymentPayloads.Payment
-import bunyod.fp.effekts._
-import cats.effect.Timer
-import cats.implicits._
+import bunyod.fp.effekts.Background
+import cats.effect.{MonadThrow, Timer}
+import cats.syntax.all._
 import org.typelevel.log4cats.Logger
 import retry.RetryDetails._
 import retry._
-
-import scala.concurrent.duration.DurationInt
 import squants.market.Money
 
+import scala.concurrent.duration._
+
 final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
-  paymentClient: PaymentClientService[F],
+  paymentClient: PaymentClientAlgebra[F],
   shoppingCart: ShoppingCartService[F],
   orders: OrdersService[F],
   retryPolicy: RetryPolicy[F]

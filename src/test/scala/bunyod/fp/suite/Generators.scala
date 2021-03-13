@@ -1,5 +1,6 @@
 package bunyod.fp.suite
 
+import bunyod.fp.domain.auth.AuthPayloads.UserId
 import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.categories.CategoryPayloads._
@@ -9,6 +10,7 @@ import bunyod.fp.domain.orders.OrdersPayloads._
 import eu.timepit.refined.api.Refined
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.ops._
+
 import java.util.UUID
 import org.scalacheck.Gen
 import squants.market._
@@ -67,6 +69,15 @@ object Generators {
       b <- brandGen
       c <- categoryGen
     } yield Item(i, n, d, p, b, c)
+
+  val userIdGen: Gen[UserId] =
+    Gen.uuid.map(UserId(_))
+
+  val orderIdGen: Gen[OrderId] =
+    Gen.uuid.map(OrderId(_))
+
+  val paymentIdGen: Gen[PaymentId] =
+    Gen.uuid.map(PaymentId(_))
 
   val cartItemGen: Gen[CartItem] =
     for {
