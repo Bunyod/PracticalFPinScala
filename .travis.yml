@@ -21,9 +21,8 @@ cache:
 stages:
   - name: test
 
-jobs:
-  include:
-    - scala: 2.13.5 # Remember to update this in build.sbt, too.
-      script:
-        - sbt ++$TRAVIS_SCALA_VERSION test
+#jobs:
+#  include:
+#    - scala: 2.13.5 # Remember to update this in build.sbt, too.
+script: sbt ++$TRAVIS_SCALA_VERSION test
 
