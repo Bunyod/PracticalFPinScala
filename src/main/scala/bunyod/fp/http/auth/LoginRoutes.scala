@@ -2,12 +2,14 @@ package bunyod.fp.http.auth
 
 import bunyod.fp.domain.auth._
 import bunyod.fp.domain.auth.AuthPayloads._
-import bunyod.fp.effects.MonadThrow
+import bunyod.fp.effekts.MonadThrow
 import bunyod.fp.http.utils.decoder._
-import bunyod.fp.http.utils.json._
-import cats.Defer
-import cats.implicits._
-import org.http4s.HttpRoutes
+import bunyod.fp.domain._
+
+import cats._
+import cats.syntax.all._
+import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router

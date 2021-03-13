@@ -4,9 +4,9 @@ import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.items._
 import cats._
 import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
-import bunyod.fp.http.utils.json._
 import bunyod.fp.http.utils.params._
 
 final class ItemRoutes[F[_]: Defer: Monad](

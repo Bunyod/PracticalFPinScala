@@ -1,4 +1,4 @@
-package bunyod.fp.effects
+package bunyod.fp.effekts
 
 import cats.effect._
 import cats.effect.implicits._

@@ -5,9 +5,9 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders._
-import bunyod.fp.effects._
+import bunyod.fp.effekts.ID
 import bunyod.fp.utils.extensions.Skunkx._
-import bunyod.fp.http.utils.json._
+
 import cats.effect._
 import cats.implicits._
 import skunk._
@@ -36,7 +36,7 @@ class OrdersRepository[F[_]: Sync](
   ): F[OrderId] =
     sessionPool.use { session =>
       session.prepare(insertOrder).use { cmd =>
-        GenUUID[F].make[OrderId].flatMap { id =>
+        ID.make[F, OrderId].flatMap { id =>
           val itMap = items.map(x => x.item.uuid -> x.quantity).toMap
           val order = Order(id, paymentId, itMap, total)
           cmd.execute(userId ~ order).as(id)

@@ -1,6 +1,5 @@
 package bunyod.fp.http
 
-package shop.modules
 import bunyod.fp.domain.brands.BrandsService
 import bunyod.fp.domain.cart.ShoppingCartService
 import bunyod.fp.domain.categories.CategoriesService
@@ -12,7 +11,7 @@ import bunyod.fp.http.admin._
 import bunyod.fp.http.auth._
 import bunyod.fp.http.brands.BrandRoutes
 import bunyod.fp.http.categories.CategoryRoutes
-import bunyod.fp.http.checkout.CheckoutRoutes
+import bunyod.fp.http.secured.CheckoutRoutes
 import bunyod.fp.http.items.ItemRoutes
 import bunyod.fp.http.secured._
 import bunyod.fp.utils.extensions.Security

@@ -5,7 +5,7 @@ import bunyod.fp.domain.auth._
 import bunyod.fp.domain.tokens.TokensAlgebra
 import bunyod.fp.domain.users.UsersAlgebra
 import bunyod.fp.domain.users.UsersPayloads.User
-import bunyod.fp.effects._
+import bunyod.fp.effekts._
 import bunyod.fp.utils.cfg.Configuration.TokenExpirationCfg
 import cats.effect.Sync
 import dev.profunktor.auth.jwt.JwtToken

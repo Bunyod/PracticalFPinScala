@@ -2,7 +2,8 @@ package bunyod.fp.infrastructure.skunk
 
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.categories._
-import bunyod.fp.effects._
+import bunyod.fp.effekts.GenUUID
+import bunyod.fp.effekts.ID
 import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
 import cats.syntax.all._
@@ -22,7 +23,7 @@ class CategoriesRepository[F[_]: Sync](
   def create(categoryName: CategoryName): F[Unit] =
     sessionPool.use { session =>
       session.prepare(insertCategory).use { cmd =>
-        GenUUID[F].make[CategoryId].flatMap { id =>
+        ID.make[F, CategoryId].flatMap { id =>
           cmd
             .execute(Category(id, categoryName))
             .void

@@ -4,10 +4,11 @@ import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.items._
-import bunyod.fp.utils.extensions.Skunkx._
-import bunyod.fp.effects._
+import bunyod.fp.effekts.ID
+import bunyod.fp.infrastructure.database.Codecs._
+
 import cats.effect._
-import cats.implicits._
+import cats.syntax.all._
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
@@ -31,8 +32,7 @@ class ItemsRepository[F[_]: Sync](
   def create(item: CreateItem): F[Unit] =
     sessionPool.use { session =>
       session.prepare(insertItem).use { cmd =>
-        GenUUID[F]
-          .make[ItemId]
+        ID.make[F, ItemId]
           .flatMap(id => cmd.execute(id ~ item).void)
       }
     }
@@ -74,7 +74,7 @@ object ItemsRepository {
            FROM items AS i
            INNER JOIN brands AS b ON i.brand_id == b.uuid
            INNER JOIN categories AS c ON i.category_id == i.category_id
-           WHERE b.name like ${varchar.cimap[BrandName]}
+           WHERE b.name like ${brandName}
          """.query(decoder)
 
   val selecById: Query[ItemId, Item] =
@@ -83,7 +83,7 @@ object ItemsRepository {
            FROM items AS i
            INNER JOIN brands AS b ON i.brand_id == b.uuid
            INNER JOIN categories AS c ON i.category_id == c.uuid
-           WHERE i.uuid== ${uuid.cimap[ItemId]}
+           WHERE i.uuid== ${itemId}
          """.query(decoder)
 
   val insertItem: Command[ItemId ~ CreateItem] =
@@ -98,6 +98,6 @@ object ItemsRepository {
     sql"""
        UPDATE items
        SET price = $numeric
-       WHERE uuid == ${uuid.cimap[ItemId]}
+       WHERE uuid == ${itemId}
      """.command.contramap(i => i.price.amount ~ i.id)
 }

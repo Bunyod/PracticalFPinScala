@@ -33,9 +33,10 @@ object Dependencies {
     val catsRetry = "com.github.cb372" %% "cats-retry" % Versions.catsRetry
 
     val fs2 = "co.fs2" %% "fs2-core" % Versions.fs2
-    def http4s(artifact: String): ModuleID = "org.http4s" %% artifact % Versions.http4s
+    def http4s(artifact: String): ModuleID = "org.http4s" %% s"http4s-$artifact" % Versions.http4s
     def circe(artifact: String): ModuleID = "io.circe" %% artifact % Versions.circe
     def ciris(artifact: String): ModuleID = "is.cir" %% artifact % Versions.ciris
+    def derevo(artifact: String): ModuleID = "tf.tofu"    %% s"derevo-$artifact" % Versions.derevo
 
     val redis4catsEffects = "dev.profunktor" %% "redis4cats-effects" % Versions.redis4cats
     val redis4catsLog4cats = "dev.profunktor" %% "redis4cats-log4cats" % Versions.redis4cats
@@ -51,10 +52,10 @@ object Dependencies {
     val cirisEnum = ciris("ciris-enumeratum")
     val cirisRefined = ciris("ciris-refined")
 
-    val http4sDsl = http4s("http4s-dsl")
-    val http4sServer = http4s("http4s-blaze-server")
-    val http4sClient = http4s("http4s-blaze-client")
-    val http4sCirce = http4s("http4s-circe")
+    val http4sDsl = http4s("dsl")
+    val http4sServer = http4s("ember-server")
+    val http4sClient = http4s("ember-client")
+    val http4sCirce = http4s("circe")
 
     val http4sJwtAuth = "dev.profunktor" %% "http4s-jwt-auth" % Versions.http4sJwtAuth
 
@@ -65,13 +66,13 @@ object Dependencies {
     val refinedCats = "eu.timepit" %% "refined-cats" % Versions.refined
     val refinedPureconfig = "eu.timepit" %% "refined-pureconfig" % Versions.refined
 
-    val log4cats = "io.chrisdavenport" %% "log4cats-slf4j" % Versions.log4cats
     val newtype = "io.estatico" %% "newtype" % Versions.newtype
 
-    val skunk = "org.tpolecat" %% "skunk-core" % Versions.skunk
+    val skunkCore = "org.tpolecat" %% "skunk-core" % Versions.skunk
     val skunkCirce = "org.tpolecat" %% "skunk-circe" % Versions.skunk
     // Runtime
     val logback = "ch.qos.logback" % "logback-classic" % Versions.logback
+    val log4cats = "org.typelevel" %% "log4cats-slf4j" % Versions.log4cats
 
     val scalaCheck    = "org.scalacheck"    %% "scalacheck"      % Versions.scalaCheck
     val scalaTest     = "org.scalatest"     %% "scalatest"       % Versions.scalaTest
@@ -87,7 +88,7 @@ object Dependencies {
   }
 
   val rootDependencies = Seq(
-    compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
+    compilerPlugin(CompilerPlugins.kindProjector),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
 //    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
     "org.typelevel" %% "squants" % "1.7.4",
@@ -116,7 +117,7 @@ object Dependencies {
     Libraries.cirisEnum,
     Libraries.cirisRefined,
     Libraries.fs2,
-    Libraries.skunk,
+    Libraries.skunkCore,
     Libraries.skunkCirce,
     Libraries.newtype,
     Libraries.refinedCore,

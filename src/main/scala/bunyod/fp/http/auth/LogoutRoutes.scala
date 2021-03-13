@@ -1,9 +1,9 @@
 package bunyod.fp.http.auth
 
 import bunyod.fp.domain.auth._
-import bunyod.fp.domain.users.UsersPayloads.CommonUser
+import bunyod.fp.domain.users.UsersPayloads._
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import dev.profunktor.auth.AuthHeaders
 import org.http4s._
 import org.http4s.dsl.Http4sDsl

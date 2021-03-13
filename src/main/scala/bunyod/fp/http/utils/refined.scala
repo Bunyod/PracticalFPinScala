@@ -12,4 +12,7 @@ object refined {
       Size[N](w.value)
     )
 
+  def decoderOf[T, P](implicit v: Validate[T, P], d: Decoder[T]): Decoder[T Refined P] =
+    d.emap(refineV[P].apply[T](_))
+
 }

@@ -4,12 +4,12 @@ import bunyod.fp.domain.auth.AuthPayloads._
 import bunyod.fp.domain.crypto.CryptoAlgebra
 import bunyod.fp.domain.users.UsersAlgebra
 import bunyod.fp.domain.users.UsersPayloads.User
-import bunyod.fp.effects._
-import bunyod.fp.utils.extensions.Skunkx._
+import bunyod.fp.effekts._
+import bunyod.fp.infrastructure.database.Codecs._
+
 import cats.effect.Resource
 import cats.implicits._
 import skunk._
-import skunk.codec.all._
 import skunk.implicits._
 
 class UsersRepository[F[_]: BracketThrow: GenUUID](
@@ -35,7 +35,7 @@ class UsersRepository[F[_]: BracketThrow: GenUUID](
   override def create(username: UserName, password: Password): F[UserId] =
     sessionPool.use { session =>
       session.prepare(insertUser).use { cmd =>
-        GenUUID[F].make[UserId].flatMap { id =>
+        ID.make[F, UserId].flatMap { id =>
           cmd
             .execute(User(id, username) ~ crypto.encrypt(password))
             .as(id)
@@ -58,13 +58,14 @@ object UsersRepository {
 
   val selectUser: Query[UserName, User ~ EncryptedPassword] =
     sql"""
-      SELECT * FROM users
-      where name = ${varchar.cimap[UserName]}
-      """.query(codec)
+        SELECT * FROM users
+        WHERE name = ${userName}
+       """.query(codec)
 
   val insertUser: Command[User ~ EncryptedPassword] =
     sql"""
-           INSERT INTO users
-           VALUES ($codec)
-         """.command
+        INSERT INTO users
+        VALUES ($codec)
+        """.command
+
 }

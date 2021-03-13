@@ -8,12 +8,13 @@ import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders.OrdersService
 import bunyod.fp.domain.payment.PaymentClientService
 import bunyod.fp.domain.payment.PaymentPayloads.Payment
-import bunyod.fp.effects._
+import bunyod.fp.effekts._
 import cats.effect.Timer
 import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import retry.RetryDetails._
 import retry._
+
 import scala.concurrent.duration.DurationInt
 import squants.market.Money
 

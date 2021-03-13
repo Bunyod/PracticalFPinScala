@@ -7,17 +7,12 @@ import bunyod.fp.domain.checkout.CheckoutService
 import bunyod.fp.domain.items.ItemsService
 import bunyod.fp.domain.orders.OrdersService
 import bunyod.fp.domain.payment.PaymentClientService
-import bunyod.fp.http.shop.modules.HttpApi
+import bunyod.fp.http.HttpApi
 import bunyod.fp.infrastructure.clients.PaymentClientRepository
 import bunyod.fp.infrastructure.redis.ShoppingCartRepository
 import bunyod.fp.infrastructure.skunk._
 import bunyod.fp.utils.cfg.Configurable
 import bunyod.fp.utils.extensions.Security
-import cats.effect._
-import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import org.http4s.server.blaze.BlazeServerBuilder
 import retry.RetryPolicies.{exponentialBackoff, limitRetries}
 import retry.RetryPolicy
 import scala.concurrent.ExecutionContext
@@ -62,13 +57,23 @@ object MainIO extends IOApp with Configurable {
                 cfg.httpServer.port.value,
                 cfg.httpServer.host.value
               )
-              .withHttpApp(routes.httpApp)
-              .serve
-              .compile
-              .drain
+              cfg.httpServer -> api
 
-          } yield ExitCode.Success
-        }
+            }
+          }
+          .flatMap { case (cfg, api) =>
+            EmberServerBuilder
+              .default[IO]
+              .withHost(cfg.host.value)
+              .withPort(cfg.port.value)
+              .withHttpApp(api.httpApp)
+              .build
+
+          }
+          .use { server =>
+            Logger[IO].info(s"HTTP Server started at ${server.address}") >>
+              IO.never.as(ExitCode.Success)
+          }
     }
 
 }

@@ -1,13 +1,14 @@
 package bunyod.fp.http.secured
 
 import bunyod.fp.domain.cart._
-import bunyod.fp.domain.cart.CartPayloads.Cart
-import bunyod.fp.domain.items.ItemsPayloads.ItemId
+import bunyod.fp.domain.cart.CartPayloads._
+import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.users.UsersPayloads.CommonUser
-import bunyod.fp.http.utils.json._
+
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
@@ -22,6 +23,7 @@ final class CartRoutes[F[_]: Defer: JsonDecoder: Monad](
     AuthedRoutes.of {
       case GET -> Root as user =>
         Ok(shoppingCart.get(user.value.id))
+      // Add items to the cart
       case ar @ POST -> Root as user =>
         ar.req.asJsonDecode[Cart].flatMap { cart =>
           cart.items
@@ -30,6 +32,12 @@ final class CartRoutes[F[_]: Defer: JsonDecoder: Monad](
             }
             .toList
             .sequence *> Created()
+        }
+
+      // Modify items in the cart
+      case ar @ PUT -> Root as user =>
+        ar.req.asJsonDecode[Cart].flatMap { cart =>
+          shoppingCart.update(user.value.id, cart) *> Ok()
         }
       case DELETE -> Root / UUIDVar(uuid) as user =>
         shoppingCart.removeItem(user.value.id, ItemId(uuid)) *> NoContent()

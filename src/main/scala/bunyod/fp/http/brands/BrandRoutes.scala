@@ -1,9 +1,9 @@
 package bunyod.fp.http.brands
 
-import bunyod.fp.domain.brands._
-import bunyod.fp.http.utils.json._
+import bunyod.fp.domain.brands.BrandsService
 import cats._
 import org.http4s.HttpRoutes
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
