@@ -1,6 +1,5 @@
 package bunyod.fp.http
 
-package shop.modules
 import bunyod.fp.domain.brands.BrandsService
 import bunyod.fp.domain.cart.ShoppingCartService
 import bunyod.fp.domain.categories.CategoriesService
@@ -12,7 +11,7 @@ import bunyod.fp.http.admin._
 import bunyod.fp.http.auth._
 import bunyod.fp.http.brands.BrandRoutes
 import bunyod.fp.http.categories.CategoryRoutes
-import bunyod.fp.http.checkout.CheckoutRoutes
+import bunyod.fp.http.secured.CheckoutRoutes
 import bunyod.fp.http.items.ItemRoutes
 import bunyod.fp.http.secured._
 import bunyod.fp.utils.extensions.Security
@@ -76,17 +75,14 @@ final class HttpApi[F[_]: Concurrent: Timer](
     version.v1 + "/admin" -> adminRoutes
   )
 
-  private val middleware: HttpRoutes[F] => HttpRoutes[F] = {
-    { http: HttpRoutes[F] => AutoSlash(http) }
-      .andThen { http: HttpRoutes[F] => CORS(http, CORS.DefaultCORSConfig) }
-      .andThen { http: HttpRoutes[F] => Timeout(60.seconds)(http) }
-  }
+  private val middleware: HttpRoutes[F] => HttpRoutes[F] = { http: HttpRoutes[F] => AutoSlash(http) }
+    .andThen { http: HttpRoutes[F] => CORS(http, CORS.DefaultCORSConfig) }
+    .andThen { http: HttpRoutes[F] => Timeout(60.seconds)(http) }
 
-  private val loggers: HttpApp[F] => HttpApp[F] = {
-    { http: HttpApp[F] => RequestLogger.httpApp(true, true)(http) }.andThen { http: HttpApp[F] =>
+  private val loggers: HttpApp[F] => HttpApp[F] = { http: HttpApp[F] => RequestLogger.httpApp(true, true)(http) }
+    .andThen { http: HttpApp[F] =>
       ResponseLogger.httpApp(true, true)(http)
     }
-  }
 
   val httpApp: HttpApp[F] = loggers(middleware(routes).orNotFound)
 

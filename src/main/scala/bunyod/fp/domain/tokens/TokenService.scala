@@ -1,6 +1,6 @@
 package bunyod.fp.domain.tokens
 
-import bunyod.fp.effects.GenUUID
+import bunyod.fp.effekts.GenUUID
 import bunyod.fp.utils.cfg.Configuration.UserJwtCfg
 import cats.effect.Sync
 import cats.implicits._

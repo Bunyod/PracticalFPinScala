@@ -7,19 +7,19 @@ import bunyod.fp.domain.checkout.CheckoutService
 import bunyod.fp.domain.items.ItemsService
 import bunyod.fp.domain.orders.OrdersService
 import bunyod.fp.domain.payment.PaymentClientService
-import bunyod.fp.http.shop.modules.HttpApi
+import bunyod.fp.http.HttpApi
 import bunyod.fp.infrastructure.clients.PaymentClientRepository
 import bunyod.fp.infrastructure.redis.ShoppingCartRepository
 import bunyod.fp.infrastructure.skunk._
 import bunyod.fp.utils.cfg.Configurable
 import bunyod.fp.utils.extensions.Security
-import cats.effect._
-import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import org.http4s.server.blaze.BlazeServerBuilder
 import retry.RetryPolicies.{exponentialBackoff, limitRetries}
 import retry.RetryPolicy
+import cats.effect._
+import cats.syntax.all._
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
+import org.http4s.ember.server.EmberServerBuilder
 
 object MainIO extends IOApp with Configurable {
 
@@ -28,46 +28,53 @@ object MainIO extends IOApp with Configurable {
   override def run(args: List[String]): IO[ExitCode] =
     config.load[IO].flatMap { cfg =>
       Logger[IO].info(s"Loaded config: $cfg") *>
-        AppResources.make[IO](cfg).use { res =>
-          for {
-            security <- Security.make[IO](cfg, res.psql, res.redis)
-            paymentRepo = new PaymentClientRepository[IO](cfg.payment, res.client)
-            paymentService = new PaymentClientService[IO](paymentRepo)
-            itemsRepo = new ItemsRepository[IO](res.psql)
-            itemsService = new ItemsService[IO](itemsRepo)
-            shoppingCartRepo = new ShoppingCartRepository[IO](itemsRepo, res.redis, cfg.shoppingCart)
-            shoppingCartService = new ShoppingCartService[IO](shoppingCartRepo)
-            orderRepo = new OrdersRepository[IO](res.psql)
-            orderService = new OrdersService[IO](orderRepo)
-            brandsRepo = new BrandsRepository[IO](res.psql)
-            brandsService = new BrandsService[IO](brandsRepo)
-            categoryRepo = new CategoriesRepository[IO](res.psql)
-            categoryService = new CategoriesService[IO](categoryRepo)
-            retryPolicy: RetryPolicy[IO] = limitRetries[IO](cfg.checkout.retriesLimit.value) |+| exponentialBackoff[IO](
-              cfg.checkout.retriesBackoff
-            )
-            checkoutService = new CheckoutService[IO](paymentService, shoppingCartService, orderService, retryPolicy)
-            routes = new HttpApi[IO](
-              brandsService,
-              categoryService,
-              itemsService,
-              shoppingCartService,
-              checkoutService,
-              orderService,
-              security
-            )
-            _ <- BlazeServerBuilder[IO]
-              .bindHttp(
-                cfg.httpServer.port.value,
-                cfg.httpServer.host.value
+        AppResources
+          .make[IO](cfg)
+          .evalMap { res =>
+            Security.make[IO](cfg, res.psql, res.redis).map { security =>
+              val paymentRepo = new PaymentClientRepository[IO](cfg.payment, res.client)
+              val paymentService = new PaymentClientService[IO](paymentRepo)
+              val itemsRepo = new ItemsRepository[IO](res.psql)
+              val itemsService = new ItemsService[IO](itemsRepo)
+              val shoppingCartRepo = new ShoppingCartRepository[IO](itemsRepo, res.redis, cfg.shoppingCart)
+              val shoppingCartService = new ShoppingCartService[IO](shoppingCartRepo)
+              val orderRepo = new OrdersRepository[IO](res.psql)
+              val orderService = new OrdersService[IO](orderRepo)
+              val brandsRepo = new BrandsRepository[IO](res.psql)
+              val brandsService = new BrandsService[IO](brandsRepo)
+              val categoryRepo = new CategoriesRepository[IO](res.psql)
+              val categoryService = new CategoriesService[IO](categoryRepo)
+              val retryPolicy: RetryPolicy[IO] = limitRetries[IO](
+                cfg.checkout.retriesLimit.value
+              ) |+| exponentialBackoff[IO](cfg.checkout.retriesBackoff)
+              val checkoutService =
+                new CheckoutService[IO](paymentService, shoppingCartService, orderService, retryPolicy)
+              val api = new HttpApi[IO](
+                brandsService,
+                categoryService,
+                itemsService,
+                shoppingCartService,
+                checkoutService,
+                orderService,
+                security
               )
-              .withHttpApp(routes.httpApp)
-              .serve
-              .compile
-              .drain
+              cfg.httpServer -> api
 
-          } yield ExitCode.Success
-        }
+            }
+          }
+          .flatMap { case (cfg, api) =>
+            EmberServerBuilder
+              .default[IO]
+              .withHost(cfg.host.value)
+              .withPort(cfg.port.value)
+              .withHttpApp(api.httpApp)
+              .build
+
+          }
+          .use { server =>
+            Logger[IO].info(s"HTTP Server started at ${server.address}") >>
+              IO.never.as(ExitCode.Success)
+          }
     }
 
 }

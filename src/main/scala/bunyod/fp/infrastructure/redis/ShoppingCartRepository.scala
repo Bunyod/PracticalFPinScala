@@ -6,10 +6,11 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.cart._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.items._
-import bunyod.fp.effects._
+import bunyod.fp.effekts.{ApThrow, GenUUID, ID}
 import bunyod.fp.utils.cfg.Configuration.ShoppingCartCfg
-import cats.implicits._
-import dev.profunktor.redis4cats.algebra.RedisCommands
+import cats.effect._
+import cats.syntax.all._
+import dev.profunktor.redis4cats.RedisCommands
 import squants.market._
 
 class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
@@ -24,38 +25,36 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
     quantity: Quantity
   ): F[Unit] =
     redis.hSet(userId.value.toString, itemId.value.toString, quantity.value.toString) *>
-      redis.expire(userId.value.toString, expCfg.expiration)
-
-  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString)
+      redis.expire(userId.value.toString, expCfg.expiration).void
 
   override def get(userId: UserId): F[CartPayloads.CartTotal] =
     redis.hGetAll(userId.value.toString).flatMap { it =>
       it.toList
-        .traverseFilter {
-          case (k, v) =>
-            for {
-              id <- GenUUID[F].read[ItemId](k)
-              qt <- ApThrow[F].catchNonFatal(Quantity(v.toInt))
-              rs <- items.findById(id).map(_.map(i => CartItem(i, qt)))
-            } yield rs
+        .traverseFilter { case (k, v) =>
+          for {
+            id <- ID.read[F, ItemId](k)
+            qt <- ApThrow[F].catchNonFatal(Quantity(v.toInt))
+            rs <- items.findById(id).map(_.map(i => CartItem(i, qt)))
+          } yield rs
         }
         .map(items => CartTotal(items, calcTotal(items)))
 
     }
 
+  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString).void
+
   override def removeItem(userId: UserId, itemId: ItemId): F[Unit] =
-    redis.hDel(userId.value.toString, itemId.value.toString)
+    redis.hDel(userId.value.toString, itemId.value.toString).void
 
   override def update(userId: UserId, cart: Cart): F[Unit] = redis.hGetAll(userId.value.toString).flatMap { items =>
     items.toList
-      .traverse_ {
-        case (k, _) =>
-          GenUUID[F].read[ItemId](k).flatMap { id =>
-            cart.items.get(id).traverse_(q => redis.hSet(userId.value.toString, k, q.value.toString))
-          }
+      .traverse_ { case (k, _) =>
+        ID.read[F, ItemId](k).flatMap { id =>
+          cart.items.get(id).traverse_(q => redis.hSet(userId.value.toString, k, q.value.toString))
+        }
 
       } *>
-      redis.expire(userId.value.toString, expCfg.expiration)
+      redis.expire(userId.value.toString, expCfg.expiration).void
   }
 
   private def calcTotal(items: List[CartItem]): Money =

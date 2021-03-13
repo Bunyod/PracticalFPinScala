@@ -1,6 +1,6 @@
 package bunyod.fp.http.utils
 
-import bunyod.fp.effects._
+import bunyod.fp.effekts._
 import cats.implicits._
 import io.circe.Decoder
 import org.http4s._
@@ -19,7 +19,6 @@ object decoder {
           }
         case Right(a) => f(a)
       }
-
   }
 
 }

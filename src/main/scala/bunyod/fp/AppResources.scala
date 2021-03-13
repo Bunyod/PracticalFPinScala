@@ -1,18 +1,15 @@
 package bunyod.fp
 
-import bunyod.fp.utils.cfg.Configuration.{Config, HttpClientCfg, PostgreSQLCfg, RedisCfg}
+import bunyod.fp.utils.cfg.Configuration._
 import cats.effect._
-import cats.implicits._
-import dev.profunktor.redis4cats.algebra.RedisCommands
-import dev.profunktor.redis4cats.connection.{RedisClient, RedisURI}
-import dev.profunktor.redis4cats.domain.RedisCodec
-import dev.profunktor.redis4cats.interpreter.Redis
+import cats.syntax.all._
 import dev.profunktor.redis4cats.log4cats._
-import io.chrisdavenport.log4cats.Logger
-import natchez.Trace.Implicits.noop /// needed for skunk
+import dev.profunktor.redis4cats.{Redis, RedisCommands}
+import eu.timepit.refined.auto._
+import natchez.Trace.Implicits.noop
 import org.http4s.client.Client
-import org.http4s.client.blaze.BlazeClientBuilder
-import scala.concurrent.ExecutionContext
+import org.http4s.ember.client.EmberClientBuilder
+import org.typelevel.log4cats.Logger
 import skunk._
 
 final case class AppResources[F[_]](
@@ -23,7 +20,7 @@ final case class AppResources[F[_]](
 
 object AppResources {
 
-  def make[F[_]: ConcurrentEffect: ContextShift: Logger](
+  def make[F[_]: ConcurrentEffect: ContextShift: Logger: Timer](
     cfg: Config
   ): Resource[F, AppResources[F]] = {
 
@@ -38,18 +35,14 @@ object AppResources {
         )
 
     def mkRedisResource(c: RedisCfg): Resource[F, RedisCommands[F, String, String]] =
-      for {
-        uri <- Resource.liftF(RedisURI.make[F](c.uri.value))
-        client <- RedisClient[F](uri)
-        cmd <- Redis[F, String, String](client, RedisCodec.Utf8)
-      } yield cmd
+      Redis[F].utf8(c.uri.value)
 
     def mkHttpClient(c: HttpClientCfg): Resource[F, Client[F]] =
-      BlazeClientBuilder[F](ExecutionContext.global)
-        .withConnectTimeout(c.connectionTimeout)
-        .withRequestTimeout(c.requestTimeout)
-        .resource
-
+      EmberClientBuilder
+        .default[F]
+        .withTimeout(c.connectionTimeout)
+        .withIdleTimeInPool(c.requestTimeout)
+        .build
     (
       mkHttpClient(cfg.httpClient),
       mkPostgreSqlResource(cfg.postgres),

@@ -23,9 +23,8 @@ object CryptoService {
         dCipher.value.init(Cipher.DECRYPT_MODE, sKeySpec)
         (eCipher, dCipher)
       }
-      .map {
-        case (ec, dc) =>
-          new CryptoService(ec, dc)
+      .map { case (ec, dc) =>
+        new CryptoService(ec, dc)
       }
 
 }

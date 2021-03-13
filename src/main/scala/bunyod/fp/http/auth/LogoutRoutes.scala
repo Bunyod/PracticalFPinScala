@@ -1,9 +1,9 @@
 package bunyod.fp.http.auth
 
 import bunyod.fp.domain.auth._
-import bunyod.fp.domain.users.UsersPayloads.CommonUser
+import bunyod.fp.domain.users.UsersPayloads._
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import dev.profunktor.auth.AuthHeaders
 import org.http4s._
 import org.http4s.dsl.Http4sDsl
@@ -15,11 +15,10 @@ final class LogoutRoutes[F[_]: Defer: Monad](
 
   private[auth] val pathPrefix = "/auth"
 
-  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of {
-    case ar @ POST -> Root / "logout" as user =>
-      AuthHeaders
-        .getBearerToken[F](ar.req)
-        .traverse_(t => auth.logout(t, user.value.name)) *> NoContent()
+  private val httpRoutes: AuthedRoutes[CommonUser, F] = AuthedRoutes.of { case ar @ POST -> Root / "logout" as user =>
+    AuthHeaders
+      .getBearerToken[F](ar.req)
+      .traverse_(t => auth.logout(t, user.value.name)) *> NoContent()
   }
 
   def routes(authMiddleware: AuthMiddleware[F, CommonUser]): HttpRoutes[F] = Router(

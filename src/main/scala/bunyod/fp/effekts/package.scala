@@ -3,7 +3,7 @@ package bunyod.fp
 import cats.effect.Bracket
 import cats.{ApplicativeError, MonadError}
 
-package object effects {
+package object effekts {
 
   type MonadThrow[F[_]] = MonadError[F, Throwable]
 

@@ -9,7 +9,7 @@ import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders._
 import bunyod.fp.domain.payment.PaymentPayloads._
 import bunyod.fp.domain.payment._
-import bunyod.fp.effects.Background
+import bunyod.fp.effekts.Background
 import bunyod.fp.logger.LoggerSuite
 import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.suite.{BackgroundTest, PureTestSuite}
