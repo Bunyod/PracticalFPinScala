@@ -36,7 +36,6 @@ object Dependencies {
     def http4s(artifact: String): ModuleID = "org.http4s" %% s"http4s-$artifact" % Versions.http4s
     def circe(artifact: String): ModuleID = "io.circe" %% artifact % Versions.circe
     def ciris(artifact: String): ModuleID = "is.cir" %% artifact % Versions.ciris
-    def derevo(artifact: String): ModuleID = "tf.tofu"    %% s"derevo-$artifact" % Versions.derevo
 
     val redis4catsEffects = "dev.profunktor" %% "redis4cats-effects" % Versions.redis4cats
     val redis4catsLog4cats = "dev.profunktor" %% "redis4cats-log4cats" % Versions.redis4cats
@@ -103,7 +102,7 @@ object Dependencies {
     Libraries.http4sCirce,
     Libraries.http4sJwtAuth,
     Libraries.log4cats,
-    Libraries.logback % Runtime,
+//    Libraries.logback,
     Libraries.pureConfig,
     Libraries.refinedPureconfig,
     Libraries.circeCore,
