@@ -6,11 +6,11 @@ import bunyod.fp.domain.users.UsersPayloads.AdminUser
 import bunyod.fp.effekts.MonadThrow
 import cats.Defer
 import org.http4s.AuthedRoutes
-import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s._
 import bunyod.fp.http.utils.decoder._
+import bunyod.fp.http.utils.json._
 import org.http4s.server.{AuthMiddleware, Router}
 
 final class AdminBrandRoutes[F[_]: Defer: JsonDecoder: MonadThrow](

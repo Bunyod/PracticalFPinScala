@@ -2,11 +2,12 @@ package bunyod.fp.infrastructure.skunk
 
 import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.brands._
-import bunyod.fp.effekts.{GenUUID, ID}
-import bunyod.fp.infrastructure.database.Codecs._
+import bunyod.fp.effekts._
+import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
-import cats.syntax.all._
+import cats.implicits._
 import skunk._
+import skunk.codec.all._
 import skunk.implicits._
 
 class BrandsRepository[F[_]: Sync](
@@ -21,8 +22,12 @@ class BrandsRepository[F[_]: Sync](
   def create(name: BrandName): F[Unit] =
     sessionPool.use { session =>
       session.prepare(insertBrand).use { cmd =>
-        ID.make[F, BrandId].flatMap { id =>
-          cmd.execute(Brand(id, name)).void
+        GenUUID[F].make[BrandId].flatMap { id =>
+          cmd
+            .execute(
+              Brand(id, name)
+            )
+            .void
         }
       }
     }
@@ -32,18 +37,18 @@ class BrandsRepository[F[_]: Sync](
 object BrandQueries {
 
   private val codec: Codec[Brand] =
-    (brandId ~ brandName).imap { case i ~ n =>
+    (uuid.cimap[BrandId] ~ varchar.cimap[BrandName]).imap { case i ~ n =>
       Brand(i, n)
     }(b => b.uuid ~ b.name)
 
   val selectAll: Query[Void, Brand] =
     sql"""
-      SELECT * FROM brands
-    """.query(codec)
+           SELECT * FROM brands
+         """.query(codec)
 
   val insertBrand: Command[Brand] =
     sql"""
-     INSERT INTO brands  VALUES ($codec)
-    """.command
+           INSERT INTO brands  VALUES ($codec)
+         """.command
 
 }

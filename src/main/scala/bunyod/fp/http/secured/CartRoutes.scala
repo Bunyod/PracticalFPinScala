@@ -1,14 +1,13 @@
 package bunyod.fp.http.secured
 
 import bunyod.fp.domain.cart._
-import bunyod.fp.domain.cart.CartPayloads._
-import bunyod.fp.domain.items.ItemsPayloads._
+import bunyod.fp.domain.cart.CartPayloads.Cart
+import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.users.UsersPayloads.CommonUser
-
+import bunyod.fp.http.utils.json._
 import cats._
-import cats.syntax.all._
+import cats.implicits._
 import org.http4s._
-import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._

@@ -6,10 +6,10 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.cart._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.items._
-import bunyod.fp.effekts.{ApThrow, GenUUID, ID}
+import bunyod.fp.effekts._
+//import cats.effect.MonadThrow
 import bunyod.fp.utils.cfg.Configuration.ShoppingCartCfg
-import cats.effect._
-import cats.syntax.all._
+import cats.implicits._
 import dev.profunktor.redis4cats.RedisCommands
 import squants.market._
 
@@ -25,9 +25,9 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
     quantity: Quantity
   ): F[Unit] =
     redis.hSet(userId.value.toString, itemId.value.toString, quantity.value.toString) *>
-      redis.expire(userId.value.toString, expCfg.expiration).void
+      redis.expire(userId.value.toString, expCfg.expiration)
 
-  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString).void
+  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString)
 
   override def get(userId: UserId): F[CartPayloads.CartTotal] =
     redis.hGetAll(userId.value.toString).flatMap { it =>
@@ -43,10 +43,8 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
 
     }
 
-  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString).void
-
   override def removeItem(userId: UserId, itemId: ItemId): F[Unit] =
-    redis.hDel(userId.value.toString, itemId.value.toString).void
+    redis.hDel(userId.value.toString, itemId.value.toString)
 
   override def update(userId: UserId, cart: Cart): F[Unit] = redis.hGetAll(userId.value.toString).flatMap { items =>
     items.toList
@@ -56,7 +54,7 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
         }
 
       } *>
-      redis.expire(userId.value.toString, expCfg.expiration).void
+      redis.expire(userId.value.toString, expCfg.expiration)
   }
 
   private def calcTotal(items: List[CartItem]): Money =

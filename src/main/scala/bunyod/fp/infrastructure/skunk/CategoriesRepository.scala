@@ -3,7 +3,7 @@ package bunyod.fp.infrastructure.skunk
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.categories._
 import bunyod.fp.effekts.GenUUID
-import bunyod.fp.effekts.ID
+//import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
 import cats.syntax.all._
@@ -11,7 +11,7 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class CategoriesRepository[F[_]: Sync](
+class CategoriesRepository[F[_]: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends CategoriesAlgebra[F] {
 
@@ -20,17 +20,14 @@ class CategoriesRepository[F[_]: Sync](
   def findAll: F[List[Category]] =
     sessionPool.use(_.execute(selectAll))
 
-  def create(categoryName: CategoryName): F[Unit] =
+  def create(name: CategoryName): F[Unit] =
     sessionPool.use { session =>
       session.prepare(insertCategory).use { cmd =>
-        ID.make[F, CategoryId].flatMap { id =>
-          cmd
-            .execute(Category(id, categoryName))
-            .void
+        GenUUID[F].make[CategoryId].flatMap { id =>
+          cmd.execute(Category(id, name)).void
         }
       }
     }
-
 }
 
 object CategoriesRepository {

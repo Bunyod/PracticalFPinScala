@@ -3,17 +3,15 @@ package bunyod.fp.infrastructure.clients
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.payment.PaymentClientAlgebra
 import bunyod.fp.domain.payment.PaymentPayloads.Payment
-import bunyod.fp.effects.BracketThrow
+import bunyod.fp.effekts.BracketThrow
 import bunyod.fp.utils.cfg.Configuration.PaymentCfg
-
-import cats.effect.BracketThrow
-import cats.syntax.all._
-import org.http4s.Method._
+import cats.implicits._
 import org.http4s._
-import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe._
 import org.http4s.client._
 import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.Method._
+import bunyod.fp.http.utils.json._
 
 class PaymentClientRepository[F[_]: JsonDecoder: BracketThrow](
   cfg: PaymentCfg,

@@ -1,7 +1,6 @@
 import Dependencies._
 
 name := "PracticalScalaFP"
-
 version in ThisBuild := "0.0.1"
 
 lazy val root = (project in file("."))
@@ -10,7 +9,6 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.3",
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= CompilerOptions.cOptions,
-//      scalacOptions ++= List("-Ywarn-unused", "-Ywarn-value-discard"),
       scalafmtOnCompile := true,
       libraryDependencies ++= rootDependencies
   )

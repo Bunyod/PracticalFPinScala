@@ -1,12 +1,11 @@
 package bunyod.fp.http.secured
 
 import bunyod.fp.domain.orders._
-import bunyod.fp.domain.orders.OrdersPayloads._
+import bunyod.fp.domain.orders.OrdersPayloads.OrderId
 import bunyod.fp.domain.users.UsersPayloads.CommonUser
-
+import bunyod.fp.http.utils.json._
 import cats._
 import org.http4s._
-import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
 

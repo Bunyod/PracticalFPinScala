@@ -6,11 +6,11 @@ import bunyod.fp.domain.users.UsersPayloads.AdminUser
 import bunyod.fp.effekts.MonadThrow
 import cats.Defer
 import org.http4s.{AuthedRoutes, HttpRoutes}
-import bunyod.fp.http.utils.decoder._
-import org.http4s.server.{AuthMiddleware, Router}
-import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
+import bunyod.fp.http.utils.decoder._
+import bunyod.fp.http.utils.json._
+import org.http4s.server.{AuthMiddleware, Router}
 
 final class AdminCategoryRoutes[F[_]: Defer: JsonDecoder: MonadThrow](categories: CategoriesService[F])
   extends Http4sDsl[F] {

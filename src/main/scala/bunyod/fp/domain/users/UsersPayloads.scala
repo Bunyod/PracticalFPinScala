@@ -1,20 +1,23 @@
 package bunyod.fp.domain.users
 
 import bunyod.fp.domain.auth.AuthPayloads.{UserId, UserName}
+import io.circe.generic.semiauto._
+import io.circe.{Decoder, Encoder}
 import io.estatico.newtype.macros.newtype
+import bunyod.fp.http.utils.json._
 import dev.profunktor.auth.jwt.JwtSymmetricAuth
-import derevo.circe.magnolia.{decoder, encoder}
-import derevo.derive
 
 object UsersPayloads {
 
   @newtype case class AdminJwtAuth(value: JwtSymmetricAuth)
   @newtype case class UserJwtAuth(value: JwtSymmetricAuth)
 
-  @derive(decoder, encoder)
   case class User(id: UserId, name: UserName)
 
   @newtype case class CommonUser(value: User)
   @newtype case class AdminUser(value: User)
+
+  implicit val userDecoder: Decoder[User] = deriveDecoder[User]
+  implicit val userEncoder: Encoder[User] = deriveEncoder[User]
 
 }

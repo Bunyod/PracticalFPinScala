@@ -46,7 +46,7 @@ object Security {
     for {
       adminClaim <- jwtDecode[F](adminToken, adminJwtAuth.value)
       content <- ApThrow[F].fromEither(jsonDecode[ClaimContent](adminClaim.content))
-      adminUser = AdminUser(User(UserId(content.uuid), UserName("admin")))
+      adminUser = AdminUser(User(UserId(content.claim), UserName("admin")))
       tokensService = new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
       token <- tokensService.create
       adminAuthRepo = new LiveAdminAuthRepository[F](token, adminUser)

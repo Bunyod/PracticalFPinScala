@@ -1,38 +1,20 @@
-package bunyod.fp.domain
-package items
+package bunyod.fp.domain.items
 
 import java.util.UUID
 import bunyod.fp.domain.brands.BrandsPayloads.{Brand, BrandId}
 import bunyod.fp.domain.categories.CategoryPayloads.{Category, CategoryId}
-import bunyod.fp.effekts.uuid
-
-import derevo.cats._
-import derevo.circe.magnolia.{decoder, encoder}
-import derevo.derive
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.string.{Uuid, ValidBigDecimal}
 import eu.timepit.refined.types.string.NonEmptyString
-import io.circe.refined._
-import io.circe.{KeyDecoder, KeyEncoder}
 import io.estatico.newtype.macros.newtype
-import squants.market._
+import squants.market.{Money, USD}
 
 object ItemsPayloads {
 
-  @derive(decoder, encoder, eqv, show, uuid)
   @newtype case class ItemId(value: UUID)
-  object ItemId {
-    implicit val keyEncoder: KeyEncoder[ItemId] = deriving
-    implicit val keyDecoder: KeyDecoder[ItemId] = deriving
-  }
-
-  @derive(decoder, encoder, eqv, show)
   @newtype case class ItemName(value: String)
-
-  @derive(decoder, encoder, eqv, show)
   @newtype case class ItemDescription(value: String)
 
-  @derive(decoder, encoder, eqv, show)
   case class Item(
     uuid: ItemId,
     name: ItemName,
@@ -44,16 +26,10 @@ object ItemsPayloads {
 
   // ----- Create item -------------------
 
-  @derive(decoder, encoder)
   @newtype case class ItemNameParam(value: NonEmptyString)
-
-  @derive(decoder, encoder)
   @newtype case class ItemDescriptionParam(value: NonEmptyString)
-
-  @derive(decoder, encoder)
   @newtype case class PriceParam(value: String Refined ValidBigDecimal)
 
-  @derive(decoder, encoder)
   case class CreateItemParam(
     name: ItemNameParam,
     description: ItemDescriptionParam,
@@ -82,10 +58,8 @@ object ItemsPayloads {
 
   // ----- Update item -------------------
 
-  @derive(decoder, encoder)
   @newtype case class ItemIdParam(value: String Refined Uuid)
 
-  @derive(decoder, encoder)
   case class UpdateItemParam(
     id: ItemIdParam,
     price: PriceParam
@@ -98,7 +72,6 @@ object ItemsPayloads {
       )
   }
 
-  @derive(decoder, encoder)
   case class UpdateItem(
     id: ItemId,
     price: Money

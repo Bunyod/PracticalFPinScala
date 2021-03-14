@@ -5,18 +5,18 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders._
-import bunyod.fp.effekts.ID
+import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
-
-import cats.effect._
-import cats.implicits._
+import bunyod.fp.http.utils.json._
+import cats.effect.{Resource, Sync}
+import cats.syntax.all._
 import skunk._
 import skunk.codec.all._
 import skunk.circe.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class OrdersRepository[F[_]: Sync](
+class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends OrdersAlgebra[F] {
 
@@ -36,7 +36,7 @@ class OrdersRepository[F[_]: Sync](
   ): F[OrderId] =
     sessionPool.use { session =>
       session.prepare(insertOrder).use { cmd =>
-        ID.make[F, OrderId].flatMap { id =>
+        GenUUID[F].make[OrderId].flatMap { id =>
           val itMap = items.map(x => x.item.uuid -> x.quantity).toMap
           val order = Order(id, paymentId, itMap, total)
           cmd.execute(userId ~ order).as(id)

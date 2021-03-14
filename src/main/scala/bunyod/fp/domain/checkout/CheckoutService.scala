@@ -11,7 +11,7 @@ import bunyod.fp.domain.payment.PaymentPayloads.Payment
 import bunyod.fp.effekts._
 import cats.effect.Timer
 import cats.implicits._
-import org.typelevel.log4cats.Logger
+import io.chrisdavenport.log4cats.Logger
 import retry.RetryDetails._
 import retry._
 
