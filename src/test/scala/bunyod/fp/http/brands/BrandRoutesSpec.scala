@@ -6,8 +6,8 @@ import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.http.utils.json._
 import bunyod.fp.suite.HttpTestSuite
 import cats.effect._
-import org.http4s.Method._
 import org.http4s._
+import org.http4s.Method._
 import org.http4s.client.dsl.io._
 
 class BrandRoutesSpec extends HttpTestSuite {
@@ -25,8 +25,8 @@ class BrandRoutesSpec extends HttpTestSuite {
 
     })
 
-  forAll { b: List[Brand] =>
-    spec("GET brands [OK]") {
+  test("GET brands [OK]") {
+    forAll { (b: List[Brand]) =>
       GET(Uri.unsafeFromString("/brands")).flatMap { req =>
         val routes = new BrandRoutes[IO](dataBrands(b)).routes
         assertHttp(routes, req)(Status.Ok, b)
@@ -34,8 +34,8 @@ class BrandRoutesSpec extends HttpTestSuite {
     }
   }
 
-  forAll { b: List[Brand] =>
-    spec("GET BRANDS[ERROR]") {
+  test("GET BRANDS[ERROR]") {
+    forAll { b: List[Brand] =>
       GET(Uri.unsafeFromString("/brands")).flatMap { req =>
         val routes = new BrandRoutes[IO](failingBrands(b)).routes
         assertHttpFailure(routes, req)

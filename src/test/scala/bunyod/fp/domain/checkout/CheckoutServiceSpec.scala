@@ -83,8 +83,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   )
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
-    spec("empty cart") {
+  test("empty cart") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
       implicit val bg = BackgroundTest.NoOp
       import bunyod.fp.logger.LoggerSuite.NoOp
       new CheckoutService[IO](successfulClient(pid), emptyCart, successfulOrders(oid), retryPolicy)
@@ -97,8 +97,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("unreachable payment client") {
+  test("unreachable payment client") {
+    forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
         implicit val bg: Background[IO] = BackgroundTest.NoOp
         implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
@@ -117,8 +117,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("failing payment client succeeds after one retry") {
+  test("failing payment client succeeds after one retry") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
         Ref.of[IO, Int](0).flatMap { ref =>
           implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
@@ -127,7 +127,7 @@ class CheckoutServiceSpec extends PureTestSuite {
             .attempt
             .flatMap {
               case Right(id) =>
-                logs.get.map(xs => assert(id.uuid === oid.uuid && xs.size === 1))
+                logs.get.map(xs => assert(id.value === oid.value && xs.size === 1))
               case Left(_) => fail("Expected PayemtnId")
             }
         }
@@ -135,8 +135,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, ct: CartTotal, card: Card) =>
-    spec("cannot create order, run in the background") {
+  test("cannot create order, run in the background") {
+    forAll { (uid: UserId, pid: PaymentId, ct: CartTotal, card: Card) =>
       Ref.of[IO, Int](0).flatMap { ref =>
         Ref.of[IO, List[String]](List.empty).flatMap { logs =>
           implicit val bg = BackgroundTest.counter(ref)
@@ -163,21 +163,21 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("failing to delete cart does not affect checkout") {
+  test("failing to delete cart does not affect checkout") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       import LoggerSuite._
       new CheckoutService[IO](successfulClient(pid), failingCart(ct), successfulOrders(oid), retryPolicy)
         .checkout(uid, card)
-        .map(id => assert(id.uuid === oid.uuid))
+        .map(id => assert(id.value === oid.value))
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("successful checkout") {
+  test("successful checkout") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       import LoggerSuite._
       new CheckoutService[IO](successfulClient(pid), successfulCart(ct), successfulOrders(oid), retryPolicy)
         .checkout(uid, card)
-        .map(id => assert(id.uuid === oid.uuid))
+        .map(id => assert(id.value === oid.value))
     }
   }
 

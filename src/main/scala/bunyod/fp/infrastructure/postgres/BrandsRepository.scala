@@ -1,11 +1,11 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
+import cats.effect._
+import cats.syntax.all._
+import bunyod.fp.domain.brands.BrandsAlgebra
 import bunyod.fp.domain.brands.BrandsPayloads._
-import bunyod.fp.domain.brands._
 import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
-import cats.effect._
-import cats.implicits._
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
@@ -32,6 +32,32 @@ class BrandsRepository[F[_]: Sync](
       }
     }
 
+}
+
+object LiveBrands {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[BrandsAlgebra[F]] =
+    Sync[F].delay(
+      new LiveBrandsReposiroty[F](sessionPool)
+    )
+}
+
+final class LiveBrandsReposiroty[F[_]: Sync](
+  sessionPool: Resource[F, Session[F]]
+) extends BrandsAlgebra[F] {
+  import BrandQueries._
+
+  override def findAll: F[List[Brand]] = sessionPool.use(_.execute(selectAll))
+
+  override def create(brand: BrandName): F[Unit] =
+    sessionPool.use { session =>
+      session.prepare(insertBrand).use { cmd =>
+        GenUUID[F].make[BrandId].flatMap { id =>
+          cmd.execute(Brand(id, brand)).void
+        }
+      }
+    }
 }
 
 object BrandQueries {

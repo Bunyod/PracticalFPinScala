@@ -31,8 +31,8 @@ class ItemRoutesSpec extends HttpTestSuite {
     }
   )
 
-  forAll { i: List[Item] =>
-    spec("GET items [OK]") {
+  test("GET items [OK]") {
+    forAll { i: List[Item] =>
       GET(Uri.unsafeFromString("/items")).flatMap { req =>
         val routes = new ItemRoutes[IO](dataItems(i)).routes
         assertHttp(routes, req)(Status.Ok, i)
@@ -40,8 +40,8 @@ class ItemRoutesSpec extends HttpTestSuite {
     }
   }
 
-  forAll { i: List[Item] =>
-    spec("GET items [ERROR]") {
+  test("GET items [ERROR]") {
+    forAll { i: List[Item] =>
       GET(Uri.unsafeFromString("/items")).flatMap { req =>
         val routes = new ItemRoutes[IO](failingItems(i)).routes
         assertHttpFailure(routes, req)

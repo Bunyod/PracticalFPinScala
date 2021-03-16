@@ -9,8 +9,8 @@ import squants.market.Money
 
 object OrdersPayloads {
 
-  @newtype case class OrderId(uuid: UUID)
-  @newtype case class PaymentId(uuid: UUID)
+  @newtype case class OrderId(value: UUID)
+  @newtype case class PaymentId(value: UUID)
 
   case class Order(
     id: OrderId,

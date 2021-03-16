@@ -3,6 +3,8 @@ import Dependencies._
 name := "PracticalScalaFP"
 version in ThisBuild := "0.0.1"
 
+lazy val IntegrationTest = config("it") extend(Test)
+
 lazy val root = (project in file("."))
   .settings(
     name := "PracticalFPinScala",
@@ -13,4 +15,4 @@ lazy val root = (project in file("."))
       libraryDependencies ++= rootDependencies
   )
   .configs(IntegrationTest)
-  .settings(Defaults.itSettings)
+  .settings(Defaults.itSettings: _*)

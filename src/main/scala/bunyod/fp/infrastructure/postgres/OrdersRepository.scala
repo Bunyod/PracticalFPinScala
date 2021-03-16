@@ -1,4 +1,4 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
 import bunyod.fp.domain.auth.AuthPayloads.UserId
 import bunyod.fp.domain.cart.CartPayloads._
@@ -40,6 +40,49 @@ class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
           val itMap = items.map(x => x.item.uuid -> x.quantity).toMap
           val order = Order(id, paymentId, itMap, total)
           cmd.execute(userId ~ order).as(id)
+        }
+      }
+    }
+
+}
+
+object LiveOrderRepository {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[OrdersAlgebra[F]] =
+    Sync[F].delay(
+      new LiveOrderRepository[F](sessionPool)
+    )
+}
+
+final class LiveOrderRepository[F[_]: Sync](
+  sessionPool: Resource[F, Session[F]]
+) extends OrdersAlgebra[F] {
+  import OrdersRepository._
+
+  override def get(userId: UserId, orderId: OrderId): F[Option[Order]] =
+    sessionPool.use { session =>
+      session.prepare(selectByUserIdAndOrderId).use { cmd =>
+        cmd.option(userId ~ orderId)
+      }
+    }
+
+  override def findBy(userId: UserId): F[List[Order]] =
+    sessionPool.use { session =>
+      session.prepare(selecByUserId).use { cmd =>
+        cmd.stream(userId, 1024).compile.toList
+      }
+    }
+
+  override def create(userId: UserId, paymentId: PaymentId, items: List[CartItem], total: Money): F[OrderId] =
+    sessionPool.use { session =>
+      session.prepare(insertOrder).use { cmd =>
+        GenUUID[F].make[OrderId].flatMap { id =>
+          val itemsMap = items.map(i => i.item.uuid -> i.quantity).toMap
+          val order = Order(id, paymentId, itemsMap, total)
+          cmd
+            .execute(userId ~ order)
+            .as(id)
         }
       }
     }

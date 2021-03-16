@@ -73,9 +73,9 @@ object Dependencies {
     // Runtime
     val logback = "ch.qos.logback" % "logback-classic" % Versions.logback
 
-    val scalaCheck    = "org.scalacheck"    %% "scalacheck"      % Versions.scalaCheck
-    val scalaTest     = "org.scalatest"     %% "scalatest"       % Versions.scalaTest
-    val scalaTestPlus = "org.scalatestplus" %% "scalacheck-1-14" % Versions.scalaTestPlus
+    val scalaCheck    = "org.scalacheck"    %% "scalacheck"      % Versions.scalaCheck % "it,test"
+    val scalaTest     = "org.scalatest"     %% "scalatest"       % Versions.scalaTest % "it,test"
+    val scalaTestPlus = "org.scalatestplus" %% "scalacheck-1-14" % Versions.scalaTestPlus % "it,test"
 
   }
 

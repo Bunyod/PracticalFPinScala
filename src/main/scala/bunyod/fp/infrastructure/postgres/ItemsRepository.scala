@@ -1,4 +1,4 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
 import bunyod.fp.domain.brands.BrandsPayloads._
 import bunyod.fp.domain.categories.CategoryPayloads._
@@ -45,6 +45,52 @@ class ItemsRepository[F[_]: Sync: BracketThrow: GenUUID](
         .use(cmd => cmd.execute(item).void)
     }
 
+}
+
+object LiveItems {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[ItemsAlgebra[F]] =
+    Sync[F].delay(
+      new LiveItemRepository[F](sessionPool)
+    )
+}
+
+final class LiveItemRepository[F[_]: Sync](
+  sessionPool: Resource[F, Session[F]]
+) extends ItemsAlgebra[F] {
+  import ItemsRepository._
+
+  override def findAll: F[List[Item]] = sessionPool.use(_.execute(selectAll))
+
+  override def findBy(brand: BrandName): F[List[Item]] = sessionPool.use { session =>
+    session.prepare(selectByBrand).use { cmd =>
+      cmd.stream(brand, 1024).compile.toList
+    }
+  }
+
+  override def findById(itemId: ItemId): F[Option[Item]] =
+    sessionPool.use { session =>
+      session.prepare(selecById).use { cmd =>
+        cmd.option(itemId)
+      }
+    }
+
+  override def create(item: CreateItem): F[Unit] =
+    sessionPool.use { session =>
+      session.prepare(insertItem).use { cmd =>
+        GenUUID[F].make[ItemId].flatMap { id =>
+          cmd.execute(id ~ item).void
+        }
+      }
+    }
+
+  override def update(item: UpdateItem): F[Unit] =
+    sessionPool.use { session =>
+      session.prepare(updateItem).use { cmd =>
+        cmd.execute(item).void
+      }
+    }
 }
 
 object ItemsRepository {

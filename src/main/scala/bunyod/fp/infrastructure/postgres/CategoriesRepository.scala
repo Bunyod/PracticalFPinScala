@@ -1,9 +1,8 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.categories._
 import bunyod.fp.effekts.GenUUID
-//import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
 import cats.syntax.all._
@@ -25,6 +24,32 @@ class CategoriesRepository[F[_]: BracketThrow: GenUUID](
       session.prepare(insertCategory).use { cmd =>
         GenUUID[F].make[CategoryId].flatMap { id =>
           cmd.execute(Category(id, name)).void
+        }
+      }
+    }
+}
+
+object LiveCategories {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[CategoriesAlgebra[F]] =
+    Sync[F].delay(
+      new LiveCategoriesRepository[F](sessionPool)
+    )
+}
+
+final class LiveCategoriesRepository[F[_]: Sync](
+  sessionPool: Resource[F, Session[F]]
+) extends CategoriesAlgebra[F] {
+  import CategoriesRepository._
+
+  override def findAll: F[List[Category]] = sessionPool.use(_.execute(selectAll))
+
+  override def create(category: CategoryName): F[Unit] =
+    sessionPool.use { session =>
+      session.prepare(insertCategory).use { cmd =>
+        GenUUID[F].make[CategoryId].flatMap { id =>
+          cmd.execute(Category(id, category)).void
         }
       }
     }

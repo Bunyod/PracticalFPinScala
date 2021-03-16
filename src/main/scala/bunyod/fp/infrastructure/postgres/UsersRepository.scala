@@ -1,4 +1,4 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
 import bunyod.fp.domain.auth.AuthPayloads._
 import bunyod.fp.domain.crypto.CryptoAlgebra
@@ -6,7 +6,7 @@ import bunyod.fp.domain.users.UsersAlgebra
 import bunyod.fp.domain.users.UsersPayloads.User
 import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
-import cats.effect.Resource
+import cats.effect.{Resource, Sync}
 import cats.implicits._
 import skunk._
 import skunk.codec.all._
@@ -33,6 +33,47 @@ class UsersRepository[F[_]: BracketThrow: GenUUID](
     }
 
   override def create(username: UserName, password: Password): F[UserId] =
+    sessionPool.use { session =>
+      session.prepare(insertUser).use { cmd =>
+        GenUUID[F].make[UserId].flatMap { id =>
+          cmd
+            .execute(User(id, username) ~ crypto.encrypt(password))
+            .as(id)
+            .handleErrorWith { case SqlState.UniqueViolation(_) =>
+              UserNameInUse(username).raiseError[F, UserId]
+            }
+        }
+      }
+    }
+}
+
+object LiveUsersRepository {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]],
+    cryptoAlgebra: CryptoAlgebra
+  ): F[UsersAlgebra[F]] =
+    Sync[F].delay(
+      new LiveUsersRepository[F](sessionPool, cryptoAlgebra)
+    )
+}
+
+final class LiveUsersRepository[F[_]: BracketThrow: GenUUID](
+  sessionPool: Resource[F, Session[F]],
+  crypto: CryptoAlgebra
+) extends UsersAlgebra[F] {
+  import UsersRepository._
+
+  def find(username: UserName, password: Password): F[Option[User]] =
+    sessionPool.use { session =>
+      session.prepare(selectUser).use { q =>
+        q.option(username).map {
+          case Some(u ~ p) if p.value == crypto.encrypt(password).value => u.some
+          case _ => none[User]
+        }
+      }
+    }
+
+  def create(username: UserName, password: Password): F[UserId] =
     sessionPool.use { session =>
       session.prepare(insertUser).use { cmd =>
         GenUUID[F].make[UserId].flatMap { id =>

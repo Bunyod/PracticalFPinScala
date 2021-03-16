@@ -7,7 +7,7 @@ import bunyod.fp.domain.tokens.TokenSyncService
 import bunyod.fp.domain.users.UsersPayloads._
 import bunyod.fp.effekts.ApThrow
 import bunyod.fp.infrastructure.redis._
-import bunyod.fp.infrastructure.skunk.UsersRepository
+import bunyod.fp.infrastructure.postgres.UsersRepository
 import bunyod.fp.utils.cfg.Configuration.Config
 import cats.effect._
 import cats.implicits._
@@ -46,7 +46,7 @@ object Security {
     for {
       adminClaim <- jwtDecode[F](adminToken, adminJwtAuth.value)
       content <- ApThrow[F].fromEither(jsonDecode[ClaimContent](adminClaim.content))
-      adminUser = AdminUser(User(UserId(content.claim), UserName("admin")))
+      adminUser = AdminUser(User(UserId(content.uuid), UserName("admin")))
       tokensService = new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
       token <- tokensService.create
       adminAuthRepo = new LiveAdminAuthRepository[F](token, adminUser)
