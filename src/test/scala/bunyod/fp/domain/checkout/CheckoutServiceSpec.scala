@@ -9,14 +9,12 @@ import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders._
 import bunyod.fp.domain.payment.PaymentPayloads._
 import bunyod.fp.domain.payment._
-import bunyod.fp.effekts.Background
 import bunyod.fp.logger.LoggerSuite
 import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.suite.{BackgroundTest, PureTestSuite}
 import cats.effect._
 import cats.effect.concurrent.Ref
 import cats.implicits.{catsSyntaxEq => _, _}
-import io.chrisdavenport.log4cats.Logger
 import retry.RetryPolicy
 import retry.RetryPolicies._
 import squants.market._
@@ -83,8 +81,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   )
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
-    spec("empty cart") {
+  test("empty cart") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
       implicit val bg = BackgroundTest.NoOp
       import bunyod.fp.logger.LoggerSuite.NoOp
       new CheckoutService[IO](successfulClient(pid), emptyCart, successfulOrders(oid), retryPolicy)
@@ -97,11 +95,11 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("unreachable payment client") {
+  test("unreachable payment client") {
+    forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
-        implicit val bg: Background[IO] = BackgroundTest.NoOp
-        implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
+        implicit val bg = BackgroundTest.NoOp
+        implicit val logger = LoggerSuite.acc(logs)
         new CheckoutService[IO](unreachableClient, successfulCart(ct), successfulOrders(oid), retryPolicy)
           .checkout(uid, card)
           .attempt
@@ -117,17 +115,17 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("failing payment client succeeds after one retry") {
+  test("failing payment client succeeds after one retry") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
         Ref.of[IO, Int](0).flatMap { ref =>
-          implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
+          implicit val logger = LoggerSuite.acc(logs)
           new CheckoutService[IO](recoveringClient(ref, pid), successfulCart(ct), successfulOrders(oid), retryPolicy)
             .checkout(uid, card)
             .attempt
             .flatMap {
               case Right(id) =>
-                logs.get.map(xs => assert(id.uuid === oid.uuid && xs.size === 1))
+                logs.get.map(xs => assert(id.value === oid.value && xs.size === 1))
               case Left(_) => fail("Expected PayemtnId")
             }
         }
@@ -135,8 +133,8 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, ct: CartTotal, card: Card) =>
-    spec("cannot create order, run in the background") {
+  test("cannot create order, run in the background") {
+    forAll { (uid: UserId, pid: PaymentId, ct: CartTotal, card: Card) =>
       Ref.of[IO, Int](0).flatMap { ref =>
         Ref.of[IO, List[String]](List.empty).flatMap { logs =>
           implicit val bg = BackgroundTest.counter(ref)
@@ -163,21 +161,21 @@ class CheckoutServiceSpec extends PureTestSuite {
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("failing to delete cart does not affect checkout") {
+  test("failing to delete cart does not affect checkout") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       import LoggerSuite._
       new CheckoutService[IO](successfulClient(pid), failingCart(ct), successfulOrders(oid), retryPolicy)
         .checkout(uid, card)
-        .map(id => assert(id.uuid === oid.uuid))
+        .map(id => assert(id.value === oid.value))
     }
   }
 
-  forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
-    spec("successful checkout") {
+  test("successful checkout") {
+    forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       import LoggerSuite._
       new CheckoutService[IO](successfulClient(pid), successfulCart(ct), successfulOrders(oid), retryPolicy)
         .checkout(uid, card)
-        .map(id => assert(id.uuid === oid.uuid))
+        .map(id => assert(id.value === oid.value))
     }
   }
 
@@ -187,7 +185,7 @@ protected class TestOrdersRepository extends OrdersAlgebra[IO] {
 
   override def get(userId: UserId, orderId: OrderId): IO[Option[Order]] = ???
 
-  override def findBy(userId: UserId): IO[List[Order]] = ???
+  override def findByUserId(userId: UserId): IO[List[Order]] = ???
 
   override def create(
     userId: UserId,

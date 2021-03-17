@@ -7,7 +7,8 @@ import bunyod.fp.domain.cart._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.items._
 import bunyod.fp.effekts._
-//import cats.effect.MonadThrow
+import cats.effect._
+import cats.effect.Sync
 import bunyod.fp.utils.cfg.Configuration.ShoppingCartCfg
 import cats.implicits._
 import dev.profunktor.redis4cats.RedisCommands
@@ -62,4 +63,16 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
       items.foldMap(i => i.item.price.value * i.quantity.value)
     )
 
+}
+
+object LiveShoppingCart {
+
+  def make[F[_]: Sync](
+    items: ItemsAlgebra[F],
+    redis: RedisCommands[F, String, String],
+    cfg: ShoppingCartCfg
+  ): F[ShoppingCartAlgebra[F]] =
+    Sync[F].delay(
+      new ShoppingCartRepository[F](items, redis, cfg)
+    )
 }

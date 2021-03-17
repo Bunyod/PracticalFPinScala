@@ -3,8 +3,8 @@ package bunyod.fp.http.admin
 import bunyod.fp.domain.brands.BrandsPayloads.BrandParam
 import bunyod.fp.domain.brands.BrandsService
 import bunyod.fp.domain.users.UsersPayloads.AdminUser
-import bunyod.fp.effekts.MonadThrow
 import cats.Defer
+import cats.effect._
 import org.http4s.AuthedRoutes
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl

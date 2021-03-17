@@ -5,7 +5,6 @@ import bunyod.fp.domain.cart.CartPayloads._
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.checkout.CheckoutPayloads._
 import bunyod.fp.domain.items.ItemsPayloads._
-import bunyod.fp.domain.orders.OrdersPayloads._
 import eu.timepit.refined.api.Refined
 import io.estatico.newtype.Coercible
 import io.estatico.newtype.ops._
@@ -30,21 +29,9 @@ object Generators {
   val genNonEmptyString: Gen[String] =
     Gen
       .chooseNum(21, 40)
-      .flatMap(n => Gen.buildableOfN[String, Char](n, Gen.alphaChar))
-
-  val genTuple: Gen[(ItemId, Quantity)] =
-    for {
-      ii <- cbUuid[ItemId]
-      q <- cbInt[Quantity]
-    } yield (ii, q)
-
-  val orderGen: Gen[Order] =
-    for {
-      i <- cbUuid[OrderId]
-      p <- cbUuid[PaymentId]
-      is <- Gen.nonEmptyMap[ItemId, Quantity](genTuple)
-      m <- genMoney
-    } yield Order(i, p, is, m)
+      .flatMap { n =>
+        Gen.buildableOfN[String, Char](n, Gen.alphaChar)
+      }
 
   val brandGen: Gen[Brand] =
     for {

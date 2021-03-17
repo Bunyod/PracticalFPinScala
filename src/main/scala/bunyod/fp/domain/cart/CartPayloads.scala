@@ -1,7 +1,7 @@
 package bunyod.fp.domain.cart
 
 import bunyod.fp.domain.auth.AuthPayloads.UserId
-import bunyod.fp.domain.items.ItemsPayloads.{Item, ItemId}
+import bunyod.fp.domain.items.ItemsPayloads._
 import io.estatico.newtype.macros.newtype
 import java.util.UUID
 import scala.util.control.NoStackTrace

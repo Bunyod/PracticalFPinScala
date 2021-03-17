@@ -9,7 +9,7 @@ import bunyod.fp.domain.orders.OrdersService
 import bunyod.fp.domain.payment.PaymentClientService
 import bunyod.fp.domain.payment.PaymentPayloads.Payment
 import bunyod.fp.effekts._
-import cats.effect.Timer
+import cats.effect._
 import cats.implicits._
 import io.chrisdavenport.log4cats.Logger
 import retry.RetryDetails._

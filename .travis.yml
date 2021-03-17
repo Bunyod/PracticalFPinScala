@@ -5,6 +5,8 @@ scala:
 
 jdk:
   - openjdk11
+services:
+  - docker
 
 sudo: false
 addons:
@@ -14,12 +16,14 @@ addons:
 
 cache:
   directories:
-    - $HOME/.ivy2
-    - $HOME/.coursier
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
     - $HOME/.sbt
 
 stages:
   - name: test
+before_install:
+  - docker-compose up -d
 
 branches:
   except:
@@ -28,5 +32,5 @@ jobs:
   include:
     - scala: 2.13.3 # Remember to update this in build.sbt, too.
       script:
-        - sbt ++$TRAVIS_SCALA_VERSION test
+        - sbt ++$TRAVIS_SCALA_VERSION test;it:test
 

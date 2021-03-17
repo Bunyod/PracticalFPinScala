@@ -3,8 +3,8 @@ package bunyod.fp.infrastructure.clients
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.payment.PaymentClientAlgebra
 import bunyod.fp.domain.payment.PaymentPayloads.Payment
-import bunyod.fp.effekts.BracketThrow
 import bunyod.fp.utils.cfg.Configuration.PaymentCfg
+import cats.effect._
 import cats.implicits._
 import org.http4s._
 import org.http4s.circe._

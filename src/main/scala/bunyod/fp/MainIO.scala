@@ -10,7 +10,7 @@ import bunyod.fp.domain.payment.PaymentClientService
 import bunyod.fp.http.HttpApi
 import bunyod.fp.infrastructure.clients.PaymentClientRepository
 import bunyod.fp.infrastructure.redis.ShoppingCartRepository
-import bunyod.fp.infrastructure.skunk._
+import bunyod.fp.infrastructure.postgres._
 import bunyod.fp.utils.cfg.Configurable
 import bunyod.fp.utils.extensions.Security
 import cats.effect._

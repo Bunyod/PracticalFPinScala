@@ -25,11 +25,11 @@ class LiveUserAuthRepository[F[_]: Functor](
   redis: RedisCommands[F, String, String]
 ) extends UserAuthAlgebra[F, CommonUser] {
 
-  override def findUser(jwtToken: jwt.JwtToken)(
-    claim: JwtClaim
-  ): F[Option[CommonUser]] =
+  override def findUser(jwtToken: jwt.JwtToken)(claim: JwtClaim): F[Option[CommonUser]] =
     redis
       .get(jwtToken.value)
-      .map(_.flatMap(u => decode[User](u).toOption.map(CommonUser.apply)))
+      .map(_.flatMap { u =>
+        decode[User](u).toOption.map(CommonUser.apply)
+      })
 
 }

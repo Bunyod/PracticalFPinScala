@@ -1,9 +1,8 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
 import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.categories._
 import bunyod.fp.effekts.GenUUID
-//import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
 import cats.effect._
 import cats.syntax.all._
@@ -28,6 +27,15 @@ class CategoriesRepository[F[_]: BracketThrow: GenUUID](
         }
       }
     }
+}
+
+object LiveCategoriesRepository {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[CategoriesAlgebra[F]] =
+    Sync[F].delay(
+      new CategoriesRepository[F](sessionPool)
+    )
 }
 
 object CategoriesRepository {

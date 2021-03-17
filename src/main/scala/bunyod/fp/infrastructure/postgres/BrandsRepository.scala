@@ -1,11 +1,11 @@
-package bunyod.fp.infrastructure.skunk
+package bunyod.fp.infrastructure.postgres
 
+import cats.effect._
+import cats.syntax.all._
+import bunyod.fp.domain.brands.BrandsAlgebra
 import bunyod.fp.domain.brands.BrandsPayloads._
-import bunyod.fp.domain.brands._
 import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
-import cats.effect._
-import cats.implicits._
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
@@ -32,6 +32,15 @@ class BrandsRepository[F[_]: Sync](
       }
     }
 
+}
+
+object LiveBrandsRepository {
+  def make[F[_]: Sync](
+    sessionPool: Resource[F, Session[F]]
+  ): F[BrandsAlgebra[F]] =
+    Sync[F].delay(
+      new BrandsRepository[F](sessionPool)
+    )
 }
 
 object BrandQueries {
