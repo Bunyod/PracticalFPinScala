@@ -1,9 +1,9 @@
 package bunyod.fp.infrastructure
 
-import bunyod.fp.domain.auth.AuthPayloads.{Password, UserId, UserName}
-import bunyod.fp.domain.brands.BrandsPayloads.{Brand, BrandName}
-import bunyod.fp.domain.cart.CartPayloads.{Cart, Quantity}
-import bunyod.fp.domain.categories.CategoryPayloads.{Category, CategoryName}
+import bunyod.fp.domain.auth.AuthPayloads._
+import bunyod.fp.domain.brands.BrandsPayloads._
+import bunyod.fp.domain.cart.CartPayloads._
+import bunyod.fp.domain.categories.CategoryPayloads._
 import bunyod.fp.domain.items.ItemsAlgebra
 import bunyod.fp.domain.items.ItemsPayloads.{CreateItem, Item, ItemId, UpdateItem}
 import bunyod.fp.domain.tokens.TokenSyncService
