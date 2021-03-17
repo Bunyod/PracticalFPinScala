@@ -31,8 +31,8 @@ jobs:
       name: "Unit Tests"
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - stage: "Integraton tests"
-      before_script: docker-compose up
+      before_script: docker-compose up -d
       name: "Integraton test"
       script: sbt ++$TRAVIS_SCALA_VERSION it:test
-      after_success: docker-compose down
+      after_success: deactivate
 
