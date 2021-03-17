@@ -25,20 +25,14 @@ branches:
   except:
     - /^pr\..*/
 
-before_install:
-  script:
-    - docker-compose up -d
-    # Verify service availability
-    - docker-compose ps
-  after_success:
-    - deactivate
-
 jobs:
   include:
     - stage: "Tests"
       name: "Unit Tests"
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - stage: "Integraton tests"
+      before_script: docker-compose up
       name: "Integraton test"
       script: sbt ++$TRAVIS_SCALA_VERSION it:test
+      after_success: docker-compose down
 
