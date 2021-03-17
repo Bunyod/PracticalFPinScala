@@ -43,7 +43,7 @@ class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] with PureTes
       forAll(MaxTests) { (brand: Brand) =>
         IO {
           for {
-            b <- LiveBrands.make[IO](pool)
+            b <- LiveBrandsRepository.make[IO](pool)
             x <- b.findAll
             _ <- b.create(brand.name)
             y <- b.findAll
@@ -83,7 +83,7 @@ class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] with PureTes
 
         IOAssertion {
           for {
-            b <- LiveBrands.make[IO](pool)
+            b <- LiveBrandsRepository.make[IO](pool)
             c <- LiveCategoriesRepository.make[IO](pool)
             i <- LiveItemsRepository.make[IO](pool)
             _ <- i.findAll
@@ -126,11 +126,12 @@ class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] with PureTes
               c <- LiveCrypto.make[IO](salt)
               u <- LiveUsersRepository.make[IO](pool, c)
               d <- u.create(un, pw)
-              _ <- o.findByUserId(d)
-              _ <- o.get(d, oid)
+              x <- o.findByUserId(d)
+              y <- o.get(d, oid)
               _ <- o.create(d, pid, items, price)
             } yield assert(
-              true
+              x.isEmpty && y.isEmpty
+
             )
           }
       }

@@ -51,39 +51,8 @@ object LiveUsersRepository {
     cryptoAlgebra: CryptoAlgebra
   ): F[UsersAlgebra[F]] =
     Sync[F].delay(
-      new LiveUsersRepository[F](sessionPool, cryptoAlgebra)
+      new UsersRepository[F](sessionPool, cryptoAlgebra)
     )
-}
-
-final class LiveUsersRepository[F[_]: BracketThrow: GenUUID] private (
-  sessionPool: Resource[F, Session[F]],
-  crypto: CryptoAlgebra
-) extends UsersAlgebra[F] {
-  import UsersRepository._
-
-  def find(username: UserName, password: Password): F[Option[User]] =
-    sessionPool.use { session =>
-      session.prepare(selectUser).use { q =>
-        q.option(username).map {
-          case Some(u ~ p) if p.value == crypto.encrypt(password).value => u.some
-          case _ => none[User]
-        }
-      }
-    }
-
-  def create(username: UserName, password: Password): F[UserId] =
-    sessionPool.use { session =>
-      session.prepare(insertUser).use { cmd =>
-        GenUUID[F].make[UserId].flatMap { id =>
-          cmd
-            .execute(User(id, username) ~ crypto.encrypt(password))
-            .as(id)
-            .handleErrorWith { case SqlState.UniqueViolation(_) =>
-              UserNameInUse(username).raiseError[F, UserId]
-            }
-        }
-      }
-    }
 }
 
 object UsersRepository {

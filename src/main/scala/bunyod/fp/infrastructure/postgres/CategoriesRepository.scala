@@ -34,25 +34,8 @@ object LiveCategoriesRepository {
     sessionPool: Resource[F, Session[F]]
   ): F[CategoriesAlgebra[F]] =
     Sync[F].delay(
-      new LiveCategoriesRepository[F](sessionPool)
+      new CategoriesRepository[F](sessionPool)
     )
-}
-
-final class LiveCategoriesRepository[F[_]: Sync] private (
-  sessionPool: Resource[F, Session[F]]
-) extends CategoriesAlgebra[F] {
-  import CategoriesRepository._
-
-  override def findAll: F[List[Category]] = sessionPool.use(_.execute(selectAll))
-
-  override def create(category: CategoryName): F[Unit] =
-    sessionPool.use { session =>
-      session.prepare(insertCategory).use { cmd =>
-        GenUUID[F].make[CategoryId].flatMap { id =>
-          cmd.execute(Category(id, category)).void
-        }
-      }
-    }
 }
 
 object CategoriesRepository {

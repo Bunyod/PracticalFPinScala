@@ -13,7 +13,7 @@ object OrdersPayloads {
   @newtype case class PaymentId(value: UUID)
 
   case class Order(
-    id: OrderId,
+    uuid: OrderId,
     paymentId: PaymentId,
     items: Map[ItemId, Quantity],
     total: Money

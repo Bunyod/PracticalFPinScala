@@ -51,45 +51,8 @@ object LiveItemsRepository {
     sessionPool: Resource[F, Session[F]]
   ): F[ItemsAlgebra[F]] =
     Sync[F].delay(
-      new LiveItemsRepository[F](sessionPool)
+      new ItemsRepository[F](sessionPool)
     )
-}
-
-final class LiveItemsRepository[F[_]: Sync] private (
-  sessionPool: Resource[F, Session[F]]
-) extends ItemsAlgebra[F] {
-  import ItemsRepository._
-
-  override def findAll: F[List[Item]] = sessionPool.use(_.execute(selectAll))
-
-  override def findBy(brand: BrandName): F[List[Item]] = sessionPool.use { session =>
-    session.prepare(selectByBrand).use { cmd =>
-      cmd.stream(brand, 1024).compile.toList
-    }
-  }
-
-  override def findById(itemId: ItemId): F[Option[Item]] =
-    sessionPool.use { session =>
-      session.prepare(selectById).use { cmd =>
-        cmd.option(itemId)
-      }
-    }
-
-  override def create(item: CreateItem): F[Unit] =
-    sessionPool.use { session =>
-      session.prepare(insertItem).use { cmd =>
-        GenUUID[F].make[ItemId].flatMap { id =>
-          cmd.execute(id ~ item).void
-        }
-      }
-    }
-
-  override def update(item: UpdateItem): F[Unit] =
-    sessionPool.use { session =>
-      session.prepare(updateItem).use { cmd =>
-        cmd.execute(item).void
-      }
-    }
 }
 
 object ItemsRepository {

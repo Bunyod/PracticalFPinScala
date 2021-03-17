@@ -34,30 +34,13 @@ class BrandsRepository[F[_]: Sync](
 
 }
 
-object LiveBrands {
+object LiveBrandsRepository {
   def make[F[_]: Sync](
     sessionPool: Resource[F, Session[F]]
   ): F[BrandsAlgebra[F]] =
     Sync[F].delay(
-      new LiveBrandsReposiroty[F](sessionPool)
+      new BrandsRepository[F](sessionPool)
     )
-}
-
-final class LiveBrandsReposiroty[F[_]: Sync](
-  sessionPool: Resource[F, Session[F]]
-) extends BrandsAlgebra[F] {
-  import BrandQueries._
-
-  override def findAll: F[List[Brand]] = sessionPool.use(_.execute(selectAll))
-
-  override def create(brand: BrandName): F[Unit] =
-    sessionPool.use { session =>
-      session.prepare(insertBrand).use { cmd =>
-        GenUUID[F].make[BrandId].flatMap { id =>
-          cmd.execute(Brand(id, brand)).void
-        }
-      }
-    }
 }
 
 object BrandQueries {
