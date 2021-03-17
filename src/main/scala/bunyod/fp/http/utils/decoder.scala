@@ -1,6 +1,6 @@
 package bunyod.fp.http.utils
 
-import bunyod.fp.effekts._
+import cats.effect._
 import cats.implicits._
 import io.circe.Decoder
 import org.http4s._

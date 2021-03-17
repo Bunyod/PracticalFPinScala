@@ -1,13 +1,13 @@
 package bunyod.fp.http.secured
 
 import cats.Defer
+import cats.effect._
 import cats.implicits._
 import bunyod.fp.domain.cart.CartPayloads.CartNotFound
 import bunyod.fp.domain.checkout.CheckoutService
 import bunyod.fp.domain.checkout.CheckoutPayloads.Card
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.users.UsersPayloads.CommonUser
-import bunyod.fp.effekts._
 import bunyod.fp.http.utils.decoder._
 import bunyod.fp.http.utils.json._
 import org.http4s._

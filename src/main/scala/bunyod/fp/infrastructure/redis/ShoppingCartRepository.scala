@@ -7,6 +7,7 @@ import bunyod.fp.domain.cart._
 import bunyod.fp.domain.items.ItemsPayloads.ItemId
 import bunyod.fp.domain.items._
 import bunyod.fp.effekts._
+import cats.effect._
 import cats.effect.Sync
 import bunyod.fp.utils.cfg.Configuration.ShoppingCartCfg
 import cats.implicits._

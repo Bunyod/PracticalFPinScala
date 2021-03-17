@@ -11,7 +11,7 @@ class OrdersService[F[_]](ordersRepo: OrdersAlgebra[F]) {
     ordersRepo.get(userId, orderId)
 
   def findBy(userId: UserId): F[List[Order]] =
-    ordersRepo.findBy(userId)
+    ordersRepo.findByUserId(userId)
 
   def create(
     userId: UserId,

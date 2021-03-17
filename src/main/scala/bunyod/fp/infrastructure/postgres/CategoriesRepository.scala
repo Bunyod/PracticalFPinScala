@@ -29,7 +29,7 @@ class CategoriesRepository[F[_]: BracketThrow: GenUUID](
     }
 }
 
-object LiveCategories {
+object LiveCategoriesRepository {
   def make[F[_]: Sync](
     sessionPool: Resource[F, Session[F]]
   ): F[CategoriesAlgebra[F]] =
@@ -38,7 +38,7 @@ object LiveCategories {
     )
 }
 
-final class LiveCategoriesRepository[F[_]: Sync](
+final class LiveCategoriesRepository[F[_]: Sync] private (
   sessionPool: Resource[F, Session[F]]
 ) extends CategoriesAlgebra[F] {
   import CategoriesRepository._

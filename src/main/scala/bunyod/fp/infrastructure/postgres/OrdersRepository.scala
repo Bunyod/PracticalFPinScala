@@ -8,7 +8,7 @@ import bunyod.fp.domain.orders._
 import bunyod.fp.effekts._
 import bunyod.fp.utils.extensions.Skunkx._
 import bunyod.fp.http.utils.json._
-import cats.effect.{Resource, Sync}
+import cats.effect._
 import cats.syntax.all._
 import skunk._
 import skunk.codec.all._
@@ -25,7 +25,7 @@ class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
   override def get(userId: UserId, orderId: OrderId): F[Option[Order]] =
     sessionPool.use(session => session.prepare(selectByUserIdAndOrderId).use(q => q.option(userId ~ orderId)))
 
-  override def findBy(userId: UserId): F[List[Order]] =
+  override def findByUserId(userId: UserId): F[List[Order]] =
     sessionPool.use(session => session.prepare(selecByUserId).use(q => q.stream(userId, 1024).compile.toList))
 
   override def create(
@@ -55,7 +55,7 @@ object LiveOrderRepository {
     )
 }
 
-final class LiveOrderRepository[F[_]: Sync](
+private class LiveOrderRepository[F[_]: Sync] private (
   sessionPool: Resource[F, Session[F]]
 ) extends OrdersAlgebra[F] {
   import OrdersRepository._
@@ -67,7 +67,7 @@ final class LiveOrderRepository[F[_]: Sync](
       }
     }
 
-  override def findBy(userId: UserId): F[List[Order]] =
+  override def findByUserId(userId: UserId): F[List[Order]] =
     sessionPool.use { session =>
       session.prepare(selecByUserId).use { cmd =>
         cmd.stream(userId, 1024).compile.toList
@@ -80,6 +80,7 @@ final class LiveOrderRepository[F[_]: Sync](
         GenUUID[F].make[OrderId].flatMap { id =>
           val itemsMap = items.map(i => i.item.uuid -> i.quantity).toMap
           val order = Order(id, paymentId, itemsMap, total)
+          IO(println(s"ORDERRRRRRRR:$order")).unsafeRunSync()
           cmd
             .execute(userId ~ order)
             .as(id)
@@ -91,16 +92,18 @@ final class LiveOrderRepository[F[_]: Sync](
 
 object OrdersRepository {
 
-  private val decoder: Decoder[Order] = (uuid.cimap[OrderId] ~ uuid.cimap[UserId] ~ uuid.cimap[PaymentId] ~
-    jsonb[Map[ItemId, Quantity]] ~ numeric.map[Money](USD.apply)).map { case o ~ _ ~ p ~ i ~ t =>
-    Order(o, p, i, t)
-  }
+  private val decoder: Decoder[Order] =
+    (uuid.cimap[OrderId] ~ uuid ~ uuid.cimap[PaymentId] ~
+      jsonb[Map[ItemId, Quantity]] ~ numeric.map[Money](USD.apply)).map { case o ~ _ ~ p ~ i ~ t =>
+      Order(o, p, i, t)
+    }
 
   val encoder: Encoder[UserId ~ Order] =
     (uuid.cimap[OrderId] ~ uuid.cimap[UserId] ~ uuid.cimap[PaymentId] ~
-      jsonb[Map[ItemId, Quantity]] ~ numeric.contramap[Money](_.amount)).contramap { case id ~ o =>
-      o.id ~ id ~ o.paymentId ~ o.items ~ o.total
-    }
+      jsonb[Map[ItemId, Quantity]] ~ numeric.contramap[Money](_.amount))
+      .contramap { case id ~ o =>
+        o.id ~ id ~ o.paymentId ~ o.items ~ o.total
+      }
 
   val selecByUserId: Query[UserId, Order] =
     sql"""

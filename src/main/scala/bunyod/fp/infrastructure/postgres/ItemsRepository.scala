@@ -6,7 +6,6 @@ import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.items._
 import bunyod.fp.effekts.GenUUID
 import bunyod.fp.utils.extensions.Skunkx._
-//import bunyod.fp.effekts._
 import cats.effect._
 import cats.syntax.all._
 import skunk._
@@ -27,7 +26,7 @@ class ItemsRepository[F[_]: Sync: BracketThrow: GenUUID](
     sessionPool.use(session => session.prepare(selectByBrand).use(ps => ps.stream(brandName, 1024).compile.toList))
 
   def findById(itemId: ItemId): F[Option[Item]] =
-    sessionPool.use(session => session.prepare(selecById).use(ps => ps.option(itemId)))
+    sessionPool.use(session => session.prepare(selectById).use(ps => ps.option(itemId)))
 
   def create(item: CreateItem): F[Unit] =
     sessionPool.use { session =>
@@ -47,16 +46,16 @@ class ItemsRepository[F[_]: Sync: BracketThrow: GenUUID](
 
 }
 
-object LiveItems {
+object LiveItemsRepository {
   def make[F[_]: Sync](
     sessionPool: Resource[F, Session[F]]
   ): F[ItemsAlgebra[F]] =
     Sync[F].delay(
-      new LiveItemRepository[F](sessionPool)
+      new LiveItemsRepository[F](sessionPool)
     )
 }
 
-final class LiveItemRepository[F[_]: Sync](
+final class LiveItemsRepository[F[_]: Sync] private (
   sessionPool: Resource[F, Session[F]]
 ) extends ItemsAlgebra[F] {
   import ItemsRepository._
@@ -71,7 +70,7 @@ final class LiveItemRepository[F[_]: Sync](
 
   override def findById(itemId: ItemId): F[Option[Item]] =
     sessionPool.use { session =>
-      session.prepare(selecById).use { cmd =>
+      session.prepare(selectById).use { cmd =>
         cmd.option(itemId)
       }
     }
@@ -95,56 +94,58 @@ final class LiveItemRepository[F[_]: Sync](
 
 object ItemsRepository {
 
-  private val decoder: Decoder[Item] =
+  val decoder: Decoder[Item] =
     (uuid ~ varchar ~ varchar ~ numeric ~ uuid ~ varchar ~ uuid ~ varchar).map {
-      case id ~ name ~ desc ~ p ~ brandId ~ brandName ~ cid ~ cname =>
+      case i ~ n ~ d ~ p ~ bi ~ bn ~ ci ~ cn =>
         Item(
-          ItemId(id),
-          ItemName(name),
-          ItemDescription(desc),
+          ItemId(i),
+          ItemName(n),
+          ItemDescription(d),
           USD(p),
-          Brand(BrandId(brandId), BrandName(brandName)),
-          Category(CategoryId(cid), CategoryName(cname))
+          Brand(BrandId(bi), BrandName(bn)),
+          Category(CategoryId(ci), CategoryName(cn))
         )
     }
 
   val selectAll: Query[Void, Item] =
     sql"""
-           SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name FROM items AS i
-           INNER JOIN brands AS b ON i.brand_id == b.uuid
-           INNER JOIN categories AS c ON i.category_id == c.uuid
-         """.query(decoder)
+        SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name
+        FROM items AS i
+        INNER JOIN brands AS b ON i.brand_id = b.uuid
+        INNER JOIN categories AS c ON i.category_id = c.uuid
+       """.query(decoder)
 
   val selectByBrand: Query[BrandName, Item] =
     sql"""
-           SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name
-           FROM items AS i
-           INNER JOIN brands AS b ON i.brand_id == b.uuid
-           INNER JOIN categories AS c ON i.category_id == i.category_id
-           WHERE b.name like ${varchar.cimap[BrandName]}
-         """.query(decoder)
+        SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name
+        FROM items AS i
+        INNER JOIN brands AS b ON i.brand_id = b.uuid
+        INNER JOIN categories AS c ON i.category_id = c.uuid
+        WHERE b.name LIKE ${varchar.cimap[BrandName]}
+       """.query(decoder)
 
-  val selecById: Query[ItemId, Item] =
+  val selectById: Query[ItemId, Item] =
     sql"""
-           SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name
-           FROM items AS i
-           INNER JOIN brands AS b ON i.brand_id == b.uuid
-           INNER JOIN categories AS c ON i.category_id == c.uuid
-           WHERE i.uuid== ${uuid.cimap[ItemId]}
-         """.query(decoder)
+        SELECT i.uuid, i.name, i.description, i.price, b.uuid, b.name, c.uuid, c.name
+        FROM items AS i
+        INNER JOIN brands AS b ON i.brand_id = b.uuid
+        INNER JOIN categories AS c ON i.category_id = c.uuid
+        WHERE i.uuid = ${uuid.cimap[ItemId]}
+       """.query(decoder)
 
   val insertItem: Command[ItemId ~ CreateItem] =
     sql"""
-       INSERT INTO items
-       VALUES ($uuid, $varchar, $varchar, $numeric, $uuid, $uuid)
-     """.command.contramap { case id ~ i =>
+        INSERT INTO items
+        VALUES ($uuid, $varchar, $varchar, $numeric, $uuid, $uuid)
+       """.command.contramap { case id ~ i =>
       id.value ~ i.name.value ~ i.description.value ~ i.price.amount ~ i.brandId.value ~ i.categoryId.value
     }
 
   val updateItem: Command[UpdateItem] =
     sql"""
-       UPDATE items
-       SET price = $numeric
-       WHERE uuid == ${uuid.cimap[ItemId]}
-     """.command.contramap(i => i.price.amount ~ i.id)
+        UPDATE items
+        SET price = $numeric
+        WHERE uuid = ${uuid.cimap[ItemId]}
+       """.command.contramap(i => i.price.amount ~ i.id)
+
 }

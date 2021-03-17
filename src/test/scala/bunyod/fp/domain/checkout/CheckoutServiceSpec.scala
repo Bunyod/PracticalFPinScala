@@ -9,14 +9,12 @@ import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.domain.orders._
 import bunyod.fp.domain.payment.PaymentPayloads._
 import bunyod.fp.domain.payment._
-import bunyod.fp.effekts.Background
 import bunyod.fp.logger.LoggerSuite
 import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.suite.{BackgroundTest, PureTestSuite}
 import cats.effect._
 import cats.effect.concurrent.Ref
 import cats.implicits.{catsSyntaxEq => _, _}
-import io.chrisdavenport.log4cats.Logger
 import retry.RetryPolicy
 import retry.RetryPolicies._
 import squants.market._
@@ -100,8 +98,8 @@ class CheckoutServiceSpec extends PureTestSuite {
   test("unreachable payment client") {
     forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
-        implicit val bg: Background[IO] = BackgroundTest.NoOp
-        implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
+        implicit val bg = BackgroundTest.NoOp
+        implicit val logger = LoggerSuite.acc(logs)
         new CheckoutService[IO](unreachableClient, successfulCart(ct), successfulOrders(oid), retryPolicy)
           .checkout(uid, card)
           .attempt
@@ -121,7 +119,7 @@ class CheckoutServiceSpec extends PureTestSuite {
     forAll { (uid: UserId, pid: PaymentId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
         Ref.of[IO, Int](0).flatMap { ref =>
-          implicit val logger: Logger[IO] = LoggerSuite.acc(logs)
+          implicit val logger = LoggerSuite.acc(logs)
           new CheckoutService[IO](recoveringClient(ref, pid), successfulCart(ct), successfulOrders(oid), retryPolicy)
             .checkout(uid, card)
             .attempt
@@ -187,7 +185,7 @@ protected class TestOrdersRepository extends OrdersAlgebra[IO] {
 
   override def get(userId: UserId, orderId: OrderId): IO[Option[Order]] = ???
 
-  override def findBy(userId: UserId): IO[List[Order]] = ???
+  override def findByUserId(userId: UserId): IO[List[Order]] = ???
 
   override def create(
     userId: UserId,
