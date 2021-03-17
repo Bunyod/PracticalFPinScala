@@ -16,13 +16,12 @@ import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.orders.OrdersPayloads._
 import bunyod.fp.infrastructure.postgres._
 import bunyod.fp.itsuite._
-import bunyod.fp.suite.PureTestSuite
 import bunyod.fp.utils.cfg.Configuration.PasswordSaltCfg
 import eu.timepit.refined.predicates.all.NonEmpty
 import skunk._
 import squants.market.Money
 
-class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] with PureTestSuite {
+class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] {
   val MaxTests: PropertyCheckConfigParam = MinSuccessful(1)
 
   private lazy val secret: NonEmptyString = refineMV[NonEmpty]("53kr3t")
@@ -131,7 +130,6 @@ class PostgresSpec extends ResourceSuite[Resource[IO, Session[IO]]] with PureTes
               _ <- o.create(d, pid, items, price)
             } yield assert(
               x.isEmpty && y.isEmpty
-
             )
           }
       }
