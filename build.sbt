@@ -12,7 +12,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "PracticalFPinScala",
     scalaVersion := "2.13.3",
-    mainClass in Compile := Some("bunyod.fp.MainZIO"),
+    mainClass in Compile := Some("bunyod.fp.MainIO"),
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     scalacOptions ++= CompilerOptions.cOptions,
     scalafmtOnCompile := true,
