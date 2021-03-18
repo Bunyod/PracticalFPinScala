@@ -42,7 +42,6 @@ shopping-cart                 latest              646501a87362        2 seconds 
 To run our application using our Docker image, run the following command:
 
 ```
-cd /app
 docker-compose up
 ```
 
