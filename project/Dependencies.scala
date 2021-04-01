@@ -23,7 +23,7 @@ object Dependencies {
     val pureConfig = "0.14.1"
 
     val scalaCheck    = "1.15.2"
-    val scalaTest     = "3.2.3"
+    val scalaTest     = "3.2.7"
     val scalaTestPlus = "3.2.2.0"
   }
 
