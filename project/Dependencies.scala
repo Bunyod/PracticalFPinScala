@@ -13,7 +13,7 @@ object Dependencies {
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.11.3"
     val skunk = "0.0.25"
-    val http4s = "0.21.20"
+    val http4s = "0.21.22"
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.6"
     val log4cats = "1.1.1"
