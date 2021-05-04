@@ -6,24 +6,26 @@ object Dependencies {
     val cats = "2.4.2"
     val catsEffect = "2.3.3"
     val catsMeowMtl = "0.4.1"
-    val fs2 = "2.4.6"
+    val fs2 = "2.5.4"
     val logback = "1.2.3"
     val newtype = "0.4.3"
     val refined = "0.9.19"
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.11.3"
-    val skunk = "0.0.24"
+    val skunk = "0.0.25"
     val http4s = "0.21.20"
     val circe = "0.13.0"
-    val http4sJwtAuth = "0.0.4"
+    val http4sJwtAuth = "0.0.6"
     val log4cats = "1.1.1"
     val catsRetry = "2.0.0"
     val redis4cats = "0.10.3"
     val ciris = "1.2.1"
-    val pureConfig = "0.14.1"
+    val pureConfig = "0.15.0"
+    val zio = "1.0.0-RC17"
+    val zioCats = "2.0.0.0-RC10"
 
-    val scalaCheck    = "1.15.2"
-    val scalaTest     = "3.2.8"
+    val scalaCheck = "1.15.2"
+    val scalaTest = "3.2.3"
     val scalaTestPlus = "3.2.2.0"
   }
 
@@ -60,6 +62,8 @@ object Dependencies {
 
     val catsMeowMtlCore = "com.olegpy" %% "meow-mtl-core" % Versions.catsMeowMtl
     val catsMeowMtlEffects = "com.olegpy" %% "meow-mtl-effects" % Versions.catsMeowMtl
+    val zioCore = "dev.zio" %% "zio" % Versions.zio
+    val zioCats = "dev.zio" %% "zio-interop-cats" % Versions.zioCats
 
     val refinedCore = "eu.timepit" %% "refined" % Versions.refined
     val refinedCats = "eu.timepit" %% "refined-cats" % Versions.refined
@@ -73,8 +77,8 @@ object Dependencies {
     // Runtime
     val logback = "ch.qos.logback" % "logback-classic" % Versions.logback
 
-    val scalaCheck    = "org.scalacheck"    %% "scalacheck"      % Versions.scalaCheck % "it,test"
-    val scalaTest     = "org.scalatest"     %% "scalatest"       % Versions.scalaTest % "it,test"
+    val scalaCheck = "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % "it,test"
+    val scalaTest = "org.scalatest" %% "scalatest" % Versions.scalaTest % "it,test"
     val scalaTestPlus = "org.scalatestplus" %% "scalacheck-1-14" % Versions.scalaTestPlus % "it,test"
 
   }
@@ -87,7 +91,7 @@ object Dependencies {
   }
 
   val rootDependencies = Seq(
-    compilerPlugin(CompilerPlugins.kindProjector cross CrossVersion.full),
+    compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
 //    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
     "org.typelevel" %% "squants" % "1.7.4",
@@ -112,6 +116,8 @@ object Dependencies {
     Libraries.catsEffect,
     Libraries.catsMeowMtlCore,
     Libraries.catsMeowMtlEffects,
+    Libraries.zioCore,
+    Libraries.zioCats,
     Libraries.cirisCore,
     Libraries.cirisEnum,
     Libraries.cirisRefined,
