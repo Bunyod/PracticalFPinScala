@@ -72,7 +72,7 @@ final class HttpApi[F[_]: Concurrent: Timer](
 
   private val routes: HttpRoutes[F] = Router(
     version.v1 -> openRoutes,
-    version.v1 + "/admin" -> adminRoutes
+    version.v2 + "/admin" -> adminRoutes
   )
 
   private val middleware: HttpRoutes[F] => HttpRoutes[F] = { http: HttpRoutes[F] => AutoSlash(http) }
@@ -90,4 +90,5 @@ final class HttpApi[F[_]: Concurrent: Timer](
 
 object version {
   val v1 = "/v1"
+  val v2 = "/v2"
 }

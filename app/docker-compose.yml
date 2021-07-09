@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  app:
+    restart: always
+    image: practicalscalafp:latest
+#    ports:
+#      - "8080:8080"
+#    network_mode: "bridge"
+    environment:
+      - DEBUG=false
+      - ACCESS_TOKEN_SECRET_KEY=5h0pp1ng_k4rt
+      - JWT_SECRET_KEY=-*5h0pp1ng_k4rt*-
+      - JWT_CLAIM=004b4457-71c3-4439-a1b2-03820263b59c
+      - ADMIN_USER_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjogIjAwNGI0NDU3LTcxYzMtNDQzOS1hMWIyLTAzODIwMjYzYjU5YyJ9.L97BnPScSAKY-BLkYu8G_n8h1U4LDOURUen14O22hD4
+      - PASSWORD_SALT=06!grsnxXG0d*Pj496p6fuA*o
+      - APP_ENV=stage
+#  postgre:
+#    image: postgres:12.0-alpine
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      - DEBUG=false
+#      - POSTGRES_DB=store
+#    volumes:
+#      - ./src/it/resources/tables.sql:/docker-entrypoint-initdb.d/init.sql
+#
+#  redis:
+#    image: redis:5.0.0
+#    ports:
+#      - "6379:6379"
+#    environment:
+#      - DEBUG=false

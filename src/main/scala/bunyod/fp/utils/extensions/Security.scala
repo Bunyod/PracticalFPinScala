@@ -13,9 +13,11 @@ import cats.effect._
 import cats.implicits._
 import dev.profunktor.auth.jwt._
 import dev.profunktor.redis4cats.RedisCommands
-import io.circe.parser.{decode => jsonDecode}
+import io.circe.parser._
 import pdi.jwt._
 import skunk.Session
+
+import java.util.UUID
 
 object Security {
 
@@ -45,8 +47,8 @@ object Security {
     val adminToken = JwtToken(cfg.adminJwt.adminToken.value)
     for {
       adminClaim <- jwtDecode[F](adminToken, adminJwtAuth.value)
-      content <- ApThrow[F].fromEither(jsonDecode[ClaimContent](adminClaim.content))
-      adminUser = AdminUser(User(UserId(content.uuid), UserName("admin")))
+      content <- ApThrow[F].fromEither(decode[ClaimContent](adminClaim.content))
+      adminUser = AdminUser(User(UserId(UUID.fromString(content.claim)), UserName("admin")))
       tokensService = new TokenSyncService[F](cfg.userJwt, cfg.tokenExpiration.value)
       token <- tokensService.create
       adminAuthRepo = new LiveAdminAuthRepository[F](token, adminUser)
