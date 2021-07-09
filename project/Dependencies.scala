@@ -3,29 +3,29 @@ import sbt._
 object Dependencies {
 
   object Versions {
-    val cats = "2.4.2"
-    val catsEffect = "2.3.3"
+    val cats = "2.6.1"
+    val catsEffect = "2.5.1"
     val catsMeowMtl = "0.4.1"
-    val fs2 = "2.5.4"
+    val fs2 = "2.5.8"
     val logback = "1.2.3"
     val newtype = "0.4.3"
     val refined = "0.9.19"
     val betterMonadicFor = "0.3.1"
-    val kindProjector = "0.11.3"
-    val skunk = "0.0.25"
+    val kindProjector = "0.13.0"
+    val skunk = "0.0.28"
     val http4s = "0.21.20"
     val circe = "0.13.0"
     val http4sJwtAuth = "0.0.6"
     val log4cats = "1.1.1"
-    val catsRetry = "2.0.0"
-    val redis4cats = "0.10.3"
+    val catsRetry = "2.1.1"
+    val redis4cats = "0.14.0"
     val ciris = "1.2.1"
-    val pureConfig = "0.15.0"
+    val pureConfig = "0.16.0"
     val zio = "1.0.9"
-    val zioCats = "2.0.0.0-RC10"
+    val zioCats = "2.0.0.0-RC14"
 
-    val scalaCheck = "1.15.2"
-    val scalaTest = "3.2.3"
+    val scalaCheck = "1.15.4"
+    val scalaTest = "3.2.9"
     val scalaTestPlus = "3.2.2.0"
   }
 
@@ -94,7 +94,7 @@ object Dependencies {
     compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
 //    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
-    "org.typelevel" %% "squants" % "1.7.4",
+    "org.typelevel" %% "squants" % "1.8.0",
     CompilerPlugins.kindProjector,
     Libraries.cats,
     Libraries.catsRetry,
