@@ -14,7 +14,7 @@ object Dependencies {
     val kindProjector = "0.13.0"
     val skunk = "0.0.28"
     val http4s = "0.21.24"
-    val circe = "0.13.0"
+    val circe = "0.14.1"
     val http4sJwtAuth = "0.0.6"
     val log4cats = "1.1.1"
     val catsRetry = "2.1.1"
