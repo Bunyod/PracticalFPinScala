@@ -20,7 +20,7 @@ object Configurable {
 
   val config: ConfigValue[Config] =
     env("APP_ENV").as[AppEnvironment].option.flatMap {
-      case Some(AppEnvironment.Dev) | None =>
+      case Some(AppEnvironment.Local) | None =>
         ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])
       case _ =>
         (
