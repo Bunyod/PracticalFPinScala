@@ -20,7 +20,7 @@ object Dependencies {
     val catsRetry = "2.1.1"
     val redis4cats = "0.14.0"
     val ciris = "1.2.1"
-    val pureConfig = "0.15.0"
+    val pureConfig = "0.16.0"
     val zio = "1.0.0-RC17"
     val zioCats = "2.0.0.0-RC14"
 
