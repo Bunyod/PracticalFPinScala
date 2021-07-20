@@ -9,7 +9,7 @@ object Dependencies {
     val fs2 = "3.0.1"
     val logback = "1.2.3"
     val newtype = "0.4.3"
-    val refined = "0.9.26"
+    val refined = "0.9.27"
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.13.0"
     val skunk = "0.1.0"
