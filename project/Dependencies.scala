@@ -94,7 +94,7 @@ object Dependencies {
     compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
 //    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
-    "org.typelevel" %% "squants" % "1.8.0",
+    "org.typelevel" %% "squants" % "1.8.2",
     CompilerPlugins.kindProjector,
     Libraries.cats,
     Libraries.catsRetry,
