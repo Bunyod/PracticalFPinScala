@@ -4,7 +4,7 @@ object Dependencies {
 
   object Versions {
     val cats = "2.6.1"
-    val catsEffect = "3.2.0"
+    val catsEffect = "3.2.9"
     val catsMeowMtl = "0.5.0"
     val fs2 = "3.0.6"
     val logback = "1.2.5"
@@ -13,7 +13,7 @@ object Dependencies {
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.13.0"
     val skunk = "0.1.2"
-    val http4s = "0.21.26"
+    val http4s = "0.21.29"
     val circe = "0.14.1"
     val http4sJwtAuth = "0.0.7"
     val log4cats = "1.1.1"
@@ -21,8 +21,8 @@ object Dependencies {
     val redis4cats = "1.0.0"
     val ciris = "2.1.0"
     val pureConfig = "0.16.0"
-    val zio = "1.0.10"
-    val zioCats = "3.1.1.0"
+    val zio = "1.0.12"
+    val zioCats = "2.5.1.0"
 
     val scalaCheck = "1.15.4"
     val scalaTest = "3.2.9"
