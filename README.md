@@ -51,7 +51,6 @@ The configured test payment client is a fake API that always returns 200 with a 
 
 This fake API can be modified at: [https://beeceptor.com/console/payments](https://beeceptor.com/console/payments)
 
-
 ## Architecture
 ### Domain Driven Design (DDD)
 Domain driven design is all about developing a _ubiquitous language_, which is a language that you can use to discuss your software with business folks (who presumably do not know programming).
