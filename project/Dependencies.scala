@@ -22,7 +22,7 @@ object Dependencies {
     val ciris = "2.1.0"
     val pureConfig = "0.16.0"
     val zio = "1.0.12"
-    val zioCats = "2.5.1.0"
+    val zioCats = "3.1.1.0"
 
     val scalaCheck = "1.15.4"
     val scalaTest = "3.2.10"
