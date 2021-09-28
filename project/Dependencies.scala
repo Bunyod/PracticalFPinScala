@@ -6,26 +6,26 @@ object Dependencies {
     val cats = "2.6.1"
     val catsEffect = "3.2.9"
     val catsMeowMtl = "0.5.0"
-    val fs2 = "3.0.6"
+    val fs2 = "3.1.3"
     val logback = "1.2.5"
     val newtype = "0.4.3"
     val refined = "0.9.27"
     val betterMonadicFor = "0.3.1"
-    val kindProjector = "0.13.0"
-    val skunk = "0.2.2"
-    val http4s = "0.21.29"
+    val kindProjector = "0.13.2"
+    val skunk = "0.1.2"
+    val http4s = "0.23.4"
     val circe = "0.14.1"
-    val http4sJwtAuth = "0.0.7"
+    val http4sJwtAuth = "1.0.0"
     val log4cats = "1.1.1"
-    val catsRetry = "3.0.0"
+    val catsRetry = "3.1.0"
     val redis4cats = "1.0.0"
-    val ciris = "2.1.0"
+    val ciris = "2.1.1"
     val pureConfig = "0.16.0"
     val zio = "1.0.12"
-    val zioCats = "2.5.1.0"
+    val zioCats = "3.1.1.0"
 
     val scalaCheck = "1.15.4"
-    val scalaTest = "3.2.9"
+    val scalaTest = "3.2.10"
     val scalaTestPlus = "3.2.2.0"
   }
 
@@ -94,7 +94,7 @@ object Dependencies {
     compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
 //    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
-    "org.typelevel" %% "squants" % "1.8.2",
+    "org.typelevel" %% "squants" % "1.8.3",
     CompilerPlugins.kindProjector,
     Libraries.cats,
     Libraries.catsRetry,
