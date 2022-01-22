@@ -16,7 +16,7 @@ object Dependencies {
     val http4s = "0.23.7"
     val circe = "0.14.1"
     val http4sJwtAuth = "1.0.0"
-    val log4cats = "1.1.1"
+    val log4cats = "1.5.1"
     val catsRetry = "3.1.0"
     val redis4cats = "1.0.0"
     val ciris = "2.3.1"
@@ -70,7 +70,7 @@ object Dependencies {
     val refinedCats = "eu.timepit" %% "refined-cats" % Versions.refined
     val refinedPureconfig = "eu.timepit" %% "refined-pureconfig" % Versions.refined
 
-    val log4cats = "io.chrisdavenport" %% "log4cats-slf4j" % Versions.log4cats
+    val log4cats = "org.typelevel" %% "log4cats-slf4j" % Versions.log4cats
     val newtype = "io.estatico" %% "newtype" % Versions.newtype
 
     val skunk = "org.tpolecat" %% "skunk-core" % Versions.skunk
