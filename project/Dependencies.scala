@@ -26,7 +26,7 @@ object Dependencies {
     val zioCats = "3.2.9.0"
 
     val scalaCheck = "1.15.4"
-    val scalaTest = "3.2.10"
+    val scalaTest = "3.2.11"
     val scalaTestPlus = "3.2.2.0"
   }
 
