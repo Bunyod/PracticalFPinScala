@@ -5,11 +5,12 @@ import cats.implicits._
 import ciris._
 import ciris.refined._
 import eu.timepit.refined.auto._
-import eu.timepit.refined.pureconfig._ // DON'T REMOVE THIS LINE
+import com.comcast.ip4s._
+//import eu.timepit.refined.pureconfig._ // DON'T REMOVE THIS LINE
 import eu.timepit.refined.types.net.UserPortNumber
 import eu.timepit.refined.types.string.NonEmptyString
-import pureconfig._
-import pureconfig.generic.auto._ // DON'T REMOVE THIS LINE
+//import pureconfig._
+//import pureconfig.generic.auto._ // DON'T REMOVE THIS LINE
 import scala.concurrent.duration.DurationInt
 
 trait Configurable[F[_]] {
@@ -20,8 +21,8 @@ object Configurable {
 
   def config[F[_]]: ConfigValue[F, Config] =
     env("APP_ENV").as[AppEnvironment].option.flatMap {
-      case Some(AppEnvironment.Local) | None =>
-        ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])
+//      case Some(AppEnvironment.Local) | None =>
+//        ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])
       case _ =>
         (
           env("JWT_SECRET_KEY").as[NonEmptyString],
@@ -57,8 +58,8 @@ object Configurable {
                 requestTimeout = 2.seconds
               ),
               HttpServerCfg(
-                host = "0.0.0.0",
-                port = 8080
+                host = host"0.0.0.0",
+                port = port"8080"
               ),
               PostgreSQLCfg(
                 host = pgHost,

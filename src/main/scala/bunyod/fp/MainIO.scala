@@ -17,17 +17,14 @@ import cats.effect._
 import cats.implicits._
 import dev.profunktor.redis4cats.effect.Log
 import dev.profunktor.redis4cats.effect.Log.Stdout.instance
-import org.http4s.blaze.server.BlazeServerBuilder
-import retry.RetryPolicies.{exponentialBackoff, limitRetries}
-import retry.RetryPolicy
-
-import scala.concurrent.ExecutionContext
+import org.http4s.ember.server.EmberServerBuilder
+import retry.RetryPolicies._
 
 object MainIO extends IOApp.Simple with Configurable[IO] {
 
   override def run: IO[Unit] =
     config.load.flatMap { cfg =>
-      Log[IO].info(s"Loaded config: $cfg") *>
+      Log[IO].info(s"Loaded config: $cfg") >>
         AppResources.make[IO](cfg).use { res =>
           for {
             security <- Security.make[IO](cfg, res.psql, res.redis)
@@ -43,8 +40,8 @@ object MainIO extends IOApp.Simple with Configurable[IO] {
             brandsService = new BrandsService[IO](brandsRepo)
             categoryRepo = new CategoriesRepository[IO](res.psql)
             categoryService = new CategoriesService[IO](categoryRepo)
-            retryPolicy: RetryPolicy[IO] = limitRetries[IO](cfg.checkout.retriesLimit.value) |+| exponentialBackoff[IO](
-              cfg.checkout.retriesBackoff
+            retryPolicy = limitRetries[IO](cfg.checkout.retriesLimit.value).combine(
+              exponentialBackoff[IO](cfg.checkout.retriesBackoff)
             )
             checkoutService = new CheckoutService[IO](paymentService, shoppingCartService, orderService, retryPolicy)
             routes = new HttpApi[IO](
@@ -56,18 +53,15 @@ object MainIO extends IOApp.Simple with Configurable[IO] {
               orderService,
               security
             )
-            _ <- BlazeServerBuilder[IO]
-              .withExecutionContext(ExecutionContext.global)
-              .bindHttp(
-                cfg.httpServer.port.value,
-                cfg.httpServer.host.value
-              )
-              .withHttpApp(routes.httpApp)
-              .serve
-              .compile
-              .drain
-
-          } yield ()
+          } yield routes
+        }.flatMap { routes =>
+          EmberServerBuilder
+            .default[IO]
+            .withHost(cfg.httpServer.host)
+            .withPort(cfg.httpServer.port)
+            .withHttpApp(routes.httpApp)
+            .build
+            .useForever
         }
     }
 

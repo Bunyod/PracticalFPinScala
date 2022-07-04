@@ -1,10 +1,12 @@
 package bunyod.fp.utils.cfg
 
+import com.comcast.ip4s.{Host, Port}
 import enumeratum._
 import enumeratum.EnumEntry._
 import eu.timepit.refined.types.net.UserPortNumber
 import eu.timepit.refined.types.numeric.PosInt
 import eu.timepit.refined.types.string.NonEmptyString
+
 import scala.concurrent.duration.FiniteDuration
 
 object Configuration {
@@ -54,8 +56,8 @@ object Configuration {
   case class PaymentCfg(uri: NonEmptyString)
 
   case class HttpServerCfg(
-    host: NonEmptyString,
-    port: UserPortNumber
+    host: Host,
+    port: Port
   )
 
   case class HttpClientCfg(

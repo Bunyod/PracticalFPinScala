@@ -3,26 +3,26 @@ import sbt._
 object Dependencies {
 
   object Versions {
-    val cats = "2.7.0"
-    val catsEffect = "3.3.0"
-    val fs2 = "3.1.6"
-    val logback = "1.2.7"
-    val newtype = "0.4.3"
-    val refined = "0.9.28"
+    val cats = "2.8.0"
+    val catsEffect = "3.3.13"
+    val fs2 = "3.2.8"
+    val logback = "1.2.11"
+    val newtype = "0.4.4"
+    val refined = "0.10.0"
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.13.2"
-    val skunk = "0.2.2"
-    val http4s = "0.23.7"
-    val circe = "0.14.1"
+    val skunk = "0.3.1"
+    val http4s = "1.0.0-M33"
+    val circe = "0.15.0-M1"
     val http4sJwtAuth = "1.0.0"
     val log4cats = "1.7.0"
     val catsRetry = "3.1.0"
     val redis4cats = "1.2.0"
-    val ciris = "2.3.1"
+    val ciris = "2.3.2"
     val pureConfig = "0.17.1"
 
-    val scalaCheck = "1.15.4"
-    val scalaTest = "3.2.11"
+    val scalaCheck = "1.16.0"
+    val scalaTest = "3.2.12"
     val scalaTestPlus = "3.2.2.0"
   }
 
@@ -32,7 +32,7 @@ object Dependencies {
     val catsRetry = "com.github.cb372" %% "cats-retry" % Versions.catsRetry
 
     val fs2 = "co.fs2" %% "fs2-core" % Versions.fs2
-    def http4s(artifact: String): ModuleID = "org.http4s" %% artifact % Versions.http4s
+    def http4s(artifact: String): ModuleID = "org.http4s" %% s"http4s-$artifact" % Versions.http4s
     def circe(artifact: String): ModuleID = "io.circe" %% artifact % Versions.circe
     def ciris(artifact: String): ModuleID = "is.cir" %% artifact % Versions.ciris
 
@@ -50,10 +50,10 @@ object Dependencies {
     val cirisEnum = ciris("ciris-enumeratum")
     val cirisRefined = ciris("ciris-refined")
 
-    val http4sDsl = http4s("http4s-dsl")
-    val http4sServer = http4s("http4s-blaze-server")
-    val http4sClient = http4s("http4s-blaze-client")
-    val http4sCirce = http4s("http4s-circe")
+    val http4sDsl = http4s("dsl")
+    val http4sServer = http4s("ember-server")
+    val http4sClient = http4s("ember-client")
+    val http4sCirce = http4s("circe")
 
     val http4sJwtAuth = "dev.profunktor" %% "http4s-jwt-auth" % Versions.http4sJwtAuth
 
@@ -81,9 +81,8 @@ object Dependencies {
   }
 
   val rootDependencies = Seq(
-    compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
-    compilerPlugin(CompilerPlugins.betterMonadicFor),
-    CompilerPlugins.kindProjector,
+//    compilerPlugin(CompilerPlugins.betterMonadicFor),
+//    CompilerPlugins.kindProjector,
     //compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
     "org.typelevel" %% "squants" % "1.8.3",
     Libraries.cats,
@@ -94,27 +93,29 @@ object Dependencies {
     Libraries.http4sClient,
     Libraries.http4sServer,
     Libraries.http4sCirce,
-    Libraries.http4sJwtAuth,
+    Libraries.http4sJwtAuth.cross(CrossVersion.for3Use2_13).excludeAll(
+      ExclusionRule(organization = "org.http4s")
+    ),
     Libraries.logback % Runtime,
-    Libraries.pureConfig,
-    Libraries.refinedPureconfig,
+//    Libraries.pureConfig,
+//    Libraries.refinedPureconfig,
     Libraries.circeCore,
     Libraries.circeGeneric,
     Libraries.circeParser,
     Libraries.circeRefined,
     Libraries.catsEffect,
     Libraries.cirisCore,
-    Libraries.cirisEnum,
+    Libraries.cirisEnum.cross(CrossVersion.for3Use2_13),
     Libraries.cirisRefined,
-    Libraries.fs2,
+    Libraries.fs2.cross(CrossVersion.for3Use2_13),
     Libraries.skunk,
     Libraries.skunkCirce,
-    Libraries.newtype,
+    Libraries.newtype.cross(CrossVersion.for3Use2_13),
     Libraries.refinedCore,
     Libraries.refinedCats,
     Libraries.scalaCheck,
     Libraries.scalaTest,
-    Libraries.scalaTestPlus
+    Libraries.scalaTestPlus.cross(CrossVersion.for3Use2_13)
   )
 
 }

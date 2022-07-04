@@ -9,8 +9,7 @@ import dev.profunktor.redis4cats.{Redis, RedisCommands}
 import eu.timepit.refined.auto._
 import natchez.Trace.Implicits.noop
 import org.http4s.client.Client
-import org.http4s.blaze.client.BlazeClientBuilder
-import scala.concurrent.ExecutionContext
+import org.http4s.ember.client.EmberClientBuilder
 import skunk._
 
 final case class AppResources[F[_]](
@@ -39,12 +38,11 @@ object AppResources {
       Redis[F].utf8(c.uri.value)
 
     def mkHttpClient(c: HttpClientCfg): Resource[F, Client[F]] =
-      BlazeClientBuilder[F]
-        .withExecutionContext(ExecutionContext.global)
-        .withConnectTimeout(c.connectionTimeout)
-        .withRequestTimeout(c.requestTimeout)
-        .resource
-
+      EmberClientBuilder
+        .default[F]
+        .withTimeout(c.connectionTimeout)
+        .withIdleTimeInPool(c.requestTimeout)
+        .build
     (
       mkHttpClient(cfg.httpClient),
       mkPostgreSqlResource(cfg.postgres),

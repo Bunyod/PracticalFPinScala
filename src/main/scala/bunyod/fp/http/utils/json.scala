@@ -19,7 +19,7 @@ import org.http4s.circe._
 import squants.market._
 
 object json extends JsonCodecs {
-  implicit def deriveEntityEncoder[F[_], A: Encoder]: EntityEncoder[F, A] = jsonEncoderOf[F, A]
+  implicit def deriveEntityEncoder[F[_], A: Encoder]: EntityEncoder[F, A] = jsonEncoderOf[A]
 }
 
 trait JsonCodecs extends CoercibleCodecs {
