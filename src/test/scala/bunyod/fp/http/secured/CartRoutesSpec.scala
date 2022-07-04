@@ -13,8 +13,6 @@ import cats.data.Kleisli
 import cats.effect.IO
 import java.util.UUID
 import org.http4s._
-import org.http4s.Method._
-import org.http4s.client.dsl.io._
 import org.http4s.server.AuthMiddleware
 import squants.market.USD
 
@@ -34,21 +32,18 @@ class CartRoutesSpec extends HttpTestSuite {
 
   test("GET shopping cart [OK]") {
     forAll { cartTotal: CartTotal =>
-      GET(Uri.unsafeFromString("/cart")).flatMap { req =>
-        val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
-        assertHttp(routes, req)(Status.Ok, cartTotal)
-      }
+      val request = Request[IO](method = Method.GET, uri = Uri.unsafeFromString("/cart"))
+      val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
+      assertHttp(routes, request)(Status.Ok, cartTotal)
     }
   }
 
   test("POST add item to shopping cart [OK]") {
     forAll { cart: Cart =>
-      POST(cart, Uri.unsafeFromString("/cart")).flatMap { req =>
-        val cartTotal = CartTotal(List.empty, USD(0))
-        val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
-        assertHttpStatus(routes, req)(Status.Created)
-
-      }
+      val cartTotal = CartTotal(List.empty, USD(0))
+      val routes = new CartRoutes[IO](dataCart(cartTotal)).routes(authMiddleware)
+      val request = Request[IO](method = Method.POST, uri = Uri.unsafeFromString("/cart")).withEntity(cart)
+      assertHttpStatus(routes, request)(Status.Created)
     }
   }
 }

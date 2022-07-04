@@ -10,7 +10,7 @@ import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class CategoriesRepository[F[_]: BracketThrow: GenUUID](
+class CategoriesRepository[F[_]: MonadCancelThrow: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends CategoriesAlgebra[F] {
 

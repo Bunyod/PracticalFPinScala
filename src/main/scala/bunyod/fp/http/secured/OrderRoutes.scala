@@ -9,7 +9,7 @@ import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
 
-final class OrderRoutes[F[_]: Defer: Monad](
+final class OrderRoutes[F[_]: Monad](
   orders: OrdersService[F]
 ) extends Http4sDsl[F] {
 

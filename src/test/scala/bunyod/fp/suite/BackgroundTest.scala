@@ -2,7 +2,6 @@ package bunyod.fp.suite
 
 import bunyod.fp.effekts.Background
 import cats.effect._
-import cats.effect.concurrent.Ref
 import scala.concurrent.duration.FiniteDuration
 
 object BackgroundTest {

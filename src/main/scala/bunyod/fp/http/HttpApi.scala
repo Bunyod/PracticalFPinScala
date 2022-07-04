@@ -22,9 +22,10 @@ import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.middleware._
 import org.http4s.server.Router
+
 import scala.concurrent.duration._
 
-final class HttpApi[F[_]: Concurrent: Timer](
+final class HttpApi[F[_]: Async](
   brandsService: BrandsService[F],
   categoryService: CategoriesService[F],
   itemsService: ItemsService[F],
@@ -76,7 +77,7 @@ final class HttpApi[F[_]: Concurrent: Timer](
   )
 
   private val middleware: HttpRoutes[F] => HttpRoutes[F] = { http: HttpRoutes[F] => AutoSlash(http) }
-    .andThen { http: HttpRoutes[F] => CORS(http, CORS.DefaultCORSConfig) }
+    .andThen { http: HttpRoutes[F] => CORS.policy.withAllowOriginAll.apply(http) }
     .andThen { http: HttpRoutes[F] => Timeout(60.seconds)(http) }
 
   private val loggers: HttpApp[F] => HttpApp[F] = { http: HttpApp[F] => RequestLogger.httpApp(true, true)(http) }
