@@ -9,7 +9,7 @@ import org.http4s._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
 
-final class LogoutRoutes[F[_]: Defer: Monad](
+final class LogoutRoutes[F[_]: Monad](
   auth: AuthService[F]
 ) extends Http4sDsl[F] {
 

@@ -17,7 +17,6 @@ import bunyod.fp.utils.cfg.Configuration._
 import cats.Eq
 import cats.effect._
 import bunyod.fp.logger.LoggerSuite._
-import cats.effect.concurrent.Ref
 import cats.implicits.{catsSyntaxEq => _, _}
 import dev.profunktor.auth.jwt._
 import dev.profunktor.redis4cats.{Redis, RedisCommands}

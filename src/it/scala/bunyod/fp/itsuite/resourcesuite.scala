@@ -2,7 +2,7 @@ package bunyod.fp.itsuite
 
 import bunyod.fp.suite.PureTestSuite
 import cats.effect._
-import cats.effect.concurrent.Deferred
+import cats.effect.unsafe.implicits.global
 import org.scalatest.BeforeAndAfterAll
 
 trait ResourceSuite[A] extends PureTestSuite with BeforeAndAfterAll {
@@ -19,7 +19,7 @@ trait ResourceSuite[A] extends PureTestSuite with BeforeAndAfterAll {
     val (r, h) = resources.allocated.unsafeRunSync()
     res = r
     cleanUp = h
-    latch.complete(()).unsafeRunSync()
+    val _ = latch.complete(()).unsafeRunSync()
   }
 
   override def afterAll(): Unit = {

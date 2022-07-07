@@ -8,9 +8,7 @@ import bunyod.fp.suite.Arbitraries._
 import bunyod.fp.suite.HttpTestSuite
 import cats.effect._
 import cats.implicits._
-import org.http4s.Method._
 import org.http4s._
-import org.http4s.client.dsl.io._
 
 class ItemRoutesSpec extends HttpTestSuite {
 
@@ -33,19 +31,17 @@ class ItemRoutesSpec extends HttpTestSuite {
 
   test("GET items [OK]") {
     forAll { i: List[Item] =>
-      GET(Uri.unsafeFromString("/items")).flatMap { req =>
-        val routes = new ItemRoutes[IO](dataItems(i)).routes
-        assertHttp(routes, req)(Status.Ok, i)
-      }
+      val request = Request[IO](method = Method.GET, uri = Uri.unsafeFromString("/items"))
+      val routes = new ItemRoutes[IO](dataItems(i)).routes
+      assertHttp(routes, request)(Status.Ok, i)
     }
   }
 
   test("GET items [ERROR]") {
     forAll { i: List[Item] =>
-      GET(Uri.unsafeFromString("/items")).flatMap { req =>
-        val routes = new ItemRoutes[IO](failingItems(i)).routes
-        assertHttpFailure(routes, req)
-      }
+      val request = Request[IO](method = Method.GET, uri = Uri.unsafeFromString("/items"))
+      val routes = new ItemRoutes[IO](failingItems(i)).routes
+      assertHttpFailure(routes, request)
     }
   }
 

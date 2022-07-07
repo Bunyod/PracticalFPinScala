@@ -1,6 +1,5 @@
 package bunyod.fp.http.secured
 
-import cats.Defer
 import cats.effect._
 import cats.implicits._
 import bunyod.fp.domain.cart.CartPayloads.CartNotFound
@@ -15,7 +14,7 @@ import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server._
 
-final class CheckoutRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
+final class CheckoutRoutes[F[_]: JsonDecoder: MonadCancelThrow](
   program: CheckoutService[F]
 ) extends Http4sDsl[F] {
 

@@ -5,7 +5,6 @@ object Dependencies {
   object Versions {
     val cats = "2.7.0"
     val catsEffect = "3.3.0"
-    val catsMeowMtl = "0.5.0"
     val fs2 = "3.1.6"
     val logback = "1.2.7"
     val newtype = "0.4.3"
@@ -16,17 +15,14 @@ object Dependencies {
     val http4s = "0.23.7"
     val circe = "0.14.1"
     val http4sJwtAuth = "1.0.0"
-    val log4cats = "1.1.1"
+    val log4cats = "1.7.0"
     val catsRetry = "3.1.0"
-    val redis4cats = "1.0.0"
+    val redis4cats = "1.2.0"
     val ciris = "2.3.1"
     val pureConfig = "0.17.1"
 
-    val zio = "1.0.12"
-    val zioCats = "3.2.9.0"
-
     val scalaCheck = "1.15.4"
-    val scalaTest = "3.2.10"
+    val scalaTest = "3.2.11"
     val scalaTestPlus = "3.2.2.0"
   }
 
@@ -61,16 +57,9 @@ object Dependencies {
 
     val http4sJwtAuth = "dev.profunktor" %% "http4s-jwt-auth" % Versions.http4sJwtAuth
 
-    val catsMeowMtlCore = "com.olegpy" %% "meow-mtl-core" % Versions.catsMeowMtl
-    val catsMeowMtlEffects = "com.olegpy" %% "meow-mtl-effects" % Versions.catsMeowMtl
-    val zioCore = "dev.zio" %% "zio" % Versions.zio
-    val zioCats = "dev.zio" %% "zio-interop-cats" % Versions.zioCats
-
     val refinedCore = "eu.timepit" %% "refined" % Versions.refined
     val refinedCats = "eu.timepit" %% "refined-cats" % Versions.refined
     val refinedPureconfig = "eu.timepit" %% "refined-pureconfig" % Versions.refined
-
-    val log4cats = "io.chrisdavenport" %% "log4cats-slf4j" % Versions.log4cats
     val newtype = "io.estatico" %% "newtype" % Versions.newtype
 
     val skunk = "org.tpolecat" %% "skunk-core" % Versions.skunk
@@ -94,9 +83,9 @@ object Dependencies {
   val rootDependencies = Seq(
     compilerPlugin(CompilerPlugins.kindProjector.cross(CrossVersion.full)),
     compilerPlugin(CompilerPlugins.betterMonadicFor),
-//    compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
-    "org.typelevel" %% "squants" % "1.8.3",
     CompilerPlugins.kindProjector,
+    //compilerPlugin(("org.scalamacros" % "paradise"  % "2.1.1") cross CrossVersion.full),
+    "org.typelevel" %% "squants" % "1.8.3",
     Libraries.cats,
     Libraries.catsRetry,
     Libraries.redis4catsEffects,
@@ -106,7 +95,6 @@ object Dependencies {
     Libraries.http4sServer,
     Libraries.http4sCirce,
     Libraries.http4sJwtAuth,
-    Libraries.log4cats,
     Libraries.logback % Runtime,
     Libraries.pureConfig,
     Libraries.refinedPureconfig,
@@ -115,10 +103,6 @@ object Dependencies {
     Libraries.circeParser,
     Libraries.circeRefined,
     Libraries.catsEffect,
-    Libraries.catsMeowMtlCore,
-    Libraries.catsMeowMtlEffects,
-    Libraries.zioCore,
-    Libraries.zioCats,
     Libraries.cirisCore,
     Libraries.cirisEnum,
     Libraries.cirisRefined,

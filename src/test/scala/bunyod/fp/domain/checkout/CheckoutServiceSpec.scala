@@ -11,9 +11,8 @@ import bunyod.fp.domain.payment.PaymentPayloads._
 import bunyod.fp.domain.payment._
 import bunyod.fp.logger.LoggerSuite
 import bunyod.fp.suite.Arbitraries._
-import bunyod.fp.suite.{BackgroundTest, PureTestSuite}
+import bunyod.fp.suite.PureTestSuite
 import cats.effect._
-import cats.effect.concurrent.Ref
 import cats.implicits.{catsSyntaxEq => _, _}
 import retry.RetryPolicy
 import retry.RetryPolicies._
@@ -83,7 +82,6 @@ class CheckoutServiceSpec extends PureTestSuite {
 
   test("empty cart") {
     forAll { (uid: UserId, pid: PaymentId, oid: OrderId, card: Card) =>
-      implicit val bg = BackgroundTest.NoOp
       import bunyod.fp.logger.LoggerSuite.NoOp
       new CheckoutService[IO](successfulClient(pid), emptyCart, successfulOrders(oid), retryPolicy)
         .checkout(uid, card)
@@ -98,7 +96,6 @@ class CheckoutServiceSpec extends PureTestSuite {
   test("unreachable payment client") {
     forAll { (uid: UserId, oid: OrderId, ct: CartTotal, card: Card) =>
       Ref.of[IO, List[String]](List.empty).flatMap { logs =>
-        implicit val bg = BackgroundTest.NoOp
         implicit val logger = LoggerSuite.acc(logs)
         new CheckoutService[IO](unreachableClient, successfulCart(ct), successfulOrders(oid), retryPolicy)
           .checkout(uid, card)
@@ -137,7 +134,6 @@ class CheckoutServiceSpec extends PureTestSuite {
     forAll { (uid: UserId, pid: PaymentId, ct: CartTotal, card: Card) =>
       Ref.of[IO, Int](0).flatMap { ref =>
         Ref.of[IO, List[String]](List.empty).flatMap { logs =>
-          implicit val bg = BackgroundTest.counter(ref)
           implicit val logger = LoggerSuite.acc(logs)
           new CheckoutService[IO](successfulClient(pid), successfulCart(ct), failingOrders, retryPolicy)
             .checkout(uid, card)
