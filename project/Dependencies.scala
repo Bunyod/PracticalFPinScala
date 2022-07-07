@@ -21,7 +21,7 @@ object Dependencies {
     val ciris = "2.3.1"
     val pureConfig = "0.17.1"
 
-    val scalaCheck = "1.15.4"
+    val scalaCheck = "1.16.0"
     val scalaTest = "3.2.11"
     val scalaTestPlus = "3.2.2.0"
   }
