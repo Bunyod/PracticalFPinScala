@@ -7,7 +7,7 @@ import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
-final class BrandRoutes[F[_]: Defer: Monad](
+final class BrandRoutes[F[_]: Monad](
   brands: BrandsService[F]
 ) extends Http4sDsl[F] {
 

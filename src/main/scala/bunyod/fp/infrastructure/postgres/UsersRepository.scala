@@ -6,14 +6,13 @@ import bunyod.fp.domain.users.UsersAlgebra
 import bunyod.fp.domain.users.UsersPayloads.User
 import bunyod.fp.effekts.GenUUID
 import bunyod.fp.utils.extensions.Skunkx._
-import cats.Functor
 import cats.effect._
 import cats.syntax.all._
 import skunk._
 import skunk.codec.all._
 import skunk.implicits._
 
-class UsersRepository[F[_]: BracketThrow: GenUUID: Functor](
+class UsersRepository[F[_]: GenUUID: MonadCancelThrow](
   sessionPool: Resource[F, Session[F]],
   crypto: CryptoAlgebra
 ) extends UsersAlgebra[F] {
@@ -37,8 +36,9 @@ class UsersRepository[F[_]: BracketThrow: GenUUID: Functor](
           cmd
             .execute(User(id, username) ~ crypto.encrypt(password))
             .as(id)
-            .handleErrorWith { case SqlState.UniqueViolation(_) =>
-              UserNameInUse(username).raiseError[F, UserId]
+            .handleErrorWith {
+              case SqlState.UniqueViolation(_) => UserNameInUse(username).raiseError[F, UserId]
+              case err: Throwable => err.raiseError[F, UserId]
             }
         }
       }

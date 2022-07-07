@@ -11,14 +11,14 @@ import bunyod.fp.domain.payment.PaymentPayloads.Payment
 import bunyod.fp.effekts._
 import cats.effect._
 import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
+import dev.profunktor.redis4cats.effect.Log
 import retry.RetryDetails._
 import retry._
 
 import scala.concurrent.duration.DurationInt
 import squants.market.Money
 
-final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
+final class CheckoutService[F[_]: Log: Temporal](
   paymentClient: PaymentClientService[F],
   shoppingCart: ShoppingCartService[F],
   orders: OrdersService[F],
@@ -58,7 +58,7 @@ final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
       fa.adaptError { case e =>
         OrderError(e.getMessage)
       }.onError { case _ =>
-        Logger[F].error(s"Failed to create order for Payment: $paymentId. Rescheduling as a background action") *>
+        Log[F].error(s"Failed to create order for Payment: $paymentId. Rescheduling as a background action") *>
           Background[F].schedule(backgroundAction(fa), 1.hour)
       }
 
@@ -68,10 +68,10 @@ final class CheckoutService[F[_]: Background: Logger: MonadThrow: Timer](
   private def logError(action: String)(e: Throwable, details: RetryDetails): F[Unit] =
     details match {
       case r: WillDelayAndRetry =>
-        Logger[F].error(
+        Log[F].error(
           s"Failed to process $action with ${e.getMessage}. So far we have retried ${r.retriesSoFar} times."
         )
       case g: GivingUp =>
-        Logger[F].error(s"Giving up on $action after ${g.totalRetries} retries.")
+        Log[F].error(s"Giving up on $action after ${g.totalRetries} retries.")
     }
 }

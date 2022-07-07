@@ -15,20 +15,19 @@ import bunyod.fp.utils.cfg.Configurable
 import bunyod.fp.utils.extensions.Security
 import cats.effect._
 import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import org.http4s.server.blaze.BlazeServerBuilder
+import dev.profunktor.redis4cats.effect.Log
+import dev.profunktor.redis4cats.effect.Log.Stdout.instance
+import org.http4s.blaze.server.BlazeServerBuilder
 import retry.RetryPolicies.{exponentialBackoff, limitRetries}
 import retry.RetryPolicy
+
 import scala.concurrent.ExecutionContext
 
-object MainIO extends IOApp with Configurable {
+object MainIO extends IOApp.Simple with Configurable[IO] {
 
-  implicit val logger = Slf4jLogger.getLogger[IO]
-
-  override def run(args: List[String]): IO[ExitCode] =
-    config.load[IO].flatMap { cfg =>
-      Logger[IO].info(s"Loaded config: $cfg") *>
+  override def run: IO[Unit] =
+    config.load.flatMap { cfg =>
+      Log[IO].info(s"Loaded config: $cfg") *>
         AppResources.make[IO](cfg).use { res =>
           for {
             security <- Security.make[IO](cfg, res.psql, res.redis)
@@ -57,7 +56,8 @@ object MainIO extends IOApp with Configurable {
               orderService,
               security
             )
-            _ <- BlazeServerBuilder[IO](ExecutionContext.global)
+            _ <- BlazeServerBuilder[IO]
+              .withExecutionContext(ExecutionContext.global)
               .bindHttp(
                 cfg.httpServer.port.value,
                 cfg.httpServer.host.value
@@ -67,7 +67,7 @@ object MainIO extends IOApp with Configurable {
               .compile
               .drain
 
-          } yield ExitCode.Success
+          } yield ()
         }
     }
 

@@ -3,16 +3,15 @@ package bunyod.fp.http.admin
 import bunyod.fp.domain.items._
 import bunyod.fp.domain.items.ItemsPayloads._
 import bunyod.fp.domain.users.UsersPayloads.AdminUser
-import cats.Defer
-import cats.effect._
 import org.http4s._
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
 import bunyod.fp.http.utils.decoder._
 import bunyod.fp.http.utils.json._
+import cats.MonadThrow
 import org.http4s.server._
 
-final class AdminItemRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
+final class AdminItemRoutes[F[_]: JsonDecoder: MonadThrow](
   items: ItemsService[F]
 ) extends Http4sDsl[F] {
 

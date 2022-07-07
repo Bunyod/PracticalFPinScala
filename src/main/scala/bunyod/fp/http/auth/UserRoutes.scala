@@ -2,8 +2,7 @@ package bunyod.fp.http.auth
 
 import bunyod.fp.domain.auth._
 import bunyod.fp.domain.auth.AuthPayloads._
-import cats.Defer
-import cats.effect._
+import cats.MonadThrow
 import cats.implicits._
 import org.http4s.HttpRoutes
 import org.http4s.circe.JsonDecoder
@@ -12,7 +11,7 @@ import bunyod.fp.http.utils.decoder._
 import bunyod.fp.http.utils.json._
 import org.http4s.server.Router
 
-final class UserRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
+final class UserRoutes[F[_]: JsonDecoder: MonadThrow](
   auth: AuthService[F]
 ) extends Http4sDsl[F] {
 

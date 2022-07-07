@@ -14,7 +14,7 @@ import cats.implicits._
 import dev.profunktor.redis4cats.RedisCommands
 import squants.market._
 
-class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
+class ShoppingCartRepository[F[_]: GenUUID: MonadCancelThrow](
   items: ItemsAlgebra[F],
   redis: RedisCommands[F, String, String],
   expCfg: ShoppingCartCfg
@@ -26,9 +26,9 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
     quantity: Quantity
   ): F[Unit] =
     redis.hSet(userId.value.toString, itemId.value.toString, quantity.value.toString) *>
-      redis.expire(userId.value.toString, expCfg.expiration)
+      redis.expire(userId.value.toString, expCfg.expiration) *> ().pure[F]
 
-  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString)
+  override def delete(userId: AuthPayloads.UserId): F[Unit] = redis.del(userId.value.toString) *> ().pure[F]
 
   override def get(userId: UserId): F[CartPayloads.CartTotal] =
     redis.hGetAll(userId.value.toString).flatMap { it =>
@@ -45,7 +45,7 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
     }
 
   override def removeItem(userId: UserId, itemId: ItemId): F[Unit] =
-    redis.hDel(userId.value.toString, itemId.value.toString)
+    redis.hDel(userId.value.toString, itemId.value.toString) *> ().pure[F]
 
   override def update(userId: UserId, cart: Cart): F[Unit] = redis.hGetAll(userId.value.toString).flatMap { items =>
     items.toList
@@ -55,7 +55,7 @@ class ShoppingCartRepository[F[_]: GenUUID: MonadThrow](
         }
 
       } *>
-      redis.expire(userId.value.toString, expCfg.expiration)
+      redis.expire(userId.value.toString, expCfg.expiration) *> ().pure[F]
   }
 
   private def calcTotal(items: List[CartItem]): Money =
