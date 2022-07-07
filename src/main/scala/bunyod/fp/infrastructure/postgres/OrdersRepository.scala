@@ -17,7 +17,7 @@ import skunk.circe.codec.all._
 import skunk.implicits._
 import squants.market._
 
-class OrdersRepository[F[_]: Sync: BracketThrow: GenUUID](
+class OrdersRepository[F[_]: Sync: GenUUID](
   sessionPool: Resource[F, Session[F]]
 ) extends OrdersAlgebra[F] {
 

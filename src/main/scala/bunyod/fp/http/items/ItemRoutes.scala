@@ -9,7 +9,7 @@ import org.http4s.server.Router
 import bunyod.fp.http.utils.json._
 import bunyod.fp.http.utils.params._
 
-final class ItemRoutes[F[_]: Defer: Monad](
+final class ItemRoutes[F[_]: Monad](
   items: ItemsService[F]
 ) extends Http4sDsl[F] {
 

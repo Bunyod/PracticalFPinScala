@@ -1,7 +1,7 @@
 import Dependencies._
 
 name := "PracticalScalaFP"
-version in ThisBuild := "0.0.1"
+ThisBuild / version := "0.0.1"
 
 lazy val IntegrationTest = config("it") extend(Test)
 
@@ -11,11 +11,29 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "PracticalFPinScala",
-    scalaVersion := "2.13.7",
-    mainClass in Compile := Some("bunyod.fp.MainIO"),
+    scalaVersion := "2.13.5",
+    Compile / mainClass := Some("bunyod.fp.MainIO"),
     Global / onChangedBuildSource := ReloadOnSourceChanges,
-    scalacOptions ++= CompilerOptions.cOptions,
-    scalafmtOnCompile := true,
+//    scalacOptions ++= CompilerOptions.cOptions,
+//    scalafmtOnCompile := true,
+      scalacOptions ++= Seq(
+          "-Xfatal-warnings", // New lines for each options
+          "-deprecation",
+          "-unchecked",
+          "-language:implicitConversions",
+          "-language:higherKinds",
+          "-language:existentials",
+          "-language:postfixOps",
+          "-Ywarn-dead-code",
+          "-Ywarn-numeric-widen",
+          "-Xfatal-warnings",
+          "-deprecation",
+          "-Xlint:-unused,_",
+          "-deprecation",
+          "-Ymacro-annotations",
+          "-Xmaxerrs",
+          "200",
+      ),
     dockerBaseImage := "openjdk:8u201-jre-alpine3.9",
     dockerExposedPorts ++= Seq(8080),
     makeBatScripts := Seq(),

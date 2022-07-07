@@ -12,13 +12,13 @@ import pureconfig._
 import pureconfig.generic.auto._ // DON'T REMOVE THIS LINE
 import scala.concurrent.duration.DurationInt
 
-trait Configurable {
-  val config: ConfigValue[Config] = Configurable.config
+trait Configurable[F[_]] {
+  val config: ConfigValue[F, Config] = Configurable.config
 }
 
 object Configurable {
 
-  val config: ConfigValue[Config] =
+  def config[F[_]]: ConfigValue[F, Config] =
     env("APP_ENV").as[AppEnvironment].option.flatMap {
       case Some(AppEnvironment.Local) | None =>
         ConfigValue.default[Config](ConfigSource.default.loadOrThrow[Config])

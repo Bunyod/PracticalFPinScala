@@ -3,8 +3,7 @@ package bunyod.fp.http.admin
 import bunyod.fp.domain.brands.BrandsPayloads.BrandParam
 import bunyod.fp.domain.brands.BrandsService
 import bunyod.fp.domain.users.UsersPayloads.AdminUser
-import cats.Defer
-import cats.effect._
+import cats._
 import org.http4s.AuthedRoutes
 import org.http4s.circe.JsonDecoder
 import org.http4s.dsl.Http4sDsl
@@ -13,7 +12,7 @@ import bunyod.fp.http.utils.decoder._
 import bunyod.fp.http.utils.json._
 import org.http4s.server.{AuthMiddleware, Router}
 
-final class AdminBrandRoutes[F[_]: Defer: JsonDecoder: MonadThrow](
+final class AdminBrandRoutes[F[_]: JsonDecoder: MonadThrow](
   brands: BrandsService[F]
 ) extends Http4sDsl[F] {
 
