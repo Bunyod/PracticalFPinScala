@@ -3,26 +3,26 @@ import sbt._
 object Dependencies {
 
   object Versions {
-    val cats = "2.7.0"
+    val cats = "2.9.0"
     val catsEffect = "3.3.0"
-    val fs2 = "3.1.6"
+    val fs2 = "3.7.0"
     val logback = "1.2.7"
     val newtype = "0.4.3"
-    val refined = "0.9.28"
+    val refined = "0.9.29"
     val betterMonadicFor = "0.3.1"
     val kindProjector = "0.13.2"
     val skunk = "0.2.2"
-    val http4s = "0.23.7"
+    val http4s = "0.23.19"
     val circe = "0.14.1"
-    val http4sJwtAuth = "1.0.0"
+    val http4sJwtAuth = "1.2.0"
     val log4cats = "1.7.0"
     val catsRetry = "3.1.0"
-    val redis4cats = "1.2.0"
+    val redis4cats = "1.4.1"
     val ciris = "2.3.1"
-    val pureConfig = "0.17.1"
+    val pureConfig = "0.17.4"
 
     val scalaCheck = "1.15.4"
-    val scalaTest = "3.2.11"
+    val scalaTest = "3.2.16"
     val scalaTestPlus = "3.2.2.0"
   }
 
