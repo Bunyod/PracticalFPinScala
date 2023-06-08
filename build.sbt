@@ -11,7 +11,7 @@ lazy val root = (project in file("."))
   .enablePlugins(JavaAppPackaging)
   .settings(
     name := "PracticalFPinScala",
-    scalaVersion := "2.13.10",
+    scalaVersion := "2.13.11",
     Compile / mainClass := Some("bunyod.fp.MainIO"),
     Global / onChangedBuildSource := ReloadOnSourceChanges,
 //    scalacOptions ++= CompilerOptions.cOptions,
