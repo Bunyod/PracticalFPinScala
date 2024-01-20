@@ -19,7 +19,7 @@ object Dependencies {
     val catsRetry = "3.1.0"
     val redis4cats = "1.4.1"
     val ciris = "2.3.1"
-    val pureConfig = "0.17.4"
+    val pureConfig = "0.17.5"
 
     val scalaCheck = "1.15.4"
     val scalaTest = "3.2.16"
